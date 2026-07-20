@@ -3,21 +3,7 @@
  * Fall back to port 5000 when opened via Live Server or file preview.
  */
 function resolveApiBase() {
-  const { protocol, hostname, port, origin } = window.location;
-
-  if (protocol !== 'http:' && protocol !== 'https:') {
-    return 'http://localhost:5000';
-  }
-
-  if (port === '5000' || port === '3000') {
-    return origin;
-  }
-
-  if (!port && (hostname === 'localhost' || hostname === '127.0.0.1')) {
-    return origin;
-  }
-
-  return `${protocol}//${hostname}:5000`;
+  return 'https://hotel-rag-gen-glb.onrender.com';
 }
 
 const API_BASE = window.API_BASE || resolveApiBase();
