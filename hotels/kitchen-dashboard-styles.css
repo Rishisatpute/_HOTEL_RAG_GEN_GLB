@@ -1,0 +1,314 @@
+:root {
+  --primary: #d4af37;
+  --primary-dark: #b8941f;
+  --danger: #e74c3c;
+  --success: #27ae60;
+  --info: #3498db;
+  --warning: #f39c12;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg-secondary, #1a1612);
+  min-height: 100vh;
+}
+
+.kitchen-header {
+  background: linear-gradient(135deg, #2c2416 0%, #1a1612 100%);
+  color: #f5f0e8;
+  padding: 1rem 1.5rem;
+  border-bottom: 3px solid var(--primary);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.kitchen-header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.brand i {
+  font-size: 2.5rem;
+  color: var(--primary);
+}
+
+.brand h1 {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.brand p {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.live-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(39, 174, 96, 0.2);
+  color: #2ecc71;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.pulse {
+  width: 8px;
+  height: 8px;
+  background: #2ecc71;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.3); }
+}
+
+.btn-refresh,
+.btn-link {
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn-refresh:hover,
+.btn-link:hover {
+  background: var(--primary);
+  color: #1a1612;
+}
+
+.kitchen-main {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.status-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.status-tab {
+  padding: 0.6rem 1.2rem;
+  border: 1px solid var(--border-color, rgba(212, 175, 55, 0.3));
+  background: var(--bg-glass, rgba(255,255,255,0.05));
+  color: var(--text-primary, #f5f0e8);
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.status-tab:hover,
+.status-tab.active {
+  background: var(--primary);
+  color: #1a1612;
+  border-color: var(--primary);
+}
+
+.orders-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.25rem;
+}
+
+.order-card {
+  background: var(--bg-glass, rgba(37, 32, 24, 0.9));
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color, rgba(212, 175, 55, 0.2));
+  border-radius: 16px;
+  padding: 1.25rem;
+  animation: slideIn 0.4s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.order-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.order-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px dashed var(--border-color, rgba(212, 175, 55, 0.3));
+}
+
+.order-id {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.order-time {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #b8a99a);
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-top: 0.25rem;
+}
+
+.status-badge.pending { background: #f39c1220; color: #f39c12; }
+.status-badge.accepted { background: #3498db20; color: #3498db; }
+.status-badge.preparing { background: #9b59b620; color: #9b59b6; }
+.status-badge.ready { background: #27ae6020; color: #27ae60; }
+
+.order-items-list {
+  list-style: none;
+  margin-bottom: 1rem;
+}
+
+.order-items-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+  font-size: 0.95rem;
+  color: var(--text-primary, #f5f0e8);
+}
+
+.order-items-list .qty {
+  color: var(--primary);
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+.customer-info {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #b8a99a);
+  margin-bottom: 1rem;
+}
+
+.order-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.order-actions button {
+  padding: 0.6rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+}
+
+.btn-accepted { background: #3498db; color: white; }
+.btn-preparing { background: #9b59b6; color: white; }
+.btn-ready { background: #27ae60; color: white; }
+.btn-completed { background: var(--primary); color: #1a1612; grid-column: span 2; }
+
+.order-actions button:hover:not(:disabled) {
+  transform: scale(1.03);
+  filter: brightness(1.1);
+}
+
+.order-actions button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.loading-state,
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-secondary, #b8a99a);
+}
+
+.loading-state i,
+.empty-state i {
+  font-size: 3rem;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.toast {
+  position: fixed;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--primary);
+  color: #1a1612;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: 10000;
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+@media (max-width: 600px) {
+  .orders-grid {
+    grid-template-columns: 1fr;
+  }
+  .order-actions {
+    grid-template-columns: 1fr;
+  }
+  .btn-completed {
+    grid-column: span 1;
+  }
+}

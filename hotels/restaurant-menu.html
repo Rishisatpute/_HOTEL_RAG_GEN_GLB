@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu | Savory Haus</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="menu-styles.css">
+    <link rel="stylesheet" href="css/order-system.css">
+    <link rel="stylesheet" href="css/scroll-layout.css">
+</head>
+<body class="menu-page" style="background:#0e0e10">
+    <nav class="navbar scrolled">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo"><i class="fas fa-utensils"></i> SAVORY <span>HAUS</span></a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="restaurant-menu.html" class="nav-link active">Menu</a></li>
+                <li><a href="booking.html" class="nav-link">Reservations</a></li>
+                <li><a href="contact.html" class="nav-link">Contact</a></li>
+                <li><a href="kitchen-dashboard.html" class="nav-link">Kitchen</a></li>
+                <li><a href="counter-dashboard.html" class="nav-link">Counter</a></li>
+                <li><a href="admin-dashboard.html" class="nav-link">Admin</a></li>
+                <li><a href="#" class="nav-link nav-cta" id="cartNavLink"><i class="fas fa-receipt"></i> Order (<span id="cartCount">0</span>)</a></li>
+            </ul>
+            <div class="hamburger"><span></span><span></span><span></span></div>
+        </div>
+    </nav>
+    <div class="page-chrome" data-page-chrome></div>
+
+    <header class="page-header" style="margin-top:var(--nav-height);background:linear-gradient(135deg,#0a0a0a,#1c1c1e);padding:3rem 0;text-align:center;color:#f7f5f2">
+        <h1>Our Menu</h1>
+        <p>Discover our culinary masterpieces</p>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="menu-wrapper">
+            <!-- Sidebar Filters -->
+            <aside class="sidebar">
+                <div class="filter-section">
+                    <h3>Categories</h3>
+                    <div class="category-filter">
+                        <button class="filter-btn active" data-category="all">
+                            <i class="fas fa-th"></i> All Items
+                        </button>
+                        <button class="filter-btn" data-category="appetizers">
+                            <i class="fas fa-apple-alt"></i> Appetizers
+                        </button>
+                        <button class="filter-btn" data-category="mains">
+                            <i class="fas fa-utensils"></i> Main Courses
+                        </button>
+                        <button class="filter-btn" data-category="seafood">
+                            <i class="fas fa-shrimp"></i> Seafood
+                        </button>
+                        <button class="filter-btn" data-category="pasta">
+                            <i class="fas fa-fan"></i> Pasta
+                        </button>
+                        <button class="filter-btn" data-category="desserts">
+                            <i class="fas fa-birthday-cake"></i> Desserts
+                        </button>
+                        <button class="filter-btn" data-category="beverages">
+                            <i class="fas fa-wine-glass"></i> Beverages
+                        </button>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <h3>Price Range</h3>
+                    <div class="price-filter">
+                        <label>
+                            <input type="radio" name="price" value="all" checked>
+                            All Prices
+                        </label>
+                        <label>
+                            <input type="radio" name="price" value="0-15">
+                            Under $15
+                        </label>
+                        <label>
+                            <input type="radio" name="price" value="15-30">
+                            $15 - $30
+                        </label>
+                        <label>
+                            <input type="radio" name="price" value="30-50">
+                            $30 - $50
+                        </label>
+                        <label>
+                            <input type="radio" name="price" value="50+">
+                            Over $50
+                        </label>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <h3>Search</h3>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search menu...">
+                </div>
+
+                <div class="filter-section">
+                    <h3>Sort</h3>
+                    <select id="sortSelect" class="sort-select">
+                        <option value="featured">Featured</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="popular">Popularity</option>
+                    </select>
+                </div>
+
+                <button class="reset-filters" id="resetFilters">Reset Filters</button>
+            </aside>
+
+            <!-- Menu Items -->
+            <main class="menu-main">
+                <!-- Menu Grid -->
+                <div class="menu-grid" id="menuGrid">
+                    <!-- Items will be populated by JavaScript -->
+                </div>
+
+                <div class="no-items" id="noItems" style="display: none;">
+                    <i class="fas fa-search"></i>
+                    <p>No items found matching your filters</p>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="js/socket-client.js"></script>
+    <script src="theme.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/order-system.js"></script>
+    <script src="menu-script.js"></script>
+</body>
+</html>

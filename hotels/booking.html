@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Reserve your table at Savory Haus — European fine dining in München.">
+    <title>Reservations | Savory Haus</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/booking.css">
+</head>
+<body class="booking-page">
+    <nav class="navbar scrolled">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo"><i class="fas fa-utensils"></i> SAVORY <span>HAUS</span></a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="restaurant-menu.html" class="nav-link">Menu</a></li>
+                <li><a href="booking.html" class="nav-link active">Reservations</a></li>
+                <li><a href="contact.html" class="nav-link">Contact</a></li>
+                <li><a href="kitchen-dashboard.html" class="nav-link">Kitchen</a></li>
+                <li><a href="counter-dashboard.html" class="nav-link">Counter</a></li>
+                <li><a href="admin-dashboard.html" class="nav-link">Admin</a></li>
+            </ul>
+            <div class="hamburger"><span></span><span></span><span></span></div>
+        </div>
+    </nav>
+
+    <div class="page-chrome" data-page-chrome></div>
+
+    <header class="booking-hero">
+        <div class="container">
+            <h1>Reserve Your Table</h1>
+            <p>An unforgettable evening awaits at Savory Haus</p>
+        </div>
+    </header>
+
+    <main class="booking-main">
+        <div class="container">
+            <div class="booking-layout">
+                <section class="booking-form-section">
+                    <div class="glass-card booking-form-card">
+                        <div class="booking-stepper" id="bookingStepper">
+                            <div class="stepper-item active" data-step="1">
+                                <div class="stepper-circle">1</div>
+                                <span class="stepper-label">Date & Time</span>
+                            </div>
+                            <div class="stepper-item" data-step="2">
+                                <div class="stepper-circle">2</div>
+                                <span class="stepper-label">Details</span>
+                            </div>
+                            <div class="stepper-item" data-step="3">
+                                <div class="stepper-circle">3</div>
+                                <span class="stepper-label">Confirm</span>
+                            </div>
+                        </div>
+
+                        <form id="bookingForm" class="booking-form">
+                            <div class="booking-step active" data-step="1">
+                                <div class="step-header">
+                                    <h2>When would you like to dine?</h2>
+                                    <span class="step-number">Step 1 of 3</span>
+                                </div>
+                                <div class="form-group form-field form-field--date" id="bookingDateField">
+                                    <input type="date" id="bookingDate" name="bookingDate" required aria-label="Select date">
+                                    <label for="bookingDate">Select Date *</label>
+                                    <button type="button" class="date-picker-trigger" id="datePickerTrigger" aria-label="Open calendar" tabindex="-1">
+                                        <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                                    </button>
+                                    <small>Available from today onwards</small>
+                                    <span class="error-message"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="booking-inline-label">Select Time *</label>
+                                    <div class="time-grid" id="timeGrid"></div>
+                                    <input type="hidden" id="bookingTime" name="bookingTime" required>
+                                    <span class="error-message"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="booking-inline-label">Guests *</label>
+                                    <div class="guest-selector">
+                                        <button type="button" class="guest-btn" onclick="decreaseGuests()"><i class="fas fa-minus"></i></button>
+                                        <input type="number" id="guestCount" name="guestCount" value="2" min="1" max="12" required readonly>
+                                        <button type="button" class="guest-btn" onclick="increaseGuests()"><i class="fas fa-plus"></i></button>
+                                    </div>
+                                    <small>1–12 guests</small>
+                                    <span class="error-message"></span>
+                                </div>
+                                <button type="button" class="btn-next" onclick="goToStep(2)">Continue <i class="fas fa-arrow-right"></i></button>
+                            </div>
+
+                            <div class="booking-step" data-step="2">
+                                <div class="step-header">
+                                    <h2>Your contact details</h2>
+                                    <span class="step-number">Step 2 of 3</span>
+                                </div>
+                                <div class="form-group form-field">
+                                    <input type="text" id="firstName" name="firstName" required placeholder=" ">
+                                    <label for="firstName">First Name *</label>
+                                    <span class="error-message"></span>
+                                </div>
+                                <div class="form-group form-field">
+                                    <input type="text" id="lastName" name="lastName" required placeholder=" ">
+                                    <label for="lastName">Last Name *</label>
+                                    <span class="error-message"></span>
+                                </div>
+                                <div class="form-group form-field">
+                                    <input type="email" id="email" name="email" required placeholder=" ">
+                                    <label for="email">Email *</label>
+                                    <span class="error-message"></span>
+                                </div>
+                                <div class="form-group form-field">
+                                    <input type="tel" id="phone" name="phone" required placeholder=" ">
+                                    <label for="phone">Phone *</label>
+                                    <span class="error-message"></span>
+                                </div>
+                                <div class="form-navigation">
+                                    <button type="button" class="btn-back" onclick="goToStep(1)"><i class="fas fa-arrow-left"></i> Back</button>
+                                    <button type="button" class="btn-next" onclick="goToStep(3)">Continue <i class="fas fa-arrow-right"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="booking-step" data-step="3">
+                                <div class="step-header">
+                                    <h2>Final touches</h2>
+                                    <span class="step-number">Step 3 of 3</span>
+                                </div>
+                                <div class="form-group form-field">
+                                    <select id="occasion" name="occasion">
+                                        <option value="">No special occasion</option>
+                                        <option value="birthday">Birthday</option>
+                                        <option value="anniversary">Anniversary</option>
+                                        <option value="engagement">Engagement</option>
+                                        <option value="business">Business Dinner</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                    <label for="occasion">Occasion</label>
+                                </div>
+                                <div class="form-group form-field">
+                                    <textarea id="specialRequests" name="specialRequests" placeholder=" " rows="4"></textarea>
+                                    <label for="specialRequests">Special Requests</label>
+                                    <small>Max 200 characters</small>
+                                    <span class="error-message"></span>
+                                </div>
+                                <div class="dietary-preferences">
+                                    <label class="booking-inline-label">Dietary Preferences</label>
+                                    <div class="checkbox-group">
+                                        <label class="checkbox-label"><input type="checkbox" name="dietary" value="vegetarian"> Vegetarian</label>
+                                        <label class="checkbox-label"><input type="checkbox" name="dietary" value="vegan"> Vegan</label>
+                                        <label class="checkbox-label"><input type="checkbox" name="dietary" value="gluten-free"> Gluten Free</label>
+                                    </div>
+                                </div>
+                                <div class="form-group form-group--terms">
+                                    <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                                    <label for="agreeTerms" class="terms-label">I agree to the cancellation policy *</label>
+                                    <span class="error-message"></span>
+                                </div>
+                                <div class="form-navigation">
+                                    <button type="button" class="btn-back" onclick="goToStep(2)"><i class="fas fa-arrow-left"></i> Back</button>
+                                    <button type="submit" class="btn-submit"><i class="fas fa-check"></i> Confirm Booking</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <aside class="booking-sidebar">
+                    <div class="glass-card booking-summary">
+                        <h3>Your Reservation</h3>
+                        <div class="summary-row"><span class="label"><i class="fas fa-calendar"></i> Date</span><span class="value" id="summaryDate">—</span></div>
+                        <div class="summary-row"><span class="label"><i class="fas fa-clock"></i> Time</span><span class="value" id="summaryTime">—</span></div>
+                        <div class="summary-row"><span class="label"><i class="fas fa-users"></i> Guests</span><span class="value" id="summaryGuests">2</span></div>
+                        <div class="summary-row"><span class="label"><i class="fas fa-user"></i> Name</span><span class="value" id="summaryName">—</span></div>
+                        <div class="summary-row"><span class="label"><i class="fas fa-phone"></i> Phone</span><span class="value" id="summaryPhone">—</span></div>
+                    </div>
+                    <div class="glass-card restaurant-info">
+                        <h3>Savory Haus</h3>
+                        <div class="info-item"><i class="fas fa-map-marker-alt"></i><div><p>Maximilianstraße 12</p><p>80539 München, Germany</p></div></div>
+                        <div class="info-item"><i class="fas fa-phone"></i><div><p>+49 89 123 4567</p></div></div>
+                        <div class="info-item"><i class="fas fa-clock"></i><div><p>Tue–Sun from 18:00</p></div></div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <div class="booking-modal" id="successModal">
+        <div class="modal-content success-pop">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <div class="modal-icon"><i class="fas fa-check-circle"></i></div>
+            <h2 style="font-family:var(--font-display);font-size:2rem;margin-bottom:1rem">Booking Confirmed</h2>
+            <div class="confirmation-details" style="text-align:left;margin-bottom:1.5rem;font-size:0.95rem">
+                <p><strong>Confirmation:</strong> <span id="confirmationNumber">—</span></p>
+                <p><strong>Date:</strong> <span id="confirmDate">—</span></p>
+                <p><strong>Time:</strong> <span id="confirmTime">—</span></p>
+                <p><strong>Guests:</strong> <span id="confirmGuests">—</span></p>
+            </div>
+            <p class="modal-message" style="color:var(--text-secondary);margin-bottom:1.5rem">Confirmation sent to <span id="confirmEmail">you</span></p>
+            <button class="btn btn-primary btn-block" onclick="goToHome()">Return Home</button>
+        </div>
+    </div>
+    <div class="notification" id="notification"></div>
+
+    <script src="api.js"></script>
+    <script src="theme.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="booking-script.js"></script>
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin | Savory Haus</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-app">
+    <aside class="admin-sidebar sidebar" id="adminSidebar">
+        <div class="sidebar-brand">
+            <i class="fas fa-utensils"></i>
+            <div><span>SAVORY HAUS</span><small>Admin Panel</small></div>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#overview" class="nav-item active" onclick="switchTab('overview')"><i class="fas fa-chart-line"></i><span>Overview</span></a>
+            <a href="#orders" class="nav-item" onclick="switchTab('orders')"><i class="fas fa-shopping-bag"></i><span>Orders</span><span class="badge">0</span></a>
+            <a href="#kitchen" class="nav-item" onclick="switchTab('kitchen')"><i class="fas fa-fire-burner"></i><span>Kitchen</span><span class="badge">0</span></a>
+            <a href="#payments" class="nav-item" onclick="switchTab('payments')"><i class="fas fa-credit-card"></i><span>Payments</span></a>
+            <a href="#analytics" class="nav-item" onclick="switchTab('analytics')"><i class="fas fa-chart-pie"></i><span>Analytics</span></a>
+            <a href="#bookings" class="nav-item" onclick="switchTab('bookings')"><i class="fas fa-calendar-check"></i><span>Bookings</span></a>
+            <a href="kitchen-dashboard.html" class="nav-item"><i class="fas fa-fire-burner"></i><span>Kitchen</span></a>
+            <a href="counter-dashboard.html" class="nav-item"><i class="fas fa-cash-register"></i><span>Counter</span></a>
+            <a href="index.html" class="nav-item"><i class="fas fa-external-link-alt"></i><span>Website</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="sidebar-user">
+                <div class="avatar">MW</div>
+                <div><p>Markus Weber</p><small>Restaurant Manager</small></div>
+            </div>
+        </div>
+    </aside>
+
+    <div class="admin-main main-content">
+        <header class="admin-topbar dashboard-header">
+            <div class="topbar-left header-left">
+                <button class="topbar-btn sidebar-toggle" id="sidebarToggle" aria-label="Menu"><i class="fas fa-bars"></i></button>
+                <div>
+                    <h1>Dashboard</h1>
+                    <p id="currentTime">—</p>
+                </div>
+            </div>
+            <div class="topbar-right header-right">
+                <button class="topbar-btn btn-icon" title="Refresh" onclick="dashboardManager?.loadFromAPI()"><i class="fas fa-sync-alt"></i></button>
+                <div class="dropdown-wrap">
+                    <button class="topbar-btn btn-icon" id="notifBtn" title="Notifications"><i class="fas fa-bell"></i><span class="notification-dot"></span></button>
+                    <div class="dropdown-menu" id="notifDropdown">
+                        <div class="dropdown-header">Notifications</div>
+                        <div class="dropdown-item"><i class="fas fa-shopping-bag"></i><div><strong>New order received</strong><small>Just now</small></div></div>
+                        <div class="dropdown-item"><i class="fas fa-calendar"></i><div><strong>Table reservation</strong><small>5 min ago</small></div></div>
+                        <div class="dropdown-item"><i class="fas fa-check"></i><div><strong>Payment completed</strong><small>12 min ago</small></div></div>
+                    </div>
+                </div>
+                <div class="dropdown-wrap">
+                    <button class="profile-btn" id="profileBtn"><span class="avatar-sm">MW</span><span>Markus</span><i class="fas fa-chevron-down" style="font-size:0.65rem;margin-left:4px"></i></button>
+                    <div class="dropdown-menu" id="profileDropdown">
+                        <div class="dropdown-header">Account</div>
+                        <a href="#" class="dropdown-item"><i class="fas fa-user"></i><div>Profile Settings</div></a>
+                        <a href="index.html" class="dropdown-item"><i class="fas fa-home"></i><div>View Website</div></a>
+                        <a href="#" class="dropdown-item"><i class="fas fa-sign-out-alt"></i><div>Sign Out</div></a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="dashboard-content">
+            <!-- Overview Tab -->
+            <section id="overview" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="kpi-card stat-card reveal">
+                        <div class="kpi-icon orders stat-icon today-orders"><i class="fas fa-shopping-bag"></i></div>
+                        <div class="kpi-info stat-info">
+                            <h3>Today's Orders</h3>
+                            <p class="kpi-value stat-value" data-stat="today-orders">0</p>
+                            <span class="stat-change positive"><i class="fas fa-arrow-up"></i> Live data</span>
+                        </div>
+                    </div>
+                    <div class="kpi-card stat-card reveal reveal-delay-1">
+                        <div class="kpi-icon revenue stat-icon today-revenue"><i class="fas fa-euro-sign"></i></div>
+                        <div class="kpi-info stat-info">
+                            <h3>Today's Revenue</h3>
+                            <p class="kpi-value stat-value" data-stat="today-revenue">€0</p>
+                            <span class="stat-change positive"><i class="fas fa-arrow-up"></i> Live data</span>
+                        </div>
+                    </div>
+                    <div class="kpi-card stat-card reveal reveal-delay-2">
+                        <div class="kpi-icon customers stat-icon total-customers"><i class="fas fa-users"></i></div>
+                        <div class="kpi-info stat-info">
+                            <h3>Total Customers</h3>
+                            <p class="kpi-value stat-value" data-stat="total-customers">0</p>
+                            <span class="stat-change positive">Unique guests</span>
+                        </div>
+                    </div>
+                    <div class="kpi-card stat-card reveal reveal-delay-3">
+                        <div class="kpi-icon pending stat-icon pending-orders"><i class="fas fa-clock"></i></div>
+                        <div class="kpi-info stat-info">
+                            <h3>Active Orders</h3>
+                            <p class="kpi-value stat-value" data-stat="pending-orders">0</p>
+                            <span class="stat-change negative">In kitchen queue</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>Revenue Trend (Last 7 Days)</h3>
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>Order Status Distribution</h3>
+                        <canvas id="statusChart"></canvas>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>Top Dishes This Week</h3>
+                        <canvas id="topDishesChart"></canvas>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>Peak Hours</h3>
+                        <canvas id="peakHoursChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Orders Tab -->
+            <section id="orders" class="tab-content">
+                <div class="section-header">
+                    <h2>Orders Management</h2>
+                    <div class="filter-controls">
+                        <select class="filter-select">
+                            <option>All Orders</option>
+                            <option>Pending</option>
+                            <option>In Progress</option>
+                            <option>Completed</option>
+                            <option>Cancelled</option>
+                        </select>
+                        <input type="text" class="search-input" placeholder="Search orders...">
+                    </div>
+                </div>
+
+                <div class="orders-container data-table-wrap">
+                    <table class="orders-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Items</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Time</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody">
+                            <!-- Orders will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Kitchen Tab -->
+            <section id="kitchen" class="tab-content">
+                <div class="section-header">
+                    <h2>Kitchen Orders</h2>
+                    <button class="btn btn-primary">Print Queue</button>
+                </div>
+
+                <div class="kitchen-board">
+                    <div class="kitchen-column">
+                        <h3>New Orders</h3>
+                        <div id="kitchenNew" class="kitchen-cards">
+                            <!-- Kitchen items will be populated -->
+                        </div>
+                    </div>
+
+                    <div class="kitchen-column">
+                        <h3>Preparing</h3>
+                        <div id="kitchenPreparing" class="kitchen-cards">
+                            <!-- Kitchen items will be populated -->
+                        </div>
+                    </div>
+
+                    <div class="kitchen-column">
+                        <h3>Ready</h3>
+                        <div id="kitchenReady" class="kitchen-cards">
+                            <!-- Kitchen items will be populated -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Payments Tab -->
+            <section id="payments" class="tab-content">
+                <div class="section-header">
+                    <h2>Payment Transactions</h2>
+                    <div class="filter-controls">
+                        <input type="date" class="filter-date">
+                        <select class="filter-select">
+                            <option>All Methods</option>
+                            <option>Credit Card</option>
+                            <option>Cash</option>
+                            <option>PayPal</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="payments-summary">
+                    <div class="payment-stat">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <p>Completed</p>
+                            <h3>$18,920</h3>
+                        </div>
+                    </div>
+                    <div class="payment-stat">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <p>Pending</p>
+                            <h3>$2,340</h3>
+                        </div>
+                    </div>
+                    <div class="payment-stat">
+                        <i class="fas fa-times-circle"></i>
+                        <div>
+                            <p>Failed</p>
+                            <h3>$450</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="payments-container data-table-wrap">
+                    <table class="payments-table">
+                        <thead>
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paymentsTableBody">
+                            <!-- Payments will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Analytics Tab -->
+            <section id="analytics" class="tab-content">
+                <div class="section-header">
+                    <h2>Analytics & Reports</h2>
+                    <div class="date-range">
+                        <input type="date" id="startDate">
+                        <span>to</span>
+                        <input type="date" id="endDate">
+                        <button class="btn btn-primary">Apply</button>
+                    </div>
+                </div>
+
+                <div class="analytics-grid">
+                    <div class="chart-card large">
+                        <h3>Monthly Revenue</h3>
+                        <canvas id="monthlyRevenueChart"></canvas>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>Order Volume</h3>
+                        <canvas id="orderVolumeChart"></canvas>
+                    </div>
+
+                    <div class="analytics-table">
+                        <h3>Best Performing Items</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Quantity Sold</th>
+                                    <th>Revenue</th>
+                                    <th>Rating</th>
+                                </tr>
+                            </thead>
+                            <tbody id="topItemsBody">
+                                <!-- Will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bookings Tab -->
+            <section id="bookings" class="tab-content">
+                <div class="section-header">
+                    <h2>Table Bookings</h2>
+                    <button class="btn btn-primary">New Booking</button>
+                </div>
+
+                <div class="bookings-container data-table-wrap">
+                    <table class="bookings-table">
+                        <thead>
+                            <tr>
+                                <th>Confirmation</th>
+                                <th>Customer</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Guests</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookingsTableBody">
+                            <!-- Bookings will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Modal for Order Details -->
+    <div class="modal" id="orderModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('orderModal')">×</button>
+            <h2>Order Details</h2>
+            <div id="orderModalContent">
+                <!-- Details will be populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script src="api.js"></script>
+    <script src="js/socket-client.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="admin-dashboard-script.js"></script>
+    <script>
+    document.getElementById('notifBtn')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.getElementById('notifDropdown').classList.toggle('show');
+      document.getElementById('profileDropdown').classList.remove('show');
+    });
+    document.getElementById('profileBtn')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.getElementById('profileDropdown').classList.toggle('show');
+      document.getElementById('notifDropdown').classList.remove('show');
+    });
+    document.getElementById('sidebarToggle')?.addEventListener('click', () => {
+      document.getElementById('adminSidebar').classList.toggle('open');
+    });
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.dropdown-menu').forEach(d => d.classList.remove('show'));
+    });
+    </script>
+</body>
+</html>

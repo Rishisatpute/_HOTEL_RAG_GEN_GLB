@@ -1,0 +1,60 @@
+/* Checkout page premium overrides */
+
+body {
+  background: var(--bg-body);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.checkout-main {
+  overflow: visible;
+  min-height: 0;
+}
+
+.checkout-header {
+  margin-top: var(--nav-height);
+  background: linear-gradient(135deg, var(--matte-black), var(--charcoal));
+  padding: var(--space-3xl) 0 var(--space-2xl);
+  text-align: center;
+  border-bottom: 1px solid rgba(201, 169, 98, 0.12);
+}
+
+.checkout-header h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  color: var(--warm-white);
+  font-weight: 400;
+}
+
+.checkout-header p { color: rgba(247,245,242,0.65); }
+
+.checkout-form,
+.order-summary {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.btn-primary, .btn-submit {
+  background: linear-gradient(135deg, var(--gold), #a88b4a) !important;
+  color: var(--matte-black) !important;
+  border-radius: var(--radius-full) !important;
+}
+
+.progress-step.active span {
+  background: var(--gold) !important;
+  color: var(--matte-black) !important;
+}
+
+input, select {
+  border-radius: var(--radius-md) !important;
+  border-color: var(--border) !important;
+}
+
+input:focus {
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 0 3px var(--gold-muted) !important;
+}

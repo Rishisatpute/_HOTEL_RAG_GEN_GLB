@@ -1,0 +1,92 @@
+/**
+ * Savory Haus — Single-scroll layout (no nested visible scrollbars)
+ * Checkout, order modal, and cart use document or one hidden-scroll region only.
+ */
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Shared: scrollable but no visible scrollbar */
+.no-scrollbar,
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar,
+.hide-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+/* —— Checkout page: natural page flow only —— */
+.checkout-main,
+.checkout-layout,
+.checkout-form-section,
+.checkout-form,
+.checkout-form fieldset,
+.checkout-form .form-section,
+.order-summary-section,
+.order-summary,
+.order-items,
+.promo-section,
+.order-totals,
+.form-navigation {
+  height: auto;
+  max-height: none;
+  overflow: visible;
+}
+
+/* —— Order modal: scroll the overlay (hidden bar), not the form box —— */
+.order-modal-overlay {
+  overflow-x: hidden;
+  overflow-y: auto;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: max(var(--space-xl), 5vh);
+  padding-bottom: max(var(--space-xl), 5vh);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.order-modal-overlay::-webkit-scrollbar {
+  width: 0;
+  display: none;
+}
+
+.order-modal,
+#orderFormView,
+.order-success {
+  height: auto;
+  max-height: none;
+  overflow: visible;
+}
+
+/* —— Cart drawer: one internal scroll region, scrollbar hidden —— */
+.cart-drawer-items {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.cart-drawer-items::-webkit-scrollbar {
+  width: 0;
+  display: none;
+}
+
+.cart-drawer-footer {
+  overflow: visible;
+}
+
+@media (max-width: 576px) {
+  .order-modal-overlay {
+    align-items: flex-end;
+    padding-top: var(--space-md);
+    padding-bottom: 0;
+  }
+}

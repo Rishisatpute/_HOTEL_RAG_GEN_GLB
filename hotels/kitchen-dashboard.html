@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitchen | Savory Haus</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/kitchen.css">
+</head>
+<body class="kitchen-page" data-socket-room="kitchen">
+    <div class="page-chrome" data-page-chrome></div>
+
+    <header class="kitchen-header">
+        <div class="kitchen-header-inner">
+            <div class="brand">
+                <i class="fas fa-fire-burner"></i>
+                <div>
+                    <h1>Kitchen Display</h1>
+                    <p id="kitchenClock">—</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <span class="live-badge"><span class="pulse"></span> Live</span>
+                <button class="btn-refresh" id="refreshBtn"><i class="fas fa-sync-alt"></i></button>
+                <a href="admin-dashboard.html" class="btn-link"><i class="fas fa-chart-line"></i> Admin</a>
+                <a href="index.html" class="btn-link"><i class="fas fa-home"></i> Home</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="kitchen-main">
+        <div class="status-tabs">
+            <button class="status-tab active" data-filter="all">All Active</button>
+            <button class="status-tab" data-filter="received">Received</button>
+            <button class="status-tab" data-filter="preparing">Preparing</button>
+            <button class="status-tab" data-filter="ready">Ready</button>
+        </div>
+        <div id="ordersGrid" class="orders-grid">
+            <div class="loading-state skeleton-wrap">
+                <div class="skeleton" style="height:200px;width:100%;max-width:320px;margin:0 auto"></div>
+                <p>Loading orders…</p>
+            </div>
+        </div>
+        <div id="emptyState" class="empty-state" style="display:none">
+            <i class="fas fa-utensils"></i>
+            <h2>No active orders</h2>
+            <p>New orders appear automatically</p>
+        </div>
+    </main>
+
+    <div class="toast" id="kitchenToast"></div>
+
+    <script src="api.js"></script>
+    <script src="js/socket-client.js"></script>
+    <script src="kitchen-dashboard-script.js"></script>
+</body>
+</html>
