@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="View the gallery of Ek Punjab Dhaba & Bar in Pune. Explore our royal interiors and vibrant bar atmosphere.">
+    <title>Gallery | Ek Punjab Dhaba & Bar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/hotel-rebrand.css">
+    <style>
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem 0;
+        }
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            aspect-ratio: 4/3;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+        .gallery-item::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(0deg, rgba(26,18,16,0.5) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .gallery-item:hover::after {
+            opacity: 1;
+        }
+        
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        .lightbox.active {
+            display: flex;
+        }
+        .lightbox img {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 1010;
+        }
+    </style>
+</head>
+<body style="background: var(--bg-primary);">
+    <nav class="top-nav">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <a href="index.html" class="brand">
+                <i class="fas fa-fire"></i>
+                <div>
+                    EK PUNJAB
+                    <small>Royal Chill Bar & Dhaba</small>
+                </div>
+            </a>
+            
+            <div class="nav-search-bar" style="display: flex; align-items: center; background: white; border-radius: 8px; padding: 0.3rem 1rem; box-shadow: var(--shadow-sm); flex: 0 1 400px; margin: 0 1rem; border: 1px solid var(--border-color);">
+                <i class="fas fa-map-marker-alt" style="color: var(--accent-red); margin-right: 0.5rem;"></i>
+                <span style="font-size: 0.9rem; color: var(--text-main); border-right: 1px solid var(--border-color); padding-right: 0.8rem; margin-right: 0.8rem; white-space: nowrap;">Pune</span>
+                <i class="fas fa-search" style="color: var(--text-muted); margin-right: 0.5rem;"></i>
+                <input type="text" placeholder="Search for dishes..." style="border: none; outline: none; width: 100%; font-family: inherit; font-size: 0.9rem;">
+            </div>
+
+            <div class="hamburger" id="hamburgerBtn">
+                <i class="fas fa-bars"></i>
+            </div>
+
+            <div class="nav-links" id="navLinks">
+                <a href="index.html">Home</a>
+                <a href="restaurant-menu.html">Menu</a>
+                <a href="gallery.html" class="active">Gallery</a>
+                <a href="booking.html">Reservations</a>
+                <a href="#" style="font-size: 1.2rem; margin-left: 0.5rem; color: var(--text-main);"><i class="fas fa-user-circle"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <header style="padding: 4rem 0 2rem; background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); text-align: center;">
+        <div class="container">
+            <h1 style="margin: 0; font-size: clamp(2rem, 4vw, 3rem);">Our Gallery</h1>
+            <p style="color: var(--text-muted); font-size: 1.1rem; margin-top: 0.5rem;">A glimpse into the royal vibe of Ek Punjab</p>
+        </div>
+    </header>
+    
+    <section class="section" style="padding-top: 2rem;">
+        <div class="container">
+            <div class="gallery-grid">
+                <div class="gallery-item" onclick="openLightbox('assets/photos/hero.jpg')">
+                    <img src="assets/photos/hero.jpg" alt="Outdoor Patio at Night">
+                </div>
+                <div class="gallery-item" onclick="openLightbox('assets/photos/entrance.jpg')">
+                    <img src="assets/photos/entrance.jpg" alt="Carved Wooden Doorway">
+                </div>
+                <div class="gallery-item" onclick="openLightbox('assets/photos/bar.jpg')">
+                    <img src="assets/photos/bar.jpg" alt="Marble Bar Counter">
+                </div>
+                <div class="gallery-item" onclick="openLightbox('assets/photos/interior-1.jpg')">
+                    <img src="assets/photos/interior-1.jpg" alt="Indoor Dining Hall">
+                </div>
+                <div class="gallery-item" onclick="openLightbox('assets/photos/interior-2.jpg')">
+                    <img src="assets/photos/interior-2.jpg" alt="Indoor Decor">
+                </div>
+                <div class="gallery-item" onclick="openLightbox('https://loremflickr.com/800/600/indian,curry?lock=101')">
+                    <img src="https://loremflickr.com/400/300/indian,curry?lock=101" alt="Butter Chicken">
+                </div>
+                <div class="gallery-item" onclick="openLightbox('https://loremflickr.com/800/600/indian,paneer?lock=102')">
+                    <img src="https://loremflickr.com/400/300/indian,paneer?lock=102" alt="Paneer Tikka">
+                </div>
+                <div class="gallery-item" onclick="openLightbox('https://loremflickr.com/800/600/indian,biryani?lock=103')">
+                    <img src="https://loremflickr.com/400/300/indian,biryani?lock=103" alt="Chicken Biryani">
+                </div>
+                <div class="gallery-item" onclick="openLightbox('https://loremflickr.com/800/600/indian,bread?lock=104')">
+                    <img src="https://loremflickr.com/400/300/indian,bread?lock=104" alt="Amritsari Kulcha">
+                </div>
+                <div class="gallery-item" onclick="openLightbox('https://loremflickr.com/800/600/indian,dessert?lock=105')">
+                    <img src="https://loremflickr.com/400/300/indian,dessert?lock=105" alt="Dessert">
+                </div>
+                <div class="gallery-item" onclick="openLightbox('https://loremflickr.com/800/600/indian,tandoori?lock=106')">
+                    <img src="https://loremflickr.com/400/300/indian,tandoori?lock=106" alt="Tandoori Platters">
+                </div>
+                <div class="gallery-item" onclick="openLightbox('https://loremflickr.com/800/600/indian,fish?lock=107')">
+                    <img src="https://loremflickr.com/400/300/indian,fish?lock=107" alt="Fish Fry">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+        <span class="lightbox-close" onclick="closeLightbox(event)">&times;</span>
+        <img id="lightboxImg" src="" alt="Gallery Image">
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h3 class="font-heading" style="color: var(--text-main); font-size: 1.5rem; margin-bottom: 1rem;"><i class="fas fa-fire" style="color: var(--accent-red);"></i> EK PUNJAB</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 1rem;">Royal Chill Bar & Dhaba<br>North Indian • Punjabi • Tandoor & Bar</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="footer-title">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="restaurant-menu.html">Menu</a></li>
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="booking.html">Reservations</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-title">Contact</h4>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt" style="margin-right: 0.5rem;"></i> Shiv-Sai Lane, Beside Lotus Hospital, Pune – 411027</li>
+                        <li><i class="fas fa-phone" style="margin-right: 0.5rem;"></i> +91 78077 80724</li>
+                        <li><i class="fas fa-phone" style="margin-right: 0.5rem;"></i> +91 95495 40069</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="text-align: center; color: var(--text-muted); padding-top: 2rem; border-top: 1px solid var(--border-color); font-size: 0.9rem;">
+                &copy; 2026 Ek Punjab – Royal Chill Bar & Dhaba. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

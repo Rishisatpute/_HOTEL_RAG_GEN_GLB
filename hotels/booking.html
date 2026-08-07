@@ -3,209 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Reserve your table at Savory Haus — European fine dining in München.">
-    <title>Reservations | Savory Haus</title>
+    <meta name="description" content="Reserve a table at Ek Punjab Dhaba & Bar in Pune and enjoy authentic Punjabi flavors with a lively bar atmosphere.">
+    <title>Reserve | Ek Punjab Dhaba & Bar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/design-system.css">
-    <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" href="css/animations.css">
-    <link rel="stylesheet" href="css/booking.css">
+    <link rel="stylesheet" href="css/hotel-rebrand.css">
 </head>
-<body class="booking-page">
-    <nav class="navbar scrolled">
-        <div class="nav-container">
-            <a href="index.html" class="nav-logo"><i class="fas fa-utensils"></i> SAVORY <span>HAUS</span></a>
-            <ul class="nav-menu">
-                <li><a href="index.html" class="nav-link">Home</a></li>
-                <li><a href="restaurant-menu.html" class="nav-link">Menu</a></li>
-                <li><a href="booking.html" class="nav-link active">Reservations</a></li>
-                <li><a href="contact.html" class="nav-link">Contact</a></li>
-                <li><a href="kitchen-dashboard.html" class="nav-link">Kitchen</a></li>
-                <li><a href="counter-dashboard.html" class="nav-link">Counter</a></li>
-                <li><a href="admin-dashboard.html" class="nav-link">Admin</a></li>
-            </ul>
-            <div class="hamburger"><span></span><span></span><span></span></div>
+<body style="background: var(--bg-secondary);">
+
+    <nav class="top-nav">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <a href="index.html" class="brand">
+                <i class="fas fa-fire"></i>
+                <div>
+                    EK PUNJAB
+                    <small>Royal Chill Bar & Dhaba</small>
+                </div>
+            </a>
+            
+            <div class="nav-search-bar" style="display: flex; align-items: center; background: white; border-radius: 8px; padding: 0.3rem 1rem; box-shadow: var(--shadow-sm); flex: 0 1 400px; margin: 0 1rem; border: 1px solid var(--border-color);">
+                <i class="fas fa-map-marker-alt" style="color: var(--accent-red); margin-right: 0.5rem;"></i>
+                <span style="font-size: 0.9rem; color: var(--text-main); border-right: 1px solid var(--border-color); padding-right: 0.8rem; margin-right: 0.8rem; white-space: nowrap;">Pune</span>
+                <i class="fas fa-search" style="color: var(--text-muted); margin-right: 0.5rem;"></i>
+                <input type="text" placeholder="Search for dishes..." style="border: none; outline: none; width: 100%; font-family: inherit; font-size: 0.9rem;">
+            </div>
+
+            <div class="hamburger" id="hamburgerBtn">
+                <i class="fas fa-bars"></i>
+            </div>
+
+            <div class="nav-links" id="navLinks">
+                <a href="index.html">Home</a>
+                <a href="restaurant-menu.html">Menu</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="booking.html" class="active">Reservations</a>
+                <a href="#" style="font-size: 1.2rem; margin-left: 0.5rem; color: var(--text-main);"><i class="fas fa-user-circle"></i></a>
+            </div>
         </div>
     </nav>
 
-    <div class="page-chrome" data-page-chrome></div>
-
-    <header class="booking-hero">
+    <header style="padding: 4rem 0 2rem; background: white; border-bottom: 1px solid var(--border-color); text-align: center;">
         <div class="container">
-            <h1>Reserve Your Table</h1>
-            <p>An unforgettable evening awaits at Savory Haus</p>
+            <h1 style="margin: 0; font-size: clamp(2rem, 4vw, 3rem);">Reserve Your Table</h1>
+            <p style="color: var(--text-muted); font-size: 1.1rem; margin-top: 0.5rem;">Join us for a memorable dining experience.</p>
         </div>
     </header>
-
-    <main class="booking-main">
+    
+    <section class="section" style="padding-top: 3rem;">
         <div class="container">
-            <div class="booking-layout">
-                <section class="booking-form-section">
-                    <div class="glass-card booking-form-card">
-                        <div class="booking-stepper" id="bookingStepper">
-                            <div class="stepper-item active" data-step="1">
-                                <div class="stepper-circle">1</div>
-                                <span class="stepper-label">Date & Time</span>
-                            </div>
-                            <div class="stepper-item" data-step="2">
-                                <div class="stepper-circle">2</div>
-                                <span class="stepper-label">Details</span>
-                            </div>
-                            <div class="stepper-item" data-step="3">
-                                <div class="stepper-circle">3</div>
-                                <span class="stepper-label">Confirm</span>
+            <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2rem; align-items: start;">
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 2.5rem; box-shadow: var(--shadow-md);">
+                    <h2 style="margin-bottom: 1.5rem; font-size: 1.6rem;">Booking Request</h2>
+                    <form id="bookingForm" style="display: grid; gap: 1rem;">
+                        <div class="grid-2" style="gap: 1rem;">
+                            <input type="text" class="form-control" placeholder="Your Name" required>
+                            <input type="tel" class="form-control" placeholder="Phone Number" required>
+                        </div>
+                        <div class="grid-2" style="gap: 1rem;">
+                            <input type="date" class="form-control" required>
+                            <select class="form-control" required>
+                                <option value="" disabled selected>Number of Guests</option>
+                                <option>2 Guests</option>
+                                <option>3 Guests</option>
+                                <option>4 Guests</option>
+                                <option>5-8 Guests</option>
+                                <option>9+ Guests</option>
+                            </select>
+                        </div>
+                        <textarea class="form-control" rows="4" placeholder="Special requests, celebrations, or allergies..."></textarea>
+                        <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 1rem; font-size: 1.1rem; margin-top: 1rem;">Send Request</button>
+                    </form>
+                </div>
+
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 2.5rem; box-shadow: var(--shadow-md);">
+                    <h2 style="margin-bottom: 1.5rem; font-size: 1.6rem;">Contact Us directly</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 2rem;">For immediate confirmations and large bookings, please call us.</p>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                        <div style="display: flex; align-items: flex-start; gap: 1rem;">
+                            <div style="color: var(--accent-red); font-size: 1.5rem;"><i class="fas fa-phone-alt"></i></div>
+                            <div>
+                                <h3 style="font-size: 1.1rem; margin-bottom: 0.2rem;">Phone Numbers</h3>
+                                <p style="color: var(--text-main); font-weight: bold;">+91 78077 80724</p>
+                                <p style="color: var(--text-main); font-weight: bold;">+91 95495 40069</p>
                             </div>
                         </div>
 
-                        <form id="bookingForm" class="booking-form">
-                            <div class="booking-step active" data-step="1">
-                                <div class="step-header">
-                                    <h2>When would you like to dine?</h2>
-                                    <span class="step-number">Step 1 of 3</span>
-                                </div>
-                                <div class="form-group form-field form-field--date" id="bookingDateField">
-                                    <input type="date" id="bookingDate" name="bookingDate" required aria-label="Select date">
-                                    <label for="bookingDate">Select Date *</label>
-                                    <button type="button" class="date-picker-trigger" id="datePickerTrigger" aria-label="Open calendar" tabindex="-1">
-                                        <i class="fas fa-calendar-alt" aria-hidden="true"></i>
-                                    </button>
-                                    <small>Available from today onwards</small>
-                                    <span class="error-message"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label class="booking-inline-label">Select Time *</label>
-                                    <div class="time-grid" id="timeGrid"></div>
-                                    <input type="hidden" id="bookingTime" name="bookingTime" required>
-                                    <span class="error-message"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label class="booking-inline-label">Guests *</label>
-                                    <div class="guest-selector">
-                                        <button type="button" class="guest-btn" onclick="decreaseGuests()"><i class="fas fa-minus"></i></button>
-                                        <input type="number" id="guestCount" name="guestCount" value="2" min="1" max="12" required readonly>
-                                        <button type="button" class="guest-btn" onclick="increaseGuests()"><i class="fas fa-plus"></i></button>
-                                    </div>
-                                    <small>1–12 guests</small>
-                                    <span class="error-message"></span>
-                                </div>
-                                <button type="button" class="btn-next" onclick="goToStep(2)">Continue <i class="fas fa-arrow-right"></i></button>
+                        <div style="display: flex; align-items: flex-start; gap: 1rem;">
+                            <div style="color: var(--accent-red); font-size: 1.5rem;"><i class="fas fa-map-marker-alt"></i></div>
+                            <div>
+                                <h3 style="font-size: 1.1rem; margin-bottom: 0.2rem;">Location</h3>
+                                <p style="color: var(--text-muted);">Shiv-Sai Lane, Beside Lotus Hospital, Pimple Saudagar, Pune – 411027</p>
                             </div>
+                        </div>
 
-                            <div class="booking-step" data-step="2">
-                                <div class="step-header">
-                                    <h2>Your contact details</h2>
-                                    <span class="step-number">Step 2 of 3</span>
-                                </div>
-                                <div class="form-group form-field">
-                                    <input type="text" id="firstName" name="firstName" required placeholder=" ">
-                                    <label for="firstName">First Name *</label>
-                                    <span class="error-message"></span>
-                                </div>
-                                <div class="form-group form-field">
-                                    <input type="text" id="lastName" name="lastName" required placeholder=" ">
-                                    <label for="lastName">Last Name *</label>
-                                    <span class="error-message"></span>
-                                </div>
-                                <div class="form-group form-field">
-                                    <input type="email" id="email" name="email" required placeholder=" ">
-                                    <label for="email">Email *</label>
-                                    <span class="error-message"></span>
-                                </div>
-                                <div class="form-group form-field">
-                                    <input type="tel" id="phone" name="phone" required placeholder=" ">
-                                    <label for="phone">Phone *</label>
-                                    <span class="error-message"></span>
-                                </div>
-                                <div class="form-navigation">
-                                    <button type="button" class="btn-back" onclick="goToStep(1)"><i class="fas fa-arrow-left"></i> Back</button>
-                                    <button type="button" class="btn-next" onclick="goToStep(3)">Continue <i class="fas fa-arrow-right"></i></button>
-                                </div>
+                        <div style="display: flex; align-items: flex-start; gap: 1rem;">
+                            <div style="color: var(--accent-red); font-size: 1.5rem;"><i class="fas fa-clock"></i></div>
+                            <div>
+                                <h3 style="font-size: 1.1rem; margin-bottom: 0.2rem;">Timings</h3>
+                                <p style="color: var(--text-muted);">Daily: 12:00 PM – 1:00 AM</p>
                             </div>
-
-                            <div class="booking-step" data-step="3">
-                                <div class="step-header">
-                                    <h2>Final touches</h2>
-                                    <span class="step-number">Step 3 of 3</span>
-                                </div>
-                                <div class="form-group form-field">
-                                    <select id="occasion" name="occasion">
-                                        <option value="">No special occasion</option>
-                                        <option value="birthday">Birthday</option>
-                                        <option value="anniversary">Anniversary</option>
-                                        <option value="engagement">Engagement</option>
-                                        <option value="business">Business Dinner</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                    <label for="occasion">Occasion</label>
-                                </div>
-                                <div class="form-group form-field">
-                                    <textarea id="specialRequests" name="specialRequests" placeholder=" " rows="4"></textarea>
-                                    <label for="specialRequests">Special Requests</label>
-                                    <small>Max 200 characters</small>
-                                    <span class="error-message"></span>
-                                </div>
-                                <div class="dietary-preferences">
-                                    <label class="booking-inline-label">Dietary Preferences</label>
-                                    <div class="checkbox-group">
-                                        <label class="checkbox-label"><input type="checkbox" name="dietary" value="vegetarian"> Vegetarian</label>
-                                        <label class="checkbox-label"><input type="checkbox" name="dietary" value="vegan"> Vegan</label>
-                                        <label class="checkbox-label"><input type="checkbox" name="dietary" value="gluten-free"> Gluten Free</label>
-                                    </div>
-                                </div>
-                                <div class="form-group form-group--terms">
-                                    <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
-                                    <label for="agreeTerms" class="terms-label">I agree to the cancellation policy *</label>
-                                    <span class="error-message"></span>
-                                </div>
-                                <div class="form-navigation">
-                                    <button type="button" class="btn-back" onclick="goToStep(2)"><i class="fas fa-arrow-left"></i> Back</button>
-                                    <button type="submit" class="btn-submit"><i class="fas fa-check"></i> Confirm Booking</button>
-                                </div>
-                            </div>
-                        </form>
+                        </div>
                     </div>
-                </section>
-
-                <aside class="booking-sidebar">
-                    <div class="glass-card booking-summary">
-                        <h3>Your Reservation</h3>
-                        <div class="summary-row"><span class="label"><i class="fas fa-calendar"></i> Date</span><span class="value" id="summaryDate">—</span></div>
-                        <div class="summary-row"><span class="label"><i class="fas fa-clock"></i> Time</span><span class="value" id="summaryTime">—</span></div>
-                        <div class="summary-row"><span class="label"><i class="fas fa-users"></i> Guests</span><span class="value" id="summaryGuests">2</span></div>
-                        <div class="summary-row"><span class="label"><i class="fas fa-user"></i> Name</span><span class="value" id="summaryName">—</span></div>
-                        <div class="summary-row"><span class="label"><i class="fas fa-phone"></i> Phone</span><span class="value" id="summaryPhone">—</span></div>
-                    </div>
-                    <div class="glass-card restaurant-info">
-                        <h3>Savory Haus</h3>
-                        <div class="info-item"><i class="fas fa-map-marker-alt"></i><div><p>Maximilianstraße 12</p><p>80539 München, Germany</p></div></div>
-                        <div class="info-item"><i class="fas fa-phone"></i><div><p>+49 89 123 4567</p></div></div>
-                        <div class="info-item"><i class="fas fa-clock"></i><div><p>Tue–Sun from 18:00</p></div></div>
-                    </div>
-                </aside>
+                </div>
             </div>
         </div>
-    </main>
+    </section>
 
-    <div class="booking-modal" id="successModal">
-        <div class="modal-content success-pop">
-            <button class="modal-close" onclick="closeModal()">×</button>
-            <div class="modal-icon"><i class="fas fa-check-circle"></i></div>
-            <h2 style="font-family:var(--font-display);font-size:2rem;margin-bottom:1rem">Booking Confirmed</h2>
-            <div class="confirmation-details" style="text-align:left;margin-bottom:1.5rem;font-size:0.95rem">
-                <p><strong>Confirmation:</strong> <span id="confirmationNumber">—</span></p>
-                <p><strong>Date:</strong> <span id="confirmDate">—</span></p>
-                <p><strong>Time:</strong> <span id="confirmTime">—</span></p>
-                <p><strong>Guests:</strong> <span id="confirmGuests">—</span></p>
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h3 class="font-heading" style="color: var(--text-main); font-size: 1.5rem; margin-bottom: 1rem;"><i class="fas fa-fire" style="color: var(--accent-red);"></i> EK PUNJAB</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 1rem;">Royal Chill Bar & Dhaba<br>North Indian • Punjabi • Tandoor & Bar</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="footer-title">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="restaurant-menu.html">Menu</a></li>
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="booking.html">Reservations</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-title">Contact</h4>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt"></i> Shiv-Sai Lane, Beside Lotus Hospital, Pune – 411027</li>
+                        <li><i class="fas fa-phone"></i> +91 78077 80724</li>
+                        <li><i class="fas fa-phone"></i> +91 95495 40069</li>
+                    </ul>
+                </div>
             </div>
-            <p class="modal-message" style="color:var(--text-secondary);margin-bottom:1.5rem">Confirmation sent to <span id="confirmEmail">you</span></p>
-            <button class="btn btn-primary btn-block" onclick="goToHome()">Return Home</button>
+            <div style="text-align: center; color: var(--text-muted); padding-top: 2rem; border-top: 1px solid var(--border-color); font-size: 0.9rem;">
+                &copy; 2026 Ek Punjab – Royal Chill Bar & Dhaba. All rights reserved.
+            </div>
         </div>
-    </div>
-    <div class="notification" id="notification"></div>
+    </footer>
 
-    <script src="api.js"></script>
-    <script src="theme.js"></script>
-    <script src="js/ui.js"></script>
-    <script src="booking-script.js"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>

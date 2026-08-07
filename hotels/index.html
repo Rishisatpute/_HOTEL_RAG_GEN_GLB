@@ -3,230 +3,369 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Savory Haus — Premium European fine dining restaurant in München. Reserve your table for an unforgettable culinary experience.">
-    <title>Savory Haus | European Fine Dining</title>
+    <meta name="description" content="Ek Punjab – Royal Chill Bar & Dhaba. North Indian, Punjabi, Tandoor & Bar in Pimple Saudagar, Pune.">
+    <title>Ek Punjab – Royal Chill Bar & Dhaba | North Indian & Tandoori</title>
+    <meta name="description" content="Experience the royal taste of Punjab and sizzling tandoori grills right here in Pimple Saudagar, Pune. Order online or book a table.">
+    <meta property="og:title" content="Ek Punjab – Royal Chill Bar & Dhaba">
+    <meta property="og:description" content="Authentic Punjabi flavours, delivered fresh. Experience the best North Indian food in Pimple Saudagar.">
+    <meta property="og:image" content="assets/photos/outdoor-seating.jpg">
+    <meta property="og:type" content="restaurant">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Restaurant",
+      "name": "Ek Punjab – Royal Chill Bar & Dhaba",
+      "image": "assets/photos/outdoor-seating.jpg",
+      "servesCuisine": "North Indian, Punjabi, Tandoor",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Shiv-Sai Lane, Beside Lotus Hospital",
+        "addressLocality": "Pimple Saudagar, Pune",
+        "postalCode": "411027",
+        "addressCountry": "IN"
+      },
+      "telephone": "+917807780724",
+      "priceRange": "₹₹",
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+          "opens": "12:00",
+          "closes": "01:00"
+        }
+      ]
+    }
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/design-system.css">
-    <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" href="css/animations.css">
-    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/hotel-rebrand.css">
+    <style>
+        .hero::before { background-image: url('assets/photos/outdoor-seating.jpg') !important; }
+    </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="index.html" class="nav-logo">
-                <i class="fas fa-utensils"></i> SAVORY <span>HAUS</span>
+    <nav class="top-nav">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <a href="index.html" class="brand">
+                <i class="fas fa-fire"></i>
+                <div>
+                    EK PUNJAB
+                    <small>Royal Chill Bar & Dhaba</small>
+                </div>
             </a>
-            <ul class="nav-menu">
-                <li><a href="index.html" class="nav-link active">Home</a></li>
-                <li><a href="restaurant-menu.html" class="nav-link">Menu</a></li>
-                <li><a href="booking.html" class="nav-link">Reservations</a></li>
-                <li><a href="contact.html" class="nav-link">Contact</a></li>
-                <li><a href="kitchen-dashboard.html" class="nav-link">Kitchen</a></li>
-                <li><a href="counter-dashboard.html" class="nav-link">Counter</a></li>
-                <li><a href="admin-dashboard.html" class="nav-link">Admin</a></li>
-                <li><a href="booking.html" class="nav-link nav-cta">Book Table</a></li>
-            </ul>
-            <div class="hamburger" aria-label="Menu"><span></span><span></span><span></span></div>
+            
+            <div class="nav-search-bar" style="display: flex; align-items: center; background: white; border-radius: 8px; padding: 0.3rem 1rem; box-shadow: var(--shadow-sm); flex: 0 1 400px; margin: 0 1rem; border: 1px solid var(--border-color);">
+                <i class="fas fa-map-marker-alt" style="color: var(--accent-red); margin-right: 0.5rem;"></i>
+                <span style="font-size: 0.9rem; color: var(--text-main); border-right: 1px solid var(--border-color); padding-right: 0.8rem; margin-right: 0.8rem; white-space: nowrap;">Pune</span>
+                <i class="fas fa-search" style="color: var(--text-muted); margin-right: 0.5rem;"></i>
+                <input type="text" placeholder="Search for dishes..." style="border: none; outline: none; width: 100%; font-family: inherit; font-size: 0.9rem;">
+            </div>
+
+            <div class="hamburger" id="hamburgerBtn">
+                <i class="fas fa-bars"></i>
+            </div>
+
+            <div class="nav-links" id="navLinks">
+                <a href="index.html" class="active">Home</a>
+                <a href="restaurant-menu.html">Menu</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="booking.html">Reservations</a>
+                <a href="#" style="font-size: 1.2rem; margin-left: 0.5rem; color: var(--text-main);"><i class="fas fa-user-circle"></i></a>
+            </div>
         </div>
     </nav>
 
     <header class="hero">
-        <div class="hero-bg" aria-hidden="true"></div>
-        <div class="hero-overlay" aria-hidden="true"></div>
-        <div class="hero-content">
-            <span class="hero-badge">München · Est. 2018</span>
-            <h1 class="hero-title display-title">Where <em>Elegance</em><br>Meets Cuisine</h1>
-            <p class="hero-subtitle">An intimate European fine-dining experience crafted with seasonal ingredients, classical technique, and contemporary artistry.</p>
-            <div class="hero-actions">
-                <a href="booking.html" class="btn btn-primary">Reserve a Table</a>
-                <a href="restaurant-menu.html" class="btn btn-secondary">Explore Menu</a>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-tag">North Indian • Punjabi • Tandoor & Bar</div>
+                <h1>Authentic Punjabi flavours, delivered fresh.</h1>
+                <p>Experience the royal taste of Punjab and sizzling tandoori grills right here in Pimple Saudagar, Pune. Whether you dine in or order out, we bring the dhaba to you.</p>
+                <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center;">
+                    <a href="restaurant-menu.html" class="btn-primary" style="padding: 1rem 3rem; font-size: 1.2rem; background: var(--accent-red);">See Menu</a>
+                </div>
             </div>
         </div>
-        <a href="#specialties" class="hero-scroll"><span>Discover</span><i class="fas fa-chevron-down"></i></a>
     </header>
 
-    <section id="specialties" class="featured">
+    <section class="section">
         <div class="container">
-            <div class="section-header reveal">
-                <p class="section-label">Our Philosophy</p>
-                <h2 class="section-title">Culinary Excellence</h2>
-                <p class="section-subtitle">Every dish reflects our commitment to precision, provenance, and the timeless traditions of European gastronomy.</p>
-            </div>
-            <div class="cards-grid stagger-children">
-                <article class="glass-card specialty-card reveal">
-                    <div class="icon-wrap"><i class="fas fa-seedling"></i></div>
-                    <h3>Seasonal Produce</h3>
-                    <p>Farm-partnered ingredients from Bavaria and the Alpine regions, renewed with each season.</p>
-                </article>
-                <article class="glass-card specialty-card reveal reveal-delay-1">
-                    <div class="icon-wrap"><i class="fas fa-fish"></i></div>
-                    <h3>Artisan Seafood</h3>
-                    <p>Sustainably sourced catches prepared with Mediterranean and Nordic techniques.</p>
-                </article>
-                <article class="glass-card specialty-card reveal reveal-delay-2">
-                    <div class="icon-wrap"><i class="fas fa-wine-glass"></i></div>
-                    <h3>Curated Cellar</h3>
-                    <p>Over 120 labels from Germany, France, and Italy — expertly paired by our sommelier.</p>
-                </article>
-                <article class="glass-card specialty-card reveal reveal-delay-3">
-                    <div class="icon-wrap"><i class="fas fa-award"></i></div>
-                    <h3>Michelin Heritage</h3>
-                    <p>Award-winning kitchen team bringing three decades of European fine-dining mastery.</p>
-                </article>
-            </div>
-        </div>
-    </section>
-
-    <section class="popular-dishes">
-        <div class="container">
-            <div class="section-header reveal">
-                <p class="section-label">Signature Selection</p>
-                <h2 class="section-title">Featured Dishes</h2>
-                <p class="section-subtitle">Guest favourites from our seasonal tasting menu.</p>
-            </div>
-            <div class="dishes-grid">
-                <article class="glass-card dish-card reveal">
-                    <div class="dish-card-image"><span class="price">€38</span><i class="fas fa-bowl-food dish-icon"></i></div>
-                    <div class="dish-card-body">
-                        <h4>Risotto Milanese</h4>
-                        <div class="dish-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i> · 128 reviews</div>
-                        <p>Saffron rice with porcini, aged Parmigiano, and brown butter.</p>
-                        <a href="restaurant-menu.html" class="btn btn-outline btn-small">View Menu</a>
+            <h2 class="text-center" style="text-align: center; margin-bottom: 3rem;">Experience Ek Punjab</h2>
+            <div class="grid-3">
+                <div class="feature-card">
+                    <img src="assets/photos/entrance.jpg" alt="Carved wooden doorway with brass elephants">
+                    <div class="content">
+                        <h3 class="font-heading">Royal Ambience</h3>
+                        <p style="color: var(--text-muted); font-size: 0.95rem;">Step through our traditional carved wooden doorway into a warm, mirror-worked Punjabi dining hall.</p>
                     </div>
-                </article>
-                <article class="glass-card dish-card reveal reveal-delay-1">
-                    <div class="dish-card-image"><span class="price">€52</span><i class="fas fa-fish dish-icon"></i></div>
-                    <div class="dish-card-body">
-                        <h4>Atlantic Salmon</h4>
-                        <div class="dish-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> · 95 reviews</div>
-                        <p>Pan-seared with beurre blanc and heritage root vegetables.</p>
-                        <a href="restaurant-menu.html" class="btn btn-outline btn-small">View Menu</a>
-                    </div>
-                </article>
-                <article class="glass-card dish-card reveal reveal-delay-2">
-                    <div class="dish-card-image"><span class="price">€44</span><i class="fas fa-mortar-pestle dish-icon"></i></div>
-                    <div class="dish-card-body">
-                        <h4>Black Truffle Pasta</h4>
-                        <div class="dish-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i> · 156 reviews</div>
-                        <p>Hand-rolled tagliatelle, Alba truffle, 36-month Parmigiano.</p>
-                        <a href="restaurant-menu.html" class="btn btn-outline btn-small">View Menu</a>
-                    </div>
-                </article>
-            </div>
-        </div>
-    </section>
-
-    <section class="chef-section">
-        <div class="container">
-            <div class="chef-layout">
-                <div class="chef-image reveal">
-                    <div class="chef-image-inner" style="background-image:url('https://images.unsplash.com/photo-1574483151929-ae05b3ff1f41?w=800&q=80')"></div>
                 </div>
-                <div class="chef-content reveal reveal-delay-2">
-                    <p class="section-label">Chef's Special</p>
-                    <h2 class="section-title">Tasting Menu by Chef Weber</h2>
-                    <p>Seven courses journeying through Central Europe — from Baltic amberjack tartare to venison with juniper jus, concluding with our signature dark chocolate soufflé.</p>
-                    <p>Available Thursday through Saturday. Wine pairing optional.</p>
-                    <p class="chef-name">— Chef Markus Weber, Executive Chef</p>
-                    <a href="booking.html" class="btn btn-primary" style="margin-top:1.5rem">Reserve Experience</a>
+                <div class="feature-card">
+                    <img src="assets/photos/bar.jpg" alt="Marble bar counter">
+                    <div class="content">
+                        <h3 class="font-heading">Curated Bar</h3>
+                        <p style="color: var(--text-muted); font-size: 0.95rem;">Enjoy chilled beers and crafted drinks at our elegant, brightly lit marble bar counter.</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <img src="assets/photos/interior-2.jpg" alt="Indoor dining hall with cage lanterns">
+                    <div class="content">
+                        <h3 class="font-heading">Dhaba Vibes</h3>
+                        <p style="color: var(--text-muted); font-size: 0.95rem;">A bustling atmosphere lit by cage lanterns, perfect for family dinners and gatherings.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="testimonials">
+    <section class="section bg-secondary">
         <div class="container">
-            <div class="section-header reveal">
-                <p class="section-label">Guest Voices</p>
-                <h2 class="section-title">Testimonials</h2>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem;">
+                <div>
+                    <h2>Must Try Dishes</h2>
+                    <p style="color: var(--text-muted);">Highly recommended by our patrons.</p>
+                </div>
+                <a href="restaurant-menu.html" class="btn-outline btn-primary" style="display: inline-block;">See Full Menu</a>
             </div>
-            <div class="testimonials-grid">
-                <blockquote class="glass-card testimonial-card reveal">
-                    <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                    <p>"An extraordinary evening. Impeccable service and every course a revelation."</p>
-                    <footer class="testimonial-author">
-                        <div class="avatar">SK</div>
-                        <div><strong>Stefan Keller</strong><span>München, Germany</span></div>
-                    </footer>
-                </blockquote>
-                <blockquote class="glass-card testimonial-card reveal reveal-delay-1">
-                    <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                    <p>"The wine pairing elevated each dish. Truly world-class European dining."</p>
-                    <footer class="testimonial-author">
-                        <div class="avatar">AL</div>
-                        <div><strong>Anna Laurent</strong><span>Paris, France</span></div>
-                    </footer>
-                </blockquote>
-                <blockquote class="glass-card testimonial-card reveal reveal-delay-2">
-                    <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
-                    <p>"Elegant atmosphere, flawless execution. Our anniversary could not have been more perfect."</p>
-                    <footer class="testimonial-author">
-                        <div class="avatar">MR</div>
-                        <div><strong>Michael & Rachel</strong><span>Zürich, Switzerland</span></div>
-                    </footer>
-                </blockquote>
-            </div>
-        </div>
-    </section>
-
-    <section class="cta-section">
-        <div class="cta-bg" aria-hidden="true"></div>
-        <div class="cta-overlay" aria-hidden="true"></div>
-        <div class="cta-inner reveal">
-            <p class="section-label">Reservations</p>
-            <h2 class="section-title">Your Table Awaits</h2>
-            <p>Join us for an unforgettable evening. Limited seating — we recommend booking 48 hours in advance.</p>
-            <a href="booking.html" class="btn btn-primary">Reserve Now</a>
-        </div>
-    </section>
-
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>SAVORY <span>HAUS</span></h3>
-                    <p>European fine dining in the heart of München. Culinary artistry since 2018.</p>
-                    <div class="social-links">
-                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            
+            <div class="grid-4">
+                <div class="dish-card">
+                    <img src="https://loremflickr.com/600/400/indian,curry?lock=1" alt="Butter Chicken">
+                    <div class="dish-content">
+                        <div class="dish-title"><span class="icon-nonveg" style="margin-right: 0.3rem; vertical-align: middle;"></span> Butter Chicken</div>
+                        <div class="dish-price">₹599</div>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem;">Rich, creamy tomato gravy with tender chicken.</p>
                     </div>
                 </div>
-                <div class="footer-section">
-                    <h4>Navigate</h4>
-                    <ul>
+                <div class="dish-card">
+                    <img src="https://loremflickr.com/600/400/indian,paneer?lock=2" alt="Paneer Tikka">
+                    <div class="dish-content">
+                        <div class="dish-title"><span class="icon-veg" style="margin-right: 0.3rem; vertical-align: middle;"></span> Paneer Tikka</div>
+                        <div class="dish-price">₹399</div>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem;">Cottage cheese chunks marinated in spices.</p>
+                    </div>
+                </div>
+                <div class="dish-card">
+                    <img src="https://loremflickr.com/600/400/indian,meat?lock=3" alt="Mutton Rogan Josh">
+                    <div class="dish-content">
+                        <div class="dish-title"><span class="icon-nonveg" style="margin-right: 0.3rem; vertical-align: middle;"></span> Rogan Josh</div>
+                        <div class="dish-price">₹649</div>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem;">Classic aromatic Kashmiri curry.</p>
+                    </div>
+                </div>
+                <div class="dish-card">
+                    <img src="https://loremflickr.com/600/400/indian,biryani?lock=4" alt="Chicken Biryani">
+                    <div class="dish-content">
+                        <div class="dish-title"><span class="icon-nonveg" style="margin-right: 0.3rem; vertical-align: middle;"></span> Chicken Biryani</div>
+                        <div class="dish-price">₹449</div>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem;">Fragrant basmati rice cooked with spices.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Special Offers Section -->
+    <section class="section">
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem;">
+                <div>
+                    <h2>Special Offers</h2>
+                    <p style="color: var(--text-muted);">Exclusive deals just for you.</p>
+                </div>
+            </div>
+            <div class="grid-3" style="gap: 1.5rem;">
+                <div style="background: linear-gradient(135deg, #E23744, #ff5e6b); border-radius: 16px; padding: 2rem; color: white; position: relative; overflow: hidden; box-shadow: var(--shadow-md);">
+                    <div style="position: relative; z-index: 1;">
+                        <span style="background: rgba(255,255,255,0.2); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: bold; margin-bottom: 1rem; display: inline-block;">TODAY'S SPECIAL</span>
+                        <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Complimentary Dessert</h3>
+                        <p style="font-size: 0.95rem; opacity: 0.9; margin-bottom: 1.5rem;">With every order above ₹2000</p>
+                        <a href="restaurant-menu.html" class="btn-primary" style="background: white; color: var(--accent-red); padding: 0.5rem 1.2rem; font-size: 0.9rem;">Order Now</a>
+                    </div>
+                    <i class="fas fa-gift" style="position: absolute; right: -20px; bottom: -20px; font-size: 8rem; opacity: 0.1; transform: rotate(-15deg);"></i>
+                </div>
+                <div style="background: linear-gradient(135deg, #1C1C1C, #3d3d3d); border-radius: 16px; padding: 2rem; color: white; position: relative; overflow: hidden; box-shadow: var(--shadow-md);">
+                    <div style="position: relative; z-index: 1;">
+                        <span style="background: rgba(255,255,255,0.2); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: bold; margin-bottom: 1rem; display: inline-block;">WEEKEND OFFER</span>
+                        <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">15% Off Drinks</h3>
+                        <p style="font-size: 0.95rem; opacity: 0.9; margin-bottom: 1.5rem;">Enjoy premium drinks at the bar</p>
+                        <a href="booking.html" class="btn-primary" style="background: var(--accent-gold); color: white; border: none; padding: 0.5rem 1.2rem; font-size: 0.9rem;">Book Table</a>
+                    </div>
+                    <i class="fas fa-glass-cheers" style="position: absolute; right: -20px; bottom: -10px; font-size: 8rem; opacity: 0.1; transform: rotate(-15deg);"></i>
+                </div>
+                <div style="background: linear-gradient(135deg, #D69E2E, #f6c053); border-radius: 16px; padding: 2rem; color: white; position: relative; overflow: hidden; box-shadow: var(--shadow-md);">
+                    <div style="position: relative; z-index: 1;">
+                        <span style="background: rgba(255,255,255,0.2); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: bold; margin-bottom: 1rem; display: inline-block;">CHEF'S PICK</span>
+                        <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Amritsari Kulcha Club</h3>
+                        <p style="font-size: 0.95rem; opacity: 0.9; margin-bottom: 1.5rem;">Authentic flavors straight from Punjab</p>
+                        <a href="restaurant-menu.html" class="btn-primary" style="background: white; color: #D69E2E; border: none; padding: 0.5rem 1.2rem; font-size: 0.9rem;">Try Now</a>
+                    </div>
+                    <i class="fas fa-fire" style="position: absolute; right: -10px; bottom: -10px; font-size: 8rem; opacity: 0.1; transform: rotate(-15deg);"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Restaurant Details Section -->
+    <section class="section bg-secondary">
+        <div class="container">
+            <div class="grid-2" style="gap: 4rem; align-items: start;">
+                <div>
+                    <h2 style="margin-bottom: 1rem;">About Ek Punjab</h2>
+                    <p style="color: var(--text-muted); line-height: 1.8; margin-bottom: 2rem;">Experience the royal taste of Punjab and sizzling tandoori grills right here in Pimple Saudagar. Our expert chefs bring generations of authentic North Indian culinary traditions to your plate, using only the freshest ingredients and time-honored techniques.</p>
+                    <div class="grid-2" style="gap: 1.5rem; margin-bottom: 2rem;">
+                        <div style="background: var(--card-bg); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color);">
+                            <div style="color: var(--accent-red); font-size: 1.5rem; margin-bottom: 0.5rem;"><i class="fas fa-clock"></i></div>
+                            <h4 style="margin-bottom: 0.3rem;">Opening Hours</h4>
+                            <p style="color: var(--text-muted); font-size: 0.9rem;">Daily: 12:00 PM – 1:00 AM</p>
+                        </div>
+                        <div style="background: var(--card-bg); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color);">
+                            <div style="color: var(--accent-red); font-size: 1.5rem; margin-bottom: 0.5rem;"><i class="fas fa-rupee-sign"></i></div>
+                            <h4 style="margin-bottom: 0.3rem;">Average Cost</h4>
+                            <p style="color: var(--text-muted); font-size: 0.9rem;">₹1200 for two people (approx.)</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 1.5rem;">Facilities</h3>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.8rem; padding: 1rem; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color);">
+                            <i class="fas fa-snowflake" style="color: var(--accent-gold); width: 20px; text-align: center;"></i> <span style="font-weight: 500;">Air Conditioned</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.8rem; padding: 1rem; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color);">
+                            <i class="fas fa-wifi" style="color: var(--accent-gold); width: 20px; text-align: center;"></i> <span style="font-weight: 500;">Free Wi-Fi</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.8rem; padding: 1rem; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color);">
+                            <i class="fas fa-parking" style="color: var(--accent-gold); width: 20px; text-align: center;"></i> <span style="font-weight: 500;">Valet Parking</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.8rem; padding: 1rem; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color);">
+                            <i class="fas fa-glass-cheers" style="color: var(--accent-gold); width: 20px; text-align: center;"></i> <span style="font-weight: 500;">Full Bar</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.8rem; padding: 1rem; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color);">
+                            <i class="fas fa-users" style="color: var(--accent-gold); width: 20px; text-align: center;"></i> <span style="font-weight: 500;">Family Seating</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.8rem; padding: 1rem; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color);">
+                            <i class="fas fa-motorcycle" style="color: var(--accent-gold); width: 20px; text-align: center;"></i> <span style="font-weight: 500;">Home Delivery</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section class="section">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 3rem;">
+                <h2>What Our Guests Say</h2>
+                <p style="color: var(--text-muted);">Real reviews from Zomato and Google.</p>
+            </div>
+            <div style="display: flex; gap: 2rem; overflow-x: auto; padding-bottom: 1rem; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;" class="hide-scrollbar">
+                <div style="flex: 0 0 350px; scroll-snap-align: start; background: var(--card-bg); padding: 2rem; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
+                    <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+                        <img src="https://loremflickr.com/100/100/face?lock=1" alt="User" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
+                        <div>
+                            <h4 style="margin: 0;">Rahul Sharma</h4>
+                            <div style="color: #4CAF50; font-size: 0.9rem; margin-top: 0.2rem;"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                        </div>
+                    </div>
+                    <p style="color: var(--text-muted); line-height: 1.6; font-size: 0.95rem;">"The Butter Chicken is absolutely heavenly! Best dhaba in Pimple Saudagar. The vibe is amazing and the service is super fast."</p>
+                </div>
+                <div style="flex: 0 0 350px; scroll-snap-align: start; background: var(--card-bg); padding: 2rem; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
+                    <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+                        <img src="https://loremflickr.com/100/100/face?lock=2" alt="User" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
+                        <div>
+                            <h4 style="margin: 0;">Sneha Patil</h4>
+                            <div style="color: #4CAF50; font-size: 0.9rem; margin-top: 0.2rem;"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+                        </div>
+                    </div>
+                    <p style="color: var(--text-muted); line-height: 1.6; font-size: 0.95rem;">"Loved the Amritsari Kulcha and Dal Makhani. The outdoor seating with fairy lights creates a beautiful ambiance for dinner."</p>
+                </div>
+                <div style="flex: 0 0 350px; scroll-snap-align: start; background: var(--card-bg); padding: 2rem; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
+                    <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+                        <img src="https://loremflickr.com/100/100/face?lock=3" alt="User" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
+                        <div>
+                            <h4 style="margin: 0;">Amit Deshmukh</h4>
+                            <div style="color: #4CAF50; font-size: 0.9rem; margin-top: 0.2rem;"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                        </div>
+                    </div>
+                    <p style="color: var(--text-muted); line-height: 1.6; font-size: 0.95rem;">"Premium bar experience. Great cocktails and the Paneer Tikka was perfectly charred. Will definitely visit again!"</p>
+                </div>
+                <div style="flex: 0 0 350px; scroll-snap-align: start; background: var(--card-bg); padding: 2rem; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
+                    <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+                        <img src="https://loremflickr.com/100/100/face?lock=4" alt="User" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
+                        <div>
+                            <h4 style="margin: 0;">Neha Singh</h4>
+                            <div style="color: #4CAF50; font-size: 0.9rem; margin-top: 0.2rem;"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></div>
+                        </div>
+                    </div>
+                    <p style="color: var(--text-muted); line-height: 1.6; font-size: 0.95rem;">"Good food, decent pricing. The Mutton Rogan Josh was tender and flavorful. Good place for large families."</p>
+                </div>
+            </div>
+            <style>
+                .hide-scrollbar::-webkit-scrollbar { display: none; }
+                .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+            </style>
+        </div>
+    </section>
+
+    <section class="section" style="padding-bottom: 0;">
+        <div class="container">
+            <div style="background: var(--accent-red); padding: 4rem 3rem; border-radius: 24px; text-align: center; color: white; box-shadow: var(--shadow-md);">
+                <h2 style="color: white; margin-bottom: 1rem;">Craving a feast?</h2>
+                <p style="margin-bottom: 2rem; font-size: 1.15rem; color: rgba(255,255,255,0.9);">Call us to reserve your table or order online for quick delivery.</p>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="tel:+917807780724" class="btn-primary" style="background: white; color: var(--accent-red); box-shadow: 0 4px 15px rgba(0,0,0,0.1);"><i class="fas fa-phone"></i> +91 78077 80724</a>
+                    <a href="restaurant-menu.html" class="btn-primary" style="background: #c52733; border: 1px solid rgba(255,255,255,0.3);">View Menu</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h3 class="font-heading" style="color: var(--text-main); font-size: 1.5rem; margin-bottom: 1rem;"><i class="fas fa-fire" style="color: var(--accent-red);"></i> EK PUNJAB</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 1rem;">Royal Chill Bar & Dhaba<br>North Indian • Punjabi • Tandoor & Bar</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="footer-title">Quick Links</h4>
+                    <ul class="footer-links">
                         <li><a href="index.html">Home</a></li>
                         <li><a href="restaurant-menu.html">Menu</a></li>
+                        <li><a href="gallery.html">Gallery</a></li>
                         <li><a href="booking.html">Reservations</a></li>
-                        <li><a href="contact.html">Contact</a></li>
                     </ul>
                 </div>
-                <div class="footer-section">
-                    <h4>Hours</h4>
-                    <ul>
-                        <li>Tue – Thu: 18:00 – 23:00</li>
-                        <li>Fri – Sat: 18:00 – 00:00</li>
-                        <li>Sunday: 12:00 – 21:00</li>
-                        <li>Monday: Closed</li>
+                <div>
+                    <h4 class="footer-title">Contact</h4>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt" style="margin-right: 0.5rem;"></i> Shiv-Sai Lane, Beside Lotus Hospital, Pune – 411027</li>
+                        <li><i class="fas fa-phone" style="margin-right: 0.5rem;"></i> +91 78077 80724</li>
+                        <li><i class="fas fa-phone" style="margin-right: 0.5rem;"></i> +91 95495 40069</li>
                     </ul>
                 </div>
-                <div class="footer-section">
-                    <h4>Contact</h4>
-                    <ul>
-                        <li><i class="fas fa-phone"></i> +49 89 123 4567</li>
-                        <li><i class="fas fa-envelope"></i> hello@savoryhaus.de</li>
-                        <li><i class="fas fa-map-marker-alt"></i> Maximilianstraße 12, München</li>
+                <div>
+                    <h4 class="footer-title">Hours</h4>
+                    <ul class="footer-links">
+                        <li>Daily: 12:00 PM – 1:00 AM</li>
+                        <li><small style="color: var(--accent-red); font-weight: 500;">* Please confirm timings by phone</small></li>
                     </ul>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 Savory Haus. All rights reserved.</p>
+            <div style="text-align: center; color: var(--text-muted); padding-top: 2rem; border-top: 1px solid var(--border-color); font-size: 0.9rem;">
+                &copy; 2026 Ek Punjab – Royal Chill Bar & Dhaba. All rights reserved.
+            </div>
+            <!-- Backend Access Link (Hidden for normal users) -->
+            <div style="text-align: center; margin-top: 1rem;">
+                <a href="admin-dashboard.html" style="color: var(--border-color); font-size: 0.8rem;">Staff Portal</a>
             </div>
         </div>
     </footer>
 
-    <script src="theme.js"></script>
-    <script src="js/ui.js"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>

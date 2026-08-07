@@ -3,224 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us - Savory Restaurant</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="Contact Ek Punjab Dhaba & Bar in Pimple Saudagar, Pune.">
+    <title>Contact | Ek Punjab Dhaba & Bar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/hotel-rebrand.css">
 </head>
-<body>
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <i class="fas fa-utensils"></i> SAVORY
+<body style="background: var(--bg-primary);">
+    <nav class="top-nav">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <a href="index.html" class="brand">
+                <i class="fas fa-fire"></i>
+                <div>
+                    EK PUNJAB
+                    <small>Royal Chill Bar & Dhaba</small>
+                </div>
+            </a>
+            
+            <div class="nav-search-bar" style="display: flex; align-items: center; background: white; border-radius: 8px; padding: 0.3rem 1rem; box-shadow: var(--shadow-sm); flex: 0 1 400px; margin: 0 1rem; border: 1px solid var(--border-color);">
+                <i class="fas fa-map-marker-alt" style="color: var(--accent-red); margin-right: 0.5rem;"></i>
+                <span style="font-size: 0.9rem; color: var(--text-main); border-right: 1px solid var(--border-color); padding-right: 0.8rem; margin-right: 0.8rem; white-space: nowrap;">Pune</span>
+                <i class="fas fa-search" style="color: var(--text-muted); margin-right: 0.5rem;"></i>
+                <input type="text" placeholder="Search for dishes..." style="border: none; outline: none; width: 100%; font-family: inherit; font-size: 0.9rem;">
             </div>
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="index.html" class="nav-link">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a href="restaurant-menu.html" class="nav-link">Menu</a>
-                </li>
-                <li class="nav-item">
-                    <a href="booking.html" class="nav-link">Reservations</a>
-                </li>
-                <li class="nav-item">
-                    <a href="about.html" class="nav-link">About</a>
-                </li>
-                <li class="nav-item">
-                    <a href="kitchen-dashboard.html" class="nav-link">Kitchen</a>
-                </li>
-                <li class="nav-item">
-                    <a href="counter-dashboard.html" class="nav-link">Counter</a>
-                </li>
-                <li class="nav-item">
-                    <a href="admin-dashboard.html" class="nav-link">Admin</a>
-                </li>
-            </ul>
-            <div class="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
+
+            <div class="hamburger" id="hamburgerBtn">
+                <i class="fas fa-bars"></i>
+            </div>
+
+            <div class="nav-links" id="navLinks">
+                <a href="index.html">Home</a>
+                <a href="restaurant-menu.html">Menu</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="booking.html">Reservations</a>
+                <a href="#" style="font-size: 1.2rem; margin-left: 0.5rem; color: var(--text-main);"><i class="fas fa-user-circle"></i></a>
             </div>
         </div>
     </nav>
 
-    <!-- Page Header -->
-    <section class="page-header">
-        <h1>Contact Us</h1>
-        <p>We'd love to hear from you</p>
-    </section>
-
-    <!-- Contact Section -->
-    <section class="contact-section">
+    <header style="padding: 4rem 0 2rem; background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); text-align: center;">
         <div class="container">
-            <div class="contact-wrapper">
-                <!-- Contact Info -->
-                <div class="contact-info">
-                    <h2>Get in Touch</h2>
-                    <div class="info-item">
-                        <div class="info-icon">
-                            <i class="fas fa-map-marker-alt"></i>
+            <h1 style="margin: 0; font-size: clamp(2rem, 4vw, 3rem);">Get In Touch</h1>
+            <p style="color: var(--text-muted); font-size: 1.1rem; margin-top: 0.5rem;">We'd love to hear from you</p>
+        </div>
+    </header>
+    
+    <section class="section" style="padding-top: 4rem;">
+        <div class="container">
+            <div class="grid-2" style="gap: 4rem; align-items: start;">
+                <div>
+                    <h2 style="margin-bottom: 2rem; font-size: 2rem;">Visit Us</h2>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 2rem; margin-bottom: 3rem;">
+                        <div style="display: flex; align-items: flex-start; gap: 1rem;">
+                            <div style="color: var(--accent-red); font-size: 1.8rem; margin-top: 0.3rem;"><i class="fas fa-map-marker-alt"></i></div>
+                            <div>
+                                <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">Address</h3>
+                                <p style="color: var(--text-muted); font-size: 1.1rem;">Shiv-Sai Lane, Beside Lotus Hospital,<br>Pimple Saudagar, Pune – 411027</p>
+                            </div>
                         </div>
-                        <div class="info-content">
-                            <h3>Address</h3>
-                            <p>123 Culinary Avenue<br>Food City, FC 12345</p>
+
+                        <div style="display: flex; align-items: flex-start; gap: 1rem;">
+                            <div style="color: var(--accent-red); font-size: 1.8rem; margin-top: 0.3rem;"><i class="fas fa-phone-alt"></i></div>
+                            <div>
+                                <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">Call Us</h3>
+                                <p style="color: var(--text-main); font-weight: bold; font-size: 1.2rem;">+91 78077 80724</p>
+                                <p style="color: var(--text-main); font-weight: bold; font-size: 1.2rem;">+91 95495 40069</p>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; align-items: flex-start; gap: 1rem;">
+                            <div style="color: var(--accent-red); font-size: 1.8rem; margin-top: 0.3rem;"><i class="fas fa-clock"></i></div>
+                            <div>
+                                <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">Opening Hours</h3>
+                                <p style="color: var(--text-muted); font-size: 1.1rem;">Monday - Sunday<br>12:00 PM – 1:00 AM</p>
+                            </div>
                         </div>
                     </div>
-                    <div class="info-item">
-                        <div class="info-icon">
-                            <i class="fas fa-phone"></i>
-                        </div>
-                        <div class="info-content">
-                            <h3>Phone</h3>
-                            <p>+1 (555) 123-4567<br>+1 (555) 123-4568</p>
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-icon">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <div class="info-content">
-                            <h3>Email</h3>
-                            <p>info@savory.com<br>reservations@savory.com</p>
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-icon">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <div class="info-content">
-                            <h3>Hours</h3>
-                            <p>
-                                Mon - Thu: 11am - 10pm<br>
-                                Fri - Sat: 11am - 11pm<br>
-                                Sunday: 12pm - 9pm
-                            </p>
-                        </div>
+
+                    <h2 style="margin-bottom: 1rem; font-size: 1.5rem;">Order Online</h2>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <a href="https://www.zomato.com/pune/restaurants?search=Ek+Punjab+Dhaba+Pimple+Saudagar" target="_blank" rel="noopener" class="btn-icon-order btn-zomato" style="font-size: 1.1rem; padding: 0.8rem 1.5rem;">
+                            Order on Zomato
+                        </a>
+                        <a href="https://www.swiggy.com/search?query=Ek+Punjab+Dhaba+Pimple+Saudagar" target="_blank" rel="noopener" class="btn-icon-order btn-swiggy" style="font-size: 1.1rem; padding: 0.8rem 1.5rem;">
+                            Order on Swiggy
+                        </a>
                     </div>
                 </div>
 
-                <!-- Contact Form -->
-                <div class="contact-form-wrapper">
-                    <h2>Send us a Message</h2>
-                    <form class="contact-form" id="contactForm">
-                        <div class="form-group">
-                            <input type="text" placeholder="Your Name" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="email" placeholder="Your Email" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="tel" placeholder="Phone Number" required>
-                        </div>
-                        <div class="form-group">
-                            <select required>
-                                <option value="">Select Subject</option>
-                                <option value="reservation">Reservation</option>
-                                <option value="catering">Catering Inquiry</option>
-                                <option value="feedback">Feedback</option>
-                                <option value="event">Event Booking</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <textarea placeholder="Your Message" rows="6" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Send Message</button>
-                    </form>
-                    <div class="form-message" id="formMessage"></div>
+                <div style="width: 100%; height: 100%; min-height: 400px; background: var(--card-bg); border-radius: 16px; overflow: hidden; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15126.966371725732!2d73.7844005!3d18.5857211!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2b91dbfcfdf1d%3A0xc3f83196c8d17961!2sPimple%20Saudagar%2C%20Pimpri-Chinchwad%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" 
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Services Section -->
-    <section class="services-section">
+    <footer>
         <div class="container">
-            <h2 class="section-title">Our Services</h2>
-            <div class="services-grid">
-                <div class="service-card">
-                    <i class="fas fa-users"></i>
-                    <h3>Private Dining</h3>
-                    <p>Host your special event in our intimate private dining rooms with customized menus and service.</p>
-                </div>
-                <div class="service-card">
-                    <i class="fas fa-birthday-cake"></i>
-                    <h3>Catering</h3>
-                    <p>Professional catering services for corporate events, weddings, and celebrations of any size.</p>
-                </div>
-                <div class="service-card">
-                    <i class="fas fa-wine-glass"></i>
-                    <h3>Wine Pairings</h3>
-                    <p>Expert wine pairing recommendations to complement your entire dining experience.</p>
-                </div>
-                <div class="service-card">
-                    <i class="fas fa-utensils"></i>
-                    <h3>Cooking Classes</h3>
-                    <p>Learn from our executive chef in our state-of-the-art culinary kitchen.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Newsletter Section -->
-    <section class="newsletter-section">
-        <div class="container">
-            <h2>Stay Updated</h2>
-            <p>Subscribe to our newsletter for special offers, new menu items, and dining tips.</p>
-            <form class="newsletter-form">
-                <input type="email" placeholder="Enter your email" required>
-                <button type="submit" class="btn btn-primary">Subscribe</button>
-            </form>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>SAVORY</h3>
-                    <p>Premium dining experience with culinary excellence</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
+            <div class="footer-grid">
+                <div>
+                    <h3 class="font-heading" style="color: var(--text-main); font-size: 1.5rem; margin-bottom: 1rem;"><i class="fas fa-fire" style="color: var(--accent-red);"></i> EK PUNJAB</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 1rem;">Royal Chill Bar & Dhaba<br>North Indian • Punjabi • Tandoor & Bar</p>
+                    <div class="social-icons">
                         <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
                     </div>
                 </div>
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <ul>
+                <div>
+                    <h4 class="footer-title">Quick Links</h4>
+                    <ul class="footer-links">
                         <li><a href="index.html">Home</a></li>
                         <li><a href="restaurant-menu.html">Menu</a></li>
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="booking.html">Reservations</a></li>
                     </ul>
                 </div>
-                <div class="footer-section">
-                    <h4>Hours</h4>
-                    <ul>
-                        <li>Mon - Thu: 11am - 10pm</li>
-                        <li>Fri - Sat: 11am - 11pm</li>
-                        <li>Sunday: 12pm - 9pm</li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Contact</h4>
-                    <ul>
-                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
-                        <li><i class="fas fa-envelope"></i> info@savory.com</li>
-                        <li><i class="fas fa-map-marker-alt"></i> 123 Culinary Ave, Food City</li>
+                <div>
+                    <h4 class="footer-title">Contact</h4>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt" style="margin-right: 0.5rem;"></i> Shiv-Sai Lane, Beside Lotus Hospital, Pune – 411027</li>
+                        <li><i class="fas fa-phone" style="margin-right: 0.5rem;"></i> +91 78077 80724</li>
+                        <li><i class="fas fa-phone" style="margin-right: 0.5rem;"></i> +91 95495 40069</li>
                     </ul>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 Savory Restaurant. All rights reserved.</p>
+            <div style="text-align: center; color: var(--text-muted); padding-top: 2rem; border-top: 1px solid var(--border-color); font-size: 0.9rem;">
+                &copy; 2026 Ek Punjab – Royal Chill Bar & Dhaba. All rights reserved.
             </div>
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>
