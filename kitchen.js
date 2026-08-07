@@ -65,7 +65,8 @@
     orders.forEach(o=>{
       const card = document.createElement('div'); card.className = 'kds-card ' + elapsedClass(o.createdAt);
       const head = document.createElement('div'); head.className = 'kds-card-head';
-      head.innerHTML = `<span class="kds-table">Table ${escapeHtml(o.table)}</span><span class="kds-age">${EkCommon.timeAgoMins(o.createdAt)}m</span>`;
+      const waiterTag = o.placedBy === 'waiter' ? `<span class="waiter-tag">🧑‍🍳 ${escapeHtml(o.waiterName || 'Waiter')}</span>` : '';
+      head.innerHTML = `<span class="kds-table">Table ${escapeHtml(o.table)}</span>${waiterTag}<span class="kds-age">${EkCommon.timeAgoMins(o.createdAt)}m</span>`;
       const items = document.createElement('ul'); items.className = 'kds-items';
       o.items.forEach(it=>{
         const li = document.createElement('li');

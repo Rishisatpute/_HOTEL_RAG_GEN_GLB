@@ -15,7 +15,38 @@
       render();
     });
     setInterval(render, 15000);
+
+    document.getElementById('newOrderBtn')?.addEventListener('click', openNewOrderModal);
+    document.getElementById('newOrderCancelBtn')?.addEventListener('click', closeNewOrderModal);
+    document.getElementById('newOrderConfirmBtn')?.addEventListener('click', confirmNewOrder);
+    document.getElementById('newOrderModal')?.addEventListener('click', (e)=>{ if(e.target.id==='newOrderModal') closeNewOrderModal(); });
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeNewOrderModal(); });
   });
+
+  // ---------- Take a new order (waiter ordering on behalf of a guest) ----------
+  function openNewOrderModal(){
+    document.getElementById('waiterNameInput').value = sessionStorage.getItem('ek_waiter_name') || '';
+    document.getElementById('waiterTableInput').value = '';
+    const modal = document.getElementById('newOrderModal');
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden','false');
+    document.getElementById('waiterNameInput').focus();
+  }
+  function closeNewOrderModal(){
+    const modal = document.getElementById('newOrderModal');
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden','true');
+  }
+  function confirmNewOrder(){
+    const name = document.getElementById('waiterNameInput').value.trim();
+    const table = document.getElementById('waiterTableInput').value.trim();
+    if(!name){ EkCommon.toast('Enter your name'); return; }
+    if(!table){ EkCommon.toast('Enter a table number'); return; }
+    sessionStorage.setItem('ek_waiter_name', name);
+    const url = `menu.html?table=${encodeURIComponent(table)}&waiter=${encodeURIComponent(name)}`;
+    window.open(url, '_blank');
+    closeNewOrderModal();
+  }
 
   function tickClock(){
     const el = document.getElementById('staffClock');

@@ -45,7 +45,7 @@ const OrderStore = (() => {
 
   const ACTIVE_STATUSES = ['new','preparing','ready','delivered'];
 
-  function createOrder({ table, items, notes }){
+  function createOrder({ table, items, notes, placedBy, waiterName }){
     const orders = readAll();
     const order = {
       id: genId(),
@@ -58,7 +58,9 @@ const OrderStore = (() => {
       paidAt: null,
       createdAt: Date.now(),
       updatedAt: Date.now(),
-      notes: notes || ''
+      notes: notes || '',
+      placedBy: placedBy === 'waiter' ? 'waiter' : 'customer',
+      waiterName: waiterName || ''
     };
     orders.push(order);
     writeAll(orders);

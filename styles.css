@@ -280,6 +280,8 @@ body{
 .table-bar-inner{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 16px}
 .table-bar-label{font-weight:600;font-size:14px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .table-bar-change{flex-shrink:0;background:transparent;border:1px solid var(--gold);color:var(--gold-soft);padding:6px 12px;border-radius:999px;font-weight:600;font-size:13px;min-height:32px;cursor:pointer}
+.table-bar.waiter-mode{background:rgba(201,162,75,0.14)}
+.waiter-tag{padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;background:rgba(201,162,75,0.18);color:var(--gold-soft);margin-left:8px;white-space:nowrap}
 
 /* ============ Stepper / variant popover / cart badges ============ */
 .stepper{display:inline-flex;align-items:center;gap:10px;background:var(--wood-mid);border:1px solid var(--gold);border-radius:8px;padding:4px 10px;min-height:36px}
@@ -367,6 +369,8 @@ body{
 .staff-sync-note{text-align:center;color:rgba(245,236,217,0.45);font-size:12px;padding:18px 16px 30px}
 
 .kds-board{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:18px}
+.waiter-actions{padding:18px 18px 0}
+.waiter-actions .btn{width:100%}
 .waiter-board, .counter-board{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:18px}
 .kds-col, .waiter-section{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:14px;transition:box-shadow .3s ease}
 .kds-col.flash, .waiter-section.flash{box-shadow:0 0 0 3px var(--gold-soft), 0 0 24px rgba(228,200,120,0.5)}
