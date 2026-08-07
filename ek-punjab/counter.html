@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Counter – Ek Punjab</title>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=11">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+</head>
+<body class="page-staff">
+  <header class="staff-bar">
+    <div class="staff-bar-inner">
+      <a href="staff.html" class="staff-back" aria-label="Back to staff hub">←</a>
+      <div class="staff-title">💳 Counter</div>
+      <div class="staff-clock" id="staffClock"></div>
+    </div>
+  </header>
+
+  <main class="counter-board">
+    <section class="waiter-section">
+      <h2 class="waiter-section-title"><span class="dot-bill"></span>Pending bills <span class="kds-count" id="countPending">0</span></h2>
+      <div class="waiter-cards" id="colPending"></div>
+    </section>
+    <section class="waiter-section">
+      <div class="invoice-filter-head">
+        <h2 class="waiter-section-title">Recent invoices</h2>
+        <div class="invoice-filter">
+          <input type="date" id="invoiceDateFilter" aria-label="Browse invoices from a date">
+          <button class="btn outline sm" id="clearDateFilterBtn">Last hour</button>
+        </div>
+      </div>
+      <div class="waiter-cards" id="colRecent"></div>
+    </section>
+  </main>
+
+  <p class="staff-sync-note">Live within this browser — keep Kitchen, Waiter and Counter open in separate tabs on this device.</p>
+
+  <!-- Invoice modal -->
+  <div id="invoiceOverlay" class="modal-overlay" aria-hidden="true">
+    <div class="modal-card invoice-card">
+      <div id="invoicePrintArea"></div>
+      <div class="modal-actions no-print">
+        <button class="btn outline" id="closeInvoiceBtn">Close</button>
+        <button class="btn primary" id="printInvoiceBtn">Print invoice</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script src="common.js?v=11"></script>
+  <script src="orders.js?v=11"></script>
+  <script src="counter.js?v=11"></script>
+</body>
+</html>

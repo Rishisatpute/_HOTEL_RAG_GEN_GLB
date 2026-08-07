@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Waiter View – Ek Punjab</title>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=7">
+  <link rel="stylesheet" href="styles.css?v=11">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
 </head>
 <body class="page-staff">
@@ -17,16 +17,16 @@
     </div>
   </header>
 
-  <div class="waiter-actions">
-    <button class="btn primary" id="newOrderBtn">🧾 Take a new order</button>
-  </div>
-
   <main class="waiter-board">
     <section class="waiter-section">
       <h2 class="waiter-section-title"><span class="dot-ready"></span>Ready to deliver <span class="kds-count" id="countReady">0</span></h2>
       <div class="waiter-cards" id="colReady"></div>
     </section>
-    <section class="waiter-section cash-section">
+    <section class="waiter-section">
+      <h2 class="waiter-section-title"><span class="dot-bill"></span>Delivered — request payment <span class="kds-count" id="countDelivered">0</span></h2>
+      <div class="waiter-cards" id="colDelivered"></div>
+    </section>
+    <section class="waiter-section cash-section full-row">
       <h2 class="waiter-section-title"><span class="dot-cash"></span>Cash collection needed <span class="kds-count" id="countCash">0</span></h2>
       <div class="waiter-cards" id="colCash"></div>
     </section>
@@ -34,22 +34,8 @@
 
   <p class="staff-sync-note">Live within this browser — keep Kitchen, Waiter and Counter open in separate tabs on this device.</p>
 
-  <!-- New order: pick table + waiter name, then open the menu pre-set to that table -->
-  <div id="newOrderModal" class="modal-overlay" aria-hidden="true">
-    <div class="modal-card">
-      <h3>Take a new order</h3>
-      <p class="modal-hint">Enter your name and the table number — this opens the same menu the customer sees, so you can add dishes on their behalf. Placing the order sends it straight to the kitchen.</p>
-      <input id="waiterNameInput" class="modal-input" placeholder="Your name">
-      <input id="waiterTableInput" class="modal-input" placeholder="Table number, e.g. 7" inputmode="numeric">
-      <div class="modal-actions">
-        <button class="btn outline" id="newOrderCancelBtn">Cancel</button>
-        <button class="btn primary" id="newOrderConfirmBtn">Open menu</button>
-      </div>
-    </div>
-  </div>
-
-  <script src="common.js?v=7"></script>
-  <script src="orders.js?v=7"></script>
-  <script src="waiter.js?v=7"></script>
+  <script src="common.js?v=11"></script>
+  <script src="orders.js?v=11"></script>
+  <script src="waiter.js?v=11"></script>
 </body>
 </html>

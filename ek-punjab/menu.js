@@ -5,12 +5,11 @@
     categories: [],
     cart: [], // { key, name, price(number), qty, type, special }
     table: sessionStorage.getItem('ek_table') || null,
-    waiterName: null, // set when a waiter is ordering on a guest's behalf (?waiter=Name)
   };
 
   document.addEventListener('DOMContentLoaded', () => {
     EkCommon.initChrome();
-    fetch('menu-data.json?v=7').then(r => r.json()).then(data => {
+    fetch('menu-data.json?v=11').then(r => r.json()).then(data => {
       state.restaurant = data.restaurant;
       state.categories = data.categories || [];
       initPage(data);
@@ -262,12 +261,8 @@
     });
     document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ closeCart(); closeTableModal(); closeVariantPopover(); } });
 
-    const urlWaiter = EkCommon.qs('waiter');
-    if(urlWaiter){ state.waiterName = urlWaiter; }
-
     const urlTable = EkCommon.qs('table');
     if(urlTable){ setTable(urlTable, {silent:true}); }
-    else if(state.waiterName){ renderTableBar(); }
   }
 
   function openCart(){ document.getElementById('cartDrawer').classList.add('open'); document.getElementById('cartScrim').classList.add('show'); document.getElementById('cartDrawer').setAttribute('aria-hidden','false'); }
@@ -311,15 +306,12 @@
   function renderTableBar(){
     const label = document.getElementById('tableBarLabel');
     const changeBtn = document.getElementById('tableChangeBtn');
-    const bar = document.getElementById('tableBar');
-    const waiterPrefix = state.waiterName ? `🧑‍🍳 Waiter order (${state.waiterName}) — ` : '';
-    bar.classList.toggle('waiter-mode', !!state.waiterName);
     if(state.table){
-      label.textContent = `${waiterPrefix}🍽️ Table ${state.table}`;
+      label.textContent = `🍽️ Table ${state.table}`;
       changeBtn.textContent = 'Change';
       document.getElementById('cartTableTag').textContent = `· Table ${state.table}`;
     } else {
-      label.textContent = `${waiterPrefix}🍽️ Choose your table to start ordering`;
+      label.textContent = '🍽️ Choose your table to start ordering';
       changeBtn.textContent = 'Set table';
       document.getElementById('cartTableTag').textContent = '';
     }
@@ -344,12 +336,7 @@
   function placeOrder(){
     if(!state.table){ openTableModal(); return; }
     if(state.cart.length === 0) return;
-    const order = OrderStore.createOrder({
-      table: state.table,
-      items: state.cart.map(l=>({name:l.name, price:l.price, qty:l.qty, special:l.special})),
-      placedBy: state.waiterName ? 'waiter' : 'customer',
-      waiterName: state.waiterName || ''
-    });
+    const order = OrderStore.createOrder({ table: state.table, items: state.cart.map(l=>({name:l.name, price:l.price, qty:l.qty, special:l.special})) });
     state.cart = [];
     renderCart();
     controlRepaint.forEach(fn=>fn());

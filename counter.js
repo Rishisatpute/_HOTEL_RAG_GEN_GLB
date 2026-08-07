@@ -61,9 +61,11 @@
       const ordersForTable = groups[table];
       const total = ordersForTable.reduce((s,o)=>s+OrderStore.orderTotal(o),0);
       const method = ordersForTable[0].paymentMethodRequested;
+      const waiterOrder = ordersForTable.find(o=>o.placedBy==='waiter');
+      const waiterTag = waiterOrder ? `<span class="waiter-tag">🧑‍🍳 ${escapeHtml(waiterOrder.waiterName || 'Waiter')}</span>` : '';
       const card = document.createElement('div'); card.className = 'kds-card bill-card';
       const head = document.createElement('div'); head.className = 'kds-card-head';
-      head.innerHTML = `<span class="kds-table">Table ${escapeHtml(table)}</span><span class="method-chip method-${method}">${methodLabel(method)}</span>`;
+      head.innerHTML = `<span class="kds-table">Table ${escapeHtml(table)}</span>${waiterTag}<span class="method-chip method-${method}">${methodLabel(method)}</span>`;
       const itemsList = document.createElement('ul'); itemsList.className='kds-items';
       ordersForTable.forEach(o=>o.items.forEach(it=>{ const li=document.createElement('li'); li.textContent = `${it.qty}× ${it.name}`; itemsList.appendChild(li); }));
       const totalRow = document.createElement('div'); totalRow.className='kds-notes'; totalRow.innerHTML = `<strong>${EkCommon.money(total)}</strong>`;

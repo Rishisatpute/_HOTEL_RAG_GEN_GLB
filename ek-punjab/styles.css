@@ -280,8 +280,6 @@ body{
 .table-bar-inner{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 16px}
 .table-bar-label{font-weight:600;font-size:14px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .table-bar-change{flex-shrink:0;background:transparent;border:1px solid var(--gold);color:var(--gold-soft);padding:6px 12px;border-radius:999px;font-weight:600;font-size:13px;min-height:32px;cursor:pointer}
-.table-bar.waiter-mode{background:rgba(201,162,75,0.14)}
-.waiter-tag{padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;background:rgba(201,162,75,0.18);color:var(--gold-soft);margin-left:8px;white-space:nowrap}
 
 /* ============ Stepper / variant popover / cart badges ============ */
 .stepper{display:inline-flex;align-items:center;gap:10px;background:var(--wood-mid);border:1px solid var(--gold);border-radius:8px;padding:4px 10px;min-height:36px}
@@ -366,16 +364,22 @@ body{
 .staff-back:hover{background:rgba(255,255,255,0.08)}
 .staff-title{font-family:Oswald,Segoe UI;font-weight:700;font-size:17px;letter-spacing:.03em}
 .staff-clock{font-variant-numeric:tabular-nums;color:var(--gold-soft);font-size:14px;min-width:60px;text-align:right}
+.bill-breakdown{font-size:12.5px;color:rgba(245,236,217,0.7);display:flex;flex-direction:column;gap:2px;margin-bottom:8px}
+.bill-breakdown .bill-total-line{display:flex;justify-content:space-between;font-size:14.5px;color:var(--cream);font-weight:700;margin-top:2px;padding-top:4px;border-top:1px dashed rgba(255,255,255,0.15)}
+.bill-breakdown .bill-line{display:flex;justify-content:space-between}
 .staff-sync-note{text-align:center;color:rgba(245,236,217,0.45);font-size:12px;padding:18px 16px 30px}
 
 .kds-board{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:18px}
-.waiter-actions{padding:18px 18px 0}
-.waiter-actions .btn{width:100%}
 .waiter-board, .counter-board{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:18px}
+.waiter-board .full-row{grid-column:1/-1}
 .kds-col, .waiter-section{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:14px;transition:box-shadow .3s ease}
 .kds-col.flash, .waiter-section.flash{box-shadow:0 0 0 3px var(--gold-soft), 0 0 24px rgba(228,200,120,0.5)}
 .kds-col-title, .waiter-section-title{display:flex;align-items:center;gap:8px;font-family:Oswald,Segoe UI;font-size:16px;margin:0 0 12px;letter-spacing:.02em}
 .kds-count{margin-left:auto;background:rgba(255,255,255,0.08);padding:2px 9px;border-radius:999px;font-size:12px;font-variant-numeric:tabular-nums}
+.invoice-filter-head{margin-bottom:12px}
+.invoice-filter-head .waiter-section-title{margin-bottom:8px}
+.invoice-filter{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.invoice-filter input[type=date]{padding:6px 8px;border-radius:6px;border:1px solid rgba(255,255,255,0.15);background:var(--wood-dark);color:var(--cream);font-size:12.5px;color-scheme:dark}
 .dot-new,.dot-preparing,.dot-ready,.dot-cash,.dot-bill{width:10px;height:10px;border-radius:50%;display:inline-block}
 .dot-new{background:var(--st-new)}
 .dot-preparing{background:var(--st-preparing)}
@@ -396,6 +400,7 @@ body{
 .kds-notes{font-size:12.5px;color:rgba(245,236,217,0.7);margin-bottom:8px}
 .kds-actions{display:flex;justify-content:flex-end}
 .kds-actions.wrap{flex-wrap:wrap;gap:6px;justify-content:flex-start}
+.btn.full-width{display:block;width:100%;margin-top:6px;text-align:center}
 .kds-waiting-badge{font-size:12px;color:rgba(245,236,217,0.55);font-style:italic}
 
 .cash-card{border-left-color:var(--st-cash)}
@@ -425,20 +430,32 @@ body{
   .staff-hub-grid{grid-template-columns:1fr}
 }
 
-/* ============ Invoice ============ */
-.invoice-card{max-width:420px}
-.invoice-head{text-align:center;margin-bottom:14px;padding-bottom:14px;border-bottom:1px dashed rgba(255,255,255,0.2)}
-.invoice-brand{font-family:Oswald,Segoe UI;font-weight:700;font-size:22px;letter-spacing:.05em}
-.invoice-sub{color:var(--gold-soft);font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
-.invoice-addr{font-size:11.5px;color:rgba(245,236,217,0.7);margin-top:6px}
-.invoice-meta{display:flex;justify-content:space-between;font-size:13px;margin:10px 0;color:rgba(245,236,217,0.85)}
+/* ============ Invoice ============
+   Styled as a printed paper receipt (light background, monospace) regardless
+   of the site's dark theme — this is what the customer takes away on paper. */
+.invoice-card{max-width:420px;background:var(--cream);color:#3a2a1a;font-family:'Courier New',ui-monospace,Consolas,monospace;border:1px solid rgba(0,0,0,0.08)}
+.invoice-head{text-align:center;margin-bottom:14px;padding-bottom:14px;border-bottom:1px dashed rgba(0,0,0,0.25)}
+.invoice-brand{font-family:Oswald,Segoe UI;font-weight:700;font-size:22px;letter-spacing:.05em;color:#241207}
+.invoice-sub{color:#a97a1f;font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
+.invoice-addr{font-size:11.5px;color:rgba(58,42,26,0.75);margin-top:6px}
+.invoice-reg{font-size:11px;color:rgba(58,42,26,0.75);margin-top:4px}
+.invoice-meta{display:flex;justify-content:space-between;font-size:13px;margin:10px 0;color:rgba(58,42,26,0.85)}
 .invoice-table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
-.invoice-table th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--gold-soft);padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.15)}
-.invoice-table td{padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.06)}
+.invoice-table th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#a97a1f;padding-bottom:6px;border-bottom:1px solid rgba(0,0,0,0.2)}
+.invoice-table td{padding:6px 0;border-bottom:1px dotted rgba(0,0,0,0.15)}
 .invoice-table th:nth-child(2), .invoice-table td:nth-child(2){text-align:center}
 .invoice-table th:nth-child(3), .invoice-table td:nth-child(3), .invoice-table th:nth-child(4), .invoice-table td:nth-child(4){text-align:right}
-.invoice-total-row{display:flex;justify-content:space-between;font-size:16px;margin-top:8px;padding-top:8px;border-top:1px dashed rgba(255,255,255,0.2)}
-.invoice-thanks{text-align:center;margin-top:16px;font-size:12.5px;color:rgba(245,236,217,0.7);font-style:italic}
+.invoice-pay-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin:14px 0}
+.invoice-qr-block{display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0}
+.invoice-qr-label{font-size:10.5px;letter-spacing:.1em;font-weight:700;color:#a97a1f}
+.invoice-qr-img{width:110px;height:110px;border-radius:6px;background:#fff;padding:4px;box-shadow:0 1px 4px rgba(0,0,0,0.15)}
+.invoice-upi-id{font-size:11px;color:rgba(58,42,26,0.75)}
+.invoice-upi-name{font-size:12px;font-weight:700;color:#241207}
+.invoice-totals-block{display:flex;flex-direction:column;gap:4px;min-width:150px;flex:1}
+.invoice-totals-block .invoice-meta{margin:0;font-size:12.5px}
+.invoice-total-row{display:flex;justify-content:space-between;font-size:16px;margin-top:8px;padding-top:8px;border-top:1px dashed rgba(0,0,0,0.3)}
+.invoice-thanks{text-align:center;margin-top:16px;font-size:12px;color:#a97a1f;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.invoice-footnote{text-align:center;margin-top:4px;font-size:10.5px;color:rgba(58,42,26,0.55)}
 
 @media print{
   body *{visibility:hidden}
@@ -462,4 +479,9 @@ body{
   .waiter-board, .counter-board{grid-template-columns:1fr;padding:14px;gap:12px}
   .staff-hub-grid{grid-template-columns:1fr}
   .modal-card{padding:20px}
+}
+
+@media (max-width:380px){
+  .invoice-pay-row{flex-direction:column;align-items:center}
+  .invoice-totals-block{width:100%}
 }

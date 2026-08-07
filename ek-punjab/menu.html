@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Order Menu – Ek Punjab · Royal Chill Bar & Dhaba</title>
+  <meta name="description" content="Browse the full Ek Punjab menu and order straight to your table. Royal Punjabi flavours, live bar, dhaba-style feasts.">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=11">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+</head>
+<body class="page-menu">
+  <header class="topbar" id="topbar">
+    <div class="container bar-inner">
+      <a href="index.html" class="brand" aria-label="Ek Punjab home">
+        <div class="wordmark">
+          <div class="rule"></div>
+          <div class="name">EK PUNJAB</div>
+          <div class="subtitle">ROYAL CHILL BAR & DHABA</div>
+        </div>
+      </a>
+      <nav class="nav-desktop" id="navDesktop">
+        <a href="index.html#hero" class="nav-link">Home</a>
+        <a href="menu.html" class="nav-link active">Menu</a>
+        <a href="index.html#gallery" class="nav-link">Gallery</a>
+        <a href="index.html#visit" class="nav-link">Visit</a>
+      </nav>
+      <div class="bar-actions">
+        <a class="btn wa-btn" id="waHeaderLink" target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp">
+          <svg viewBox="0 0 24 24" class="wa-icon" aria-hidden="true"><path fill="currentColor" d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.64.08-.3-.15-1.26-.46-2.39-1.48-.88-.78-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51-.17-.01-.37-.01-.57-.01-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.87 1.22 3.07c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.62.71.23 1.36.2 1.87.12.57-.08 1.76-.72 2-1.41.25-.7.25-1.29.17-1.42-.07-.12-.27-.2-.57-.35z"/><path fill="currentColor" d="M12 2.2c-5.4 0-9.8 4.4-9.8 9.8 0 1.87.52 3.63 1.43 5.13L2.2 21.8l4.83-1.4a9.75 9.75 0 004.97 1.36c5.4 0 9.8-4.4 9.8-9.8s-4.4-9.76-9.8-9.76zm0 17.86c-1.67 0-3.23-.47-4.56-1.29l-.33-.2-3.05.89.9-2.97-.21-.34a8.1 8.1 0 01-1.28-4.35c0-4.48 3.65-8.13 8.13-8.13a8.08 8.08 0 018.13 8.13c0 4.48-3.65 8.13-8.13 8.13z"/></svg>
+          <span class="wa-text">WhatsApp</span>
+        </a>
+        <button class="btn primary" id="cartBtn" aria-label="Open cart">
+          <span id="cartBtnText">Cart</span>
+        </button>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="table-bar" id="tableBar">
+    <div class="container table-bar-inner">
+      <div class="table-bar-label" id="tableBarLabel">🍽️ Choose your table to start ordering</div>
+      <button class="table-bar-change" id="tableChangeBtn">Set table</button>
+    </div>
+  </div>
+
+  <main>
+    <section id="menu" class="menu-section">
+      <div class="container menu-wrap">
+        <aside class="category-rail" id="categoryRail" aria-hidden="false"></aside>
+        <div class="menu-main">
+          <div class="menu-filter-bar sticky" id="menuFilterBar">
+            <div class="menu-filter" id="menuFilter">
+              <input id="menuSearch" placeholder="Search in Ek Punjab…" aria-label="Search menu">
+              <div class="chips">
+                <button class="chip" data-type="veg"><span class="dot veg"></span> Veg</button>
+                <button class="chip" data-type="egg"><span class="dot egg"></span> Egg</button>
+                <button class="chip" data-type="nonveg"><span class="dot nonveg"></span> Non-veg</button>
+              </div>
+            </div>
+          </div>
+          <div id="categoriesContainer"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-col footer-brand-col">
+        <div class="brand-small">
+          <div class="rule"></div>
+          <div class="name">EK PUNJAB</div>
+          <div class="subtitle">Royal Chill Bar & Dhaba</div>
+        </div>
+        <div class="footer-secondary-order">
+          <span>Ordering for delivery instead?</span>
+          <a class="btn outline sm" id="zomatoBtn" target="_blank" rel="noopener">Zomato</a>
+          <a class="btn outline sm" id="swiggyBtn" target="_blank" rel="noopener">Swiggy</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-title">Explore</p>
+        <a href="index.html#hero">Home</a>
+        <a href="index.html#gallery">Gallery</a>
+        <a href="index.html#visit">Visit</a>
+      </div>
+      <div class="footer-col footer-notes-col">
+        <p class="footer-col-title">House rules</p>
+        <div class="footer-notes" id="footerNotes"></div>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <span>© <span id="footerYear"></span> Ek Punjab – Royal Chill Bar & Dhaba · <a href="staff.html">Staff</a></span>
+      <span class="footer-credit">Developed by <strong>Rag Genesis Global</strong></span>
+    </div>
+  </footer>
+
+  <button id="backToTop" class="back-to-top" aria-label="Back to top" hidden>↑</button>
+
+  <!-- Table picker modal -->
+  <div id="tableModal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-card">
+      <h3>Which table are you at?</h3>
+      <p class="modal-hint">Scanned a QR on your table? This is usually filled in for you. Otherwise, enter the number printed on your table.</p>
+      <input id="tableInput" class="modal-input" placeholder="e.g. 7" inputmode="numeric">
+      <div class="modal-actions">
+        <button class="btn outline" id="takeawayBtn">Takeaway</button>
+        <button class="btn primary" id="tableConfirmBtn">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Price-variant picker popover (positioned via JS) -->
+  <div id="variantPopover" class="variant-popover" aria-hidden="true"></div>
+
+  <!-- Cart drawer -->
+  <div id="cartDrawer" class="cart-drawer" aria-hidden="true">
+    <div class="cart-drawer-inner">
+      <div class="cart-drawer-head">
+        <h3>Your order <span id="cartTableTag"></span></h3>
+        <button id="closeCart" class="icon-btn" aria-label="Close cart">✕</button>
+      </div>
+
+      <div id="cartItems" class="cart-items"></div>
+
+      <div class="cart-summary" id="cartSummary">
+        <div class="cart-total-row"><span>Total</span><strong id="cartTotal">₹0</strong></div>
+        <button class="btn primary block" id="placeOrderBtn">Place order</button>
+      </div>
+
+      <div class="my-orders" id="myOrders"></div>
+
+      <div class="bill-request" id="billRequest" hidden>
+        <h4>Ready to pay?</h4>
+        <p>Pick how you'll pay — we'll let the team know.</p>
+        <div class="pay-methods">
+          <button class="pay-method" data-method="upi">📱<span>UPI</span></button>
+          <button class="pay-method" data-method="card">💳<span>Card</span></button>
+          <button class="pay-method" data-method="cash">💵<span>Cash</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="cartScrim" class="drawer-scrim" aria-hidden="true"></div>
+
+  <script src="common.js?v=11"></script>
+  <script src="orders.js?v=11"></script>
+  <script src="dish-photos.js?v=11"></script>
+  <script src="menu.js?v=11"></script>
+</body>
+</html>
