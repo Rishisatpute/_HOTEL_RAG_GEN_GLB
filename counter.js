@@ -4,9 +4,12 @@
   let knownBillKeys = new Set();
   let firstRender = true;
   let selectedDate = null; // 'YYYY-MM-DD', or null for the default "last hour" view
+  // Invoices (GSTIN/FSSAI lines, UPI QR) need restaurant data from menu-data.json. On a slow
+  // connection that fetch can still be in flight when staff click "Print Bill" — openInvoice()
+  // awaits this promise so the invoice never silently renders without it.
+  const restaurantReady = fetch('menu-data.json?v=11').then(r=>r.json()).then(data=>{ restaurant = data.restaurant; }).catch(()=>{});
 
   document.addEventListener('DOMContentLoaded', () => {
-    fetch('menu-data.json?v=11').then(r=>r.json()).then(data=>{ restaurant = data.restaurant; }).catch(()=>{});
     tickClock();
     setInterval(tickClock, 1000 * 30);
     render();
@@ -170,7 +173,8 @@
 
   function methodLabel(m){ return { cash:'Cash', card:'Card', upi:'UPI' }[m] || m || '—'; }
 
-  function openInvoice(orders, method){
+  async function openInvoice(orders, method){
+    await restaurantReady;
     const area = document.getElementById('invoicePrintArea');
     const table = orders[0].table;
     const orderRef = orders[0].id;
