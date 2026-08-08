@@ -10,7 +10,7 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     EkCommon.initChrome();
-    fetch('menu-data.json?v=7').then(r => r.json()).then(data => {
+    fetch('menu-data.json?v=11').then(r => r.json()).then(data => {
       state.restaurant = data.restaurant;
       state.categories = data.categories || [];
       initPage(data);
@@ -313,7 +313,7 @@
     const changeBtn = document.getElementById('tableChangeBtn');
     const bar = document.getElementById('tableBar');
     const waiterPrefix = state.waiterName ? `🧑‍🍳 Waiter order (${state.waiterName}) — ` : '';
-    bar.classList.toggle('waiter-mode', !!state.waiterName);
+    if(bar) bar.classList.toggle('waiter-mode', !!state.waiterName);
     if(state.table){
       label.textContent = `${waiterPrefix}🍽️ Table ${state.table}`;
       changeBtn.textContent = 'Change';

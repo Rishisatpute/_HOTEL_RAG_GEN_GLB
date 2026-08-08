@@ -2,7 +2,7 @@
 (() => {
   document.addEventListener('DOMContentLoaded', () => {
     EkCommon.initChrome();
-    fetch('menu-data.json?v=7').then(r => r.json()).then(data => {
+    fetch('menu-data.json?v=11').then(r => r.json()).then(data => {
       initSite(data);
     }).catch(err => console.error('menu load', err));
   });

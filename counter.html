@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Counter – Ek Punjab</title>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=7">
+  <link rel="stylesheet" href="styles.css?v=11">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
 </head>
 <body class="page-staff">
@@ -23,7 +23,13 @@
       <div class="waiter-cards" id="colPending"></div>
     </section>
     <section class="waiter-section">
-      <h2 class="waiter-section-title">Recent invoices</h2>
+      <div class="invoice-filter-head">
+        <h2 class="waiter-section-title">Recent invoices</h2>
+        <div class="invoice-filter">
+          <input type="date" id="invoiceDateFilter" aria-label="Browse invoices from a date">
+          <button class="btn outline sm" id="clearDateFilterBtn">Last hour</button>
+        </div>
+      </div>
       <div class="waiter-cards" id="colRecent"></div>
     </section>
   </main>
@@ -41,8 +47,9 @@
     </div>
   </div>
 
-  <script src="common.js?v=7"></script>
-  <script src="orders.js?v=7"></script>
-  <script src="counter.js?v=7"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script src="common.js?v=11"></script>
+  <script src="orders.js?v=11"></script>
+  <script src="counter.js?v=11"></script>
 </body>
 </html>

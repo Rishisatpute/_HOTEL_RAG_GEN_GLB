@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Waiter View – Ek Punjab</title>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=7">
+  <link rel="stylesheet" href="styles.css?v=11">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
 </head>
 <body class="page-staff">
@@ -26,7 +26,11 @@
       <h2 class="waiter-section-title"><span class="dot-ready"></span>Ready to deliver <span class="kds-count" id="countReady">0</span></h2>
       <div class="waiter-cards" id="colReady"></div>
     </section>
-    <section class="waiter-section cash-section">
+    <section class="waiter-section">
+      <h2 class="waiter-section-title"><span class="dot-bill"></span>Delivered — request payment <span class="kds-count" id="countDelivered">0</span></h2>
+      <div class="waiter-cards" id="colDelivered"></div>
+    </section>
+    <section class="waiter-section cash-section full-row">
       <h2 class="waiter-section-title"><span class="dot-cash"></span>Cash collection needed <span class="kds-count" id="countCash">0</span></h2>
       <div class="waiter-cards" id="colCash"></div>
     </section>
@@ -48,8 +52,8 @@
     </div>
   </div>
 
-  <script src="common.js?v=7"></script>
-  <script src="orders.js?v=7"></script>
-  <script src="waiter.js?v=7"></script>
+  <script src="common.js?v=11"></script>
+  <script src="orders.js?v=11"></script>
+  <script src="waiter.js?v=11"></script>
 </body>
 </html>
