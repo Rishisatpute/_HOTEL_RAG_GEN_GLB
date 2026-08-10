@@ -1,4 +1,4 @@
-// Shared helpers used across every Ek Punjab page (home, menu, kitchen, waiter, counter).
+// Shared helpers used across every Angaar Dhaba page (home, menu, kitchen, waiter, counter).
 const EkCommon = (() => {
   const WHATSAPP_NUMBER = '917807780724'; // country code + number, digits only
 

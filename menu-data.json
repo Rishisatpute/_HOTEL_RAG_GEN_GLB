@@ -1,7 +1,7 @@
 {
   "restaurant": {
-    "name": "Ek Punjab",
-    "tagline": "Royal Chill Bar & Dhaba",
+    "name": "Angaar Dhaba",
+    "tagline": "Family Restaurant",
     "cuisine": "North Indian • Chinese • Bar • Dhaba",
     "rating": 4.4,
     "priceForTwo": 1400,
@@ -15,7 +15,7 @@
     "gstin": "",
     "fssai": "f4444",
     "upiId": "9917227155@cnrb",
-    "upiPayeeName": "EK Punjab",
+    "upiPayeeName": "Angaar Dhaba",
     "order": {
       "zomato": "https://www.zomato.com/pune/ek-punjab-dhaba-pimple-saudagar",
       "swiggy": ""
@@ -38,7 +38,7 @@
   },
   "categories": [
     {
-      "name": "Ek Punjab Distinct",
+      "name": "Angaar Dhaba Distinct",
       "items": [
         {
           "name": "Garlic Fry",
@@ -692,7 +692,7 @@
           "desc": "Chicken tossed in a bold, garlic-forward sauce"
         },
         {
-          "name": "Ek Punjab Fairy Wings",
+          "name": "Angaar Dhaba Fairy Wings",
           "price": 449,
           "type": "nonveg",
           "desc": "The house-special chicken wings, marinated and grilled in the tandoor"
@@ -1002,7 +1002,7 @@
           "desc": "Tandoor-grilled cottage cheese chunks simmered in a spiced gravy"
         },
         {
-          "name": "Ek Punjab Special Veg",
+          "name": "Angaar Dhaba Special Veg",
           "price": 599,
           "type": "veg",
           "special": true,
@@ -1124,7 +1124,7 @@
           "desc": "Chicken in a rich, creamy, mildly spiced Nawabi-style gravy"
         },
         {
-          "name": "Ek Punjab Special Chicken",
+          "name": "Angaar Dhaba Special Chicken",
           "price": 699,
           "type": "nonveg",
           "special": true,
@@ -1251,7 +1251,7 @@
           "desc": "Mutton in a classic spiced onion-tomato gravy"
         },
         {
-          "name": "Ek Punjab Special Mutton",
+          "name": "Angaar Dhaba Special Mutton",
           "price": 849,
           "type": "nonveg",
           "special": true,

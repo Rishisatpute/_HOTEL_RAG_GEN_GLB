@@ -1,4 +1,4 @@
-// Shared order store for Ek Punjab staff/customer flow.
+// Shared order store for Angaar Dhaba staff/customer flow.
 //
 // For now (no backend yet) this syncs across browser TABS on the same device only,
 // via localStorage (persistence) + BroadcastChannel (instant cross-tab push).

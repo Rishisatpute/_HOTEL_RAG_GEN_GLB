@@ -1,4 +1,4 @@
-// Ek Punjab — Kitchen Display System
+// Angaar Dhaba — Kitchen Display System
 (() => {
   let knownIds = new Set();
   let firstRender = true;

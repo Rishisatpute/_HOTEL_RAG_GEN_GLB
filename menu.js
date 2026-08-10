@@ -1,4 +1,4 @@
-// Ek Punjab — ordering page: menu render, filters, cart, table, place order, request bill.
+// Angaar Dhaba — ordering page: menu render, filters, cart, table, place order, request bill.
 (() => {
   const state = {
     restaurant: null,
@@ -22,7 +22,7 @@
     document.title = `Order Menu – ${data.restaurant.name} · ${data.restaurant.tagline}`;
     EkCommon.setHeaderHeightVar();
     const wa = document.getElementById('waHeaderLink');
-    if(wa) wa.href = EkCommon.whatsappLink(`Hi Ek Punjab! I'd like to ask about...`);
+    if(wa) wa.href = EkCommon.whatsappLink(`Hi Angaar Dhaba! I'd like to ask about...`);
     const zomato = data.restaurant.order?.zomato || '#';
     const swig = data.restaurant.order?.swiggy || '#';
     const zb = document.getElementById('zomatoBtn'); if(zb) zb.href = zomato;

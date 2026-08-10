@@ -1,4 +1,4 @@
-// Ek Punjab — Waiter view: deliver ready orders, get alerted when a table wants to pay cash.
+// Angaar Dhaba — Waiter view: deliver ready orders, get alerted when a table wants to pay cash.
 (() => {
   let knownReadyIds = new Set();
   let knownCashKeys = new Set();

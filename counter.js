@@ -1,4 +1,4 @@
-// Ek Punjab — Counter: confirm payment, generate & print invoices.
+// Angaar Dhaba — Counter: confirm payment, generate & print invoices.
 (() => {
   let restaurant = null;
   let knownBillKeys = new Set();
@@ -190,8 +190,8 @@
     ].filter(Boolean).join(' &nbsp;·&nbsp; ');
     area.innerHTML = `
       <div class="invoice-head">
-        <div class="invoice-brand">EK PUNJAB</div>
-        <div class="invoice-sub">${escapeHtml((r.tagline || 'Royal Chill Bar & Dhaba').toUpperCase())}</div>
+        <div class="invoice-brand">ANGAAR DHABA</div>
+        <div class="invoice-sub">${escapeHtml((r.tagline || 'Family Restaurant').toUpperCase())}</div>
         <div class="invoice-addr">${escapeHtml(r.address||'')}</div>
         ${regLine ? `<div class="invoice-reg">${regLine}</div>` : ''}
       </div>
@@ -240,7 +240,7 @@
     const r = restaurant || {};
     if(!r.upiId || typeof QRCode === 'undefined'){ host.style.display = 'none'; return; }
     const params = new URLSearchParams({
-      pa: r.upiId, pn: r.upiPayeeName || 'Ek Punjab',
+      pa: r.upiId, pn: r.upiPayeeName || 'Angaar Dhaba',
       am: amount.toFixed(2), cu: 'INR', tn: invoiceNo
     });
     const upiLink = 'upi://pay?' + params.toString();
