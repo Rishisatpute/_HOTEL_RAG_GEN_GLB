@@ -1,4 +1,4 @@
-// Shared order store for Ek Punjab staff/customer flow.
+// Shared order store for Angaar Dhaba staff/customer flow.
 //
 // For now (no backend yet) this syncs across browser TABS on the same device only,
 // via localStorage (persistence) + BroadcastChannel (instant cross-tab push).
@@ -7,7 +7,10 @@
 // every page talks to OrderStore, never to localStorage directly.
 const OrderStore = (() => {
   const KEY = 'ekpunjab_orders_v1';
+  const INVOICE_SEQ_KEY = 'ekpunjab_invoice_seq_v1';
   const CHANNEL = 'ekpunjab_orders_v1';
+  // Fixed restaurant-wide GST rate — billing never requires manually entering this.
+  const GST_RATE = 5;
   let bc = null;
   try { bc = new BroadcastChannel(CHANNEL); } catch(e) { bc = null; }
   const listeners = new Set();
@@ -16,6 +19,25 @@ const OrderStore = (() => {
     try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch(e){ return []; }
   }
   function writeAll(orders){ localStorage.setItem(KEY, JSON.stringify(orders)); }
+
+  function getGstRate(){ return GST_RATE; }
+  // subtotal (sum of item totals) -> { subtotal, rate, gst, cgst, sgst, total }, rounded to paise.
+  // GST is split evenly into CGST + SGST, as required for an intra-state (same-state) sale.
+  function billBreakdown(subtotal, rate){
+    const r = rate == null ? getGstRate() : rate;
+    const gstAmount = Math.round(subtotal * r / 100 * 100) / 100;
+    const halfRate = Math.round(r / 2 * 100) / 100;
+    const half = Math.round(gstAmount / 2 * 100) / 100;
+    return { subtotal, rate: r, halfRate, gst: gstAmount, cgst: half, sgst: half, total: Math.round((subtotal + gstAmount) * 100) / 100 };
+  }
+
+  // Sequential invoice numbers, restaurant-wide (INV-EKP-000001, 000002, ...).
+  function nextInvoiceNumber(){
+    const current = parseInt(localStorage.getItem(INVOICE_SEQ_KEY), 10) || 0;
+    const next = current + 1;
+    localStorage.setItem(INVOICE_SEQ_KEY, String(next));
+    return 'INV-EKP-' + String(next).padStart(6, '0');
+  }
 
   function emit(type, payload){
     const msg = { type, payload, at: Date.now() };
@@ -78,10 +100,12 @@ const OrderStore = (() => {
     return orders[idx];
   }
 
-  // Customer/waiter asks to pay: every active order at that table moves to bill_requested.
+  // Waiter requests payment for a table: every DELIVERED order there moves to bill_requested
+  // with the chosen method, grouped under one billId. Orders still cooking (new/preparing/
+  // ready) are left alone — they'll join a later bill once they're delivered too.
   function requestBill(table, method){
     const orders = readAll();
-    const active = orders.filter(o=>o.table===table && ACTIVE_STATUSES.includes(o.status));
+    const active = orders.filter(o=>o.table===table && o.status==='delivered');
     if(active.length===0) return [];
     const now = Date.now(); // shared so this whole batch can be grouped into one bill later
     const billId = genId();
@@ -91,11 +115,38 @@ const OrderStore = (() => {
     return active;
   }
 
-  // Counter confirms money actually received.
-  function markPaid(table, method){
+  // Locks in the invoice number + GST breakdown for a table's pending bill, without marking
+  // it paid. Idempotent — calling it again just returns the already-generated invoice instead
+  // of minting a new number, so Counter staff can click it freely.
+  function generateInvoice(table){
     const orders = readAll();
     const pending = orders.filter(o=>o.table===table && o.status==='bill_requested');
     if(pending.length===0) return [];
+    if(pending[0].invoiceNo) return pending;
+    const now = Date.now();
+    const subtotal = pending.reduce((s,o)=>s+orderTotal(o),0);
+    const bill = billBreakdown(subtotal);
+    const invoiceNo = nextInvoiceNumber();
+    pending.forEach(o=>{
+      o.gstRate=bill.rate; o.halfRate=bill.halfRate; o.gstAmount=bill.gst;
+      o.cgstAmount=bill.cgst; o.sgstAmount=bill.sgst;
+      o.billSubtotal=bill.subtotal; o.billTotal=bill.total;
+      o.invoiceNo=invoiceNo; o.invoiceGeneratedAt=now; o.updatedAt=now;
+    });
+    writeAll(orders);
+    emit('invoice_generated', { table, orders: pending });
+    return pending;
+  }
+
+  // Counter confirms money actually received, using whichever method the waiter requested.
+  // generateInvoice() is idempotent, so calling it here just ensures a bill that skipped
+  // straight to "Confirm Payment" still gets a locked-in invoice number and GST breakdown.
+  function confirmPayment(table){
+    const generated = generateInvoice(table);
+    if(generated.length===0) return [];
+    const orders = readAll();
+    const pending = orders.filter(o=>o.table===table && o.status==='bill_requested');
+    const method = pending[0].paymentMethodRequested;
     const now = Date.now();
     pending.forEach(o=>{ o.status='paid'; o.paymentMethod=method; o.paidAt=now; o.updatedAt=now; });
     writeAll(orders);
@@ -109,8 +160,9 @@ const OrderStore = (() => {
 
   return {
     ACTIVE_STATUSES,
-    createOrder, updateOrder, requestBill, markPaid,
+    createOrder, updateOrder, requestBill, generateInvoice, confirmPayment,
     getAll, getByTable, getActiveByTable,
-    onChange, orderTotal, itemTotal, priceNumber, genId
+    onChange, orderTotal, itemTotal, priceNumber, genId,
+    getGstRate, billBreakdown
   };
 })();

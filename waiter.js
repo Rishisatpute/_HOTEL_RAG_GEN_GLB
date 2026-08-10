@@ -1,9 +1,10 @@
-// Ek Punjab — Waiter view: deliver ready orders, get alerted when a table wants to pay cash.
+// Angaar Dhaba — Waiter view: deliver ready orders, get alerted when a table wants to pay cash.
 (() => {
   let knownReadyIds = new Set();
   let knownCashKeys = new Set();
   let firstRender = true;
   const ackCashTables = new Set(); // acknowledged-in-this-tab-session, clears on reload by design
+  const selectedMethodByTable = {}; // table -> 'cash'|'upi'|'card', persisted across re-renders until requested
 
   document.addEventListener('DOMContentLoaded', () => {
     tickClock();
@@ -66,6 +67,9 @@
   function render(){
     const orders = OrderStore.getAll();
     const ready = orders.filter(o=>o.status==='ready').sort((a,b)=>a.updatedAt-b.updatedAt);
+    const deliveredByTable = {};
+    orders.filter(o=>o.status==='delivered')
+      .forEach(o=>{ (deliveredByTable[o.table] = deliveredByTable[o.table] || []).push(o); });
     const cashByTable = {};
     orders.filter(o=>o.status==='bill_requested' && o.paymentMethodRequested==='cash' && !ackCashTables.has(o.table))
       .forEach(o=>{ (cashByTable[o.table] = cashByTable[o.table] || []).push(o); });
@@ -85,6 +89,7 @@
     firstRender = false;
 
     renderReady(ready);
+    renderDelivered(deliveredByTable);
     renderCash(cashByTable);
   }
 
@@ -102,6 +107,42 @@
       const btn = document.createElement('button'); btn.className='btn primary sm'; btn.textContent='Mark delivered';
       btn.addEventListener('click', ()=>OrderStore.updateOrder(o.id, {status:'delivered'}));
       card.appendChild(head); card.appendChild(items); card.appendChild(btn);
+      host.appendChild(card);
+    });
+  }
+
+  function methodLabel(m){ return { cash:'Cash', upi:'UPI', card:'Card' }[m] || m; }
+
+  function renderDelivered(deliveredByTable){
+    const host = document.getElementById('colDelivered');
+    const tables = Object.keys(deliveredByTable);
+    document.getElementById('countDelivered').textContent = tables.length;
+    host.innerHTML = '';
+    if(tables.length === 0){ host.innerHTML = '<p class="kds-empty">Nothing waiting for payment</p>'; return; }
+    tables.forEach(table=>{
+      const orders = deliveredByTable[table];
+      const total = orders.reduce((s,o)=>s+OrderStore.orderTotal(o),0);
+      if(!selectedMethodByTable[table]) selectedMethodByTable[table] = 'cash';
+      const card = document.createElement('div'); card.className = 'kds-card';
+      const head = document.createElement('div'); head.className = 'kds-card-head';
+      head.innerHTML = `<span class="kds-table">Table ${escapeHtml(table)}</span><span class="kds-age">₹${total}</span>`;
+      const items = document.createElement('ul'); items.className = 'kds-items';
+      orders.forEach(o=>o.items.forEach(it=>{ const li=document.createElement('li'); li.textContent = `${it.qty}× ${it.name}`; items.appendChild(li); }));
+      const methodRow = document.createElement('div'); methodRow.className = 'kds-actions wrap';
+      ['cash','upi','card'].forEach(m=>{
+        const b = document.createElement('button');
+        b.className = 'btn ' + (m===selectedMethodByTable[table] ? 'primary' : 'outline') + ' sm';
+        b.textContent = methodLabel(m);
+        b.addEventListener('click', ()=>{ selectedMethodByTable[table] = m; render(); });
+        methodRow.appendChild(b);
+      });
+      const requestBtn = document.createElement('button');
+      requestBtn.className = 'btn primary sm full-width'; requestBtn.textContent = 'Payment Requested';
+      requestBtn.addEventListener('click', ()=>{
+        OrderStore.requestBill(table, selectedMethodByTable[table]);
+        delete selectedMethodByTable[table];
+      });
+      card.appendChild(head); card.appendChild(items); card.appendChild(methodRow); card.appendChild(requestBtn);
       host.appendChild(card);
     });
   }

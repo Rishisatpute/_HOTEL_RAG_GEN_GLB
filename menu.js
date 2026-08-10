@@ -1,4 +1,4 @@
-// Ek Punjab — ordering page: menu render, filters, cart, table, place order, request bill.
+// Angaar Dhaba — ordering page: menu render, filters, cart, table, place order, request bill.
 (() => {
   const state = {
     restaurant: null,
@@ -10,7 +10,7 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     EkCommon.initChrome();
-    fetch('menu-data.json?v=7').then(r => r.json()).then(data => {
+    fetch('menu-data.json?v=11').then(r => r.json()).then(data => {
       state.restaurant = data.restaurant;
       state.categories = data.categories || [];
       initPage(data);
@@ -22,7 +22,7 @@
     document.title = `Order Menu – ${data.restaurant.name} · ${data.restaurant.tagline}`;
     EkCommon.setHeaderHeightVar();
     const wa = document.getElementById('waHeaderLink');
-    if(wa) wa.href = EkCommon.whatsappLink(`Hi Ek Punjab! I'd like to ask about...`);
+    if(wa) wa.href = EkCommon.whatsappLink(`Hi Angaar Dhaba! I'd like to ask about...`);
     const zomato = data.restaurant.order?.zomato || '#';
     const swig = data.restaurant.order?.swiggy || '#';
     const zb = document.getElementById('zomatoBtn'); if(zb) zb.href = zomato;
@@ -313,7 +313,7 @@
     const changeBtn = document.getElementById('tableChangeBtn');
     const bar = document.getElementById('tableBar');
     const waiterPrefix = state.waiterName ? `🧑‍🍳 Waiter order (${state.waiterName}) — ` : '';
-    bar.classList.toggle('waiter-mode', !!state.waiterName);
+    if(bar) bar.classList.toggle('waiter-mode', !!state.waiterName);
     if(state.table){
       label.textContent = `${waiterPrefix}🍽️ Table ${state.table}`;
       changeBtn.textContent = 'Change';
