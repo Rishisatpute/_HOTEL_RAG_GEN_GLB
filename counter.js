@@ -191,7 +191,7 @@
     area.innerHTML = `
       <div class="invoice-head">
         <div class="invoice-brand">ANGAAR DHABA</div>
-        <div class="invoice-sub">${escapeHtml((r.tagline || 'Family Restaurant').toUpperCase())}</div>
+        <div class="invoice-sub">${escapeHtml((r.tagline || 'Family Restaurant & Bar').toUpperCase())}</div>
         <div class="invoice-addr">${escapeHtml(r.address||'')}</div>
         ${regLine ? `<div class="invoice-reg">${regLine}</div>` : ''}
       </div>
