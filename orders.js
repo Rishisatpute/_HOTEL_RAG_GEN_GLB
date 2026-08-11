@@ -8,8 +8,7 @@
 const OrderStore = (() => {
   // TODO: replace with your deployed Render backend URL once you've created it
   // (see the deployment README). Example: 'https://angaar-dhaba-api.onrender.com'
-  const API_BASE = 'https://angaar-dhaba-api.onrender.com';
-
+  const API_BASE = 'https://hotel-rag-gen-glb-1.onrender.com';
   const listeners = new Set();
   let socket = null;
 
