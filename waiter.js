@@ -64,8 +64,10 @@
     col.classList.add('flash'); setTimeout(()=>col.classList.remove('flash'), 1600);
   }
 
-  function render(){
-    const orders = OrderStore.getAll();
+  async function render(){
+    let orders;
+    try{ orders = await OrderStore.getAll(); }
+    catch(err){ return; } // transient network hiccup — the 15s interval will retry
     const ready = orders.filter(o=>o.status==='ready').sort((a,b)=>a.updatedAt-b.updatedAt);
     const deliveredByTable = {};
     orders.filter(o=>o.status==='delivered')
@@ -105,7 +107,7 @@
       const items = document.createElement('ul'); items.className = 'kds-items';
       o.items.forEach(it=>{ const li=document.createElement('li'); li.textContent = `${it.qty}× ${it.name}`; items.appendChild(li); });
       const btn = document.createElement('button'); btn.className='btn primary sm'; btn.textContent='Mark delivered';
-      btn.addEventListener('click', ()=>OrderStore.updateOrder(o.id, {status:'delivered'}));
+      btn.addEventListener('click', ()=>OrderStore.updateOrder(o.id, {status:'delivered'}).catch(err=>EkCommon.toast(err.message)));
       card.appendChild(head); card.appendChild(items); card.appendChild(btn);
       host.appendChild(card);
     });
@@ -139,7 +141,7 @@
       const requestBtn = document.createElement('button');
       requestBtn.className = 'btn primary sm full-width'; requestBtn.textContent = 'Payment Requested';
       requestBtn.addEventListener('click', ()=>{
-        OrderStore.requestBill(table, selectedMethodByTable[table]);
+        OrderStore.requestBill(table, selectedMethodByTable[table]).catch(err=>EkCommon.toast(err.message));
         delete selectedMethodByTable[table];
       });
       card.appendChild(head); card.appendChild(items); card.appendChild(methodRow); card.appendChild(requestBtn);

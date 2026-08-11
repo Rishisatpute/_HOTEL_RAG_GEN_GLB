@@ -33,8 +33,10 @@
     return 'age-ok';
   }
 
-  function render(){
-    const orders = OrderStore.getAll();
+  async function render(){
+    let orders;
+    try{ orders = await OrderStore.getAll(); }
+    catch(err){ return; } // transient network hiccup — the 15s interval will retry
     const cols = {
       new: orders.filter(o=>o.status==='new').sort((a,b)=>a.createdAt-b.createdAt),
       preparing: orders.filter(o=>o.status==='preparing').sort((a,b)=>a.createdAt-b.createdAt),
@@ -80,11 +82,11 @@
       const actions = document.createElement('div'); actions.className='kds-actions';
       if(status === 'new'){
         const btn = document.createElement('button'); btn.className='btn primary sm'; btn.textContent = 'Start preparing';
-        btn.addEventListener('click', ()=>OrderStore.updateOrder(o.id, {status:'preparing'}));
+        btn.addEventListener('click', ()=>OrderStore.updateOrder(o.id, {status:'preparing'}).catch(err=>EkCommon.toast(err.message)));
         actions.appendChild(btn);
       } else if(status === 'preparing'){
         const btn = document.createElement('button'); btn.className='btn primary sm'; btn.textContent = 'Mark ready';
-        btn.addEventListener('click', ()=>OrderStore.updateOrder(o.id, {status:'ready'}));
+        btn.addEventListener('click', ()=>OrderStore.updateOrder(o.id, {status:'ready'}).catch(err=>EkCommon.toast(err.message)));
         actions.appendChild(btn);
       } else {
         const badge = document.createElement('div'); badge.className='kds-waiting-badge'; badge.textContent = 'Waiting for waiter';

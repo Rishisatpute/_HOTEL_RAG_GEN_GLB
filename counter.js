@@ -62,8 +62,10 @@
     return g;
   }
 
-  function render(){
-    const orders = OrderStore.getAll();
+  async function render(){
+    let orders;
+    try{ orders = await OrderStore.getAll(); }
+    catch(err){ return; } // transient network hiccup — the 15s interval will retry
     const pending = orders.filter(o=>o.status==='bill_requested');
     const pendingGroups = groupByTable(pending);
 
@@ -105,20 +107,27 @@
       const genBtn = document.createElement('button'); genBtn.className = 'btn outline sm';
       genBtn.textContent = bill.invoiceNo ? 'Invoice Generated' : 'Generate Invoice';
       genBtn.disabled = !!bill.invoiceNo;
-      genBtn.addEventListener('click', ()=>{ OrderStore.generateInvoice(table); render(); });
+      genBtn.addEventListener('click', async ()=>{
+        try{ await OrderStore.generateInvoice(table); render(); }
+        catch(err){ EkCommon.toast(err.message); }
+      });
 
       const printBtn = document.createElement('button'); printBtn.className = 'btn outline sm';
       printBtn.textContent = 'Print Bill';
-      printBtn.addEventListener('click', ()=>{
-        const generated = OrderStore.generateInvoice(table); // no-op if already generated
-        if(generated.length) openInvoice(generated, method);
+      printBtn.addEventListener('click', async ()=>{
+        try{
+          const generated = await OrderStore.generateInvoice(table); // no-op if already generated
+          if(generated.length) openInvoice(generated, method);
+        }catch(err){ EkCommon.toast(err.message); }
       });
 
       const confirmBtn = document.createElement('button'); confirmBtn.className = 'btn primary sm';
       confirmBtn.textContent = 'Confirm Payment';
-      confirmBtn.addEventListener('click', ()=>{
-        const paid = OrderStore.confirmPayment(table);
-        if(paid.length) openInvoice(paid, paid[0].paymentMethod);
+      confirmBtn.addEventListener('click', async ()=>{
+        try{
+          const paid = await OrderStore.confirmPayment(table);
+          if(paid.length) openInvoice(paid, paid[0].paymentMethod);
+        }catch(err){ EkCommon.toast(err.message); }
       });
 
       actions.appendChild(genBtn); actions.appendChild(printBtn); actions.appendChild(confirmBtn);

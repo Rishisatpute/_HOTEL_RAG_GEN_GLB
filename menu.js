@@ -341,25 +341,34 @@
   }
 
   // ---------- Place order / bill ----------
-  function placeOrder(){
+  async function placeOrder(){
     if(!state.table){ openTableModal(); return; }
     if(state.cart.length === 0) return;
-    const order = OrderStore.createOrder({
-      table: state.table,
-      items: state.cart.map(l=>({name:l.name, price:l.price, qty:l.qty, special:l.special})),
-      placedBy: state.waiterName ? 'waiter' : 'customer',
-      waiterName: state.waiterName || ''
-    });
-    state.cart = [];
-    renderCart();
-    controlRepaint.forEach(fn=>fn());
-    closeCart();
-    EkCommon.toast(`Order placed for Table ${state.table} — the kitchen has been notified 👨‍🍳`, 3200);
+    const placeBtn = document.getElementById('placeOrderBtn');
+    placeBtn.disabled = true;
+    try{
+      await OrderStore.createOrder({
+        table: state.table,
+        items: state.cart.map(l=>({name:l.name, price:l.price, qty:l.qty, special:l.special})),
+        placedBy: state.waiterName ? 'waiter' : 'customer',
+        waiterName: state.waiterName || ''
+      });
+      state.cart = [];
+      renderCart();
+      controlRepaint.forEach(fn=>fn());
+      closeCart();
+      EkCommon.toast(`Order placed for Table ${state.table} — the kitchen has been notified 👨‍🍳`, 3200);
+    }catch(err){
+      EkCommon.toast(`Couldn't place the order — ${err.message}`, 3600);
+      placeBtn.disabled = false;
+    }
   }
 
-  function requestBill(method){
+  async function requestBill(method){
     if(!state.table) return;
-    const orders = OrderStore.requestBill(state.table, method);
+    let orders;
+    try{ orders = await OrderStore.requestBill(state.table, method); }
+    catch(err){ EkCommon.toast(`Couldn't request the bill — ${err.message}`, 3600); return; }
     if(orders.length === 0){ EkCommon.toast('No active order to bill yet.'); return; }
     const methodLabel = { upi:'UPI', card:'Card', cash:'Cash' }[method] || method;
     let msg = `Bill requested (${methodLabel}) — the counter has been notified.`;
@@ -383,11 +392,13 @@
     }[status] || { label:status, cls:'' };
   }
 
-  function renderMyOrders(){
+  async function renderMyOrders(){
     const host = document.getElementById('myOrders');
     const billBox = document.getElementById('billRequest');
     if(!state.table){ host.innerHTML=''; billBox.hidden = true; return; }
-    const orders = OrderStore.getByTable(state.table).sort((a,b)=>b.createdAt-a.createdAt);
+    let orders;
+    try{ orders = (await OrderStore.getByTable(state.table)).sort((a,b)=>b.createdAt-a.createdAt); }
+    catch(err){ return; } // transient network hiccup — next poll/onChange will retry
     if(orders.length === 0){ host.innerHTML=''; billBox.hidden = true; return; }
     host.innerHTML = '<h4 class="my-orders-title">Your orders — Table ' + state.table + '</h4>';
     orders.forEach(o=>{

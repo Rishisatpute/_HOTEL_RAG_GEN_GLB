@@ -1,0 +1,112 @@
+ANGAAR DHABA — HOW TO RUN THIS PROJECT
+========================================
+
+This project has two parts:
+  1. FRONTEND — the website (index.html, menu.html, kitchen.html, etc.)
+     Already live on Vercel: https://hotel-rag-gen-glb.vercel.app/
+  2. BACKEND — a small server (in the "server" folder) that stores orders
+     in a real database, so the customer's phone, the kitchen screen, the
+     waiter's phone, and the counter PC all see the same live order data.
+
+The backend needs THREE things set up before it works. Do them in this
+order.
+
+
+STEP 1 — Get a MongoDB database (this is where orders get stored)
+-------------------------------------------------------------------
+1. Go to https://www.mongodb.com/cloud/atlas/register and make a free
+   account (email + password, like signing up for anything else).
+2. It will ask you to create a "cluster" — pick the FREE one (called M0).
+   Any region is fine, pick one close to India.
+3. Wait a minute or two while it sets up.
+4. On the left, click "Database Access" -> "Add New Database User".
+   - Pick a username (e.g. angaar-admin)
+   - Click "Autogenerate Secure Password" and COPY the password somewhere
+     safe (like Notes app or a password manager). You will need it in
+     Step 2. Do not lose it, and do not paste it in chat with anyone.
+5. On the left, click "Network Access" -> "Add IP Address".
+   In the "Access List Entry" box, type exactly this (no brackets,
+   no parentheses):
+     0.0.0.0/0
+   This means "allow access from anywhere". You can leave the Comment
+   box as whatever text you like, e.g. "Allow Access From Anywhere".
+   Click Confirm.
+6. Go back to "Database" (or "Clusters"), click "Connect" on your cluster.
+   - Choose "Drivers"
+   - Copy the connection string shown. It looks like:
+     mongodb+srv://angaar-admin:<password>@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority
+   - Replace <password> with the real password you saved in step 4.
+   - Right after ".mongodb.net/" and before the "?", type a database name,
+     for example "angaar-dhaba", so it looks like:
+     mongodb+srv://angaar-admin:YOURPASSWORD@cluster0.xxxxx.mongodb.net/angaar-dhaba?retryWrites=true&w=majority
+
+   This full string is your MONGODB_URI. Keep it private — you'll paste
+   it directly into Render in Step 2, not anywhere else.
+
+
+STEP 2 — Put the backend online (Render hosts the actual running server)
+---------------------------------------------------------------------------
+1. Go to https://render.com and sign up (easiest: "Sign up with GitHub",
+   using the same GitHub account this repo is on).
+2. Click "New +" -> "Web Service".
+3. Connect the repo: Rishisatpute/_HOTEL_RAG_GEN_GLB
+   Pick the branch: ek-punjab
+4. Fill in the settings:
+   - Root Directory:   server
+   - Runtime:          Node
+   - Build Command:    npm install
+   - Start Command:    npm start
+5. Scroll to "Environment Variables" and add:
+   - MONGODB_URI       = (the full connection string from Step 1)
+   - ALLOWED_ORIGINS   = https://hotel-rag-gen-glb.vercel.app
+6. Click "Create Web Service". Wait for it to finish deploying (a few
+   minutes the first time).
+7. Render will give you a URL, something like:
+   https://angaar-dhaba-api.onrender.com
+   Open <that-url>/api/health in your browser — you should see:
+   {"ok":true,"message":"Angaar Dhaba API is running"}
+   If you see that, the backend is alive.
+
+Note: Render's free plan "sleeps" the server after 15 minutes with no
+visitors, and takes about 30-50 seconds to wake back up on the next
+request. That's normal on the free tier.
+
+
+STEP 3 — Tell the website where the backend lives
+-----------------------------------------------------
+1. Open the file: orders.js  (in the main project folder, not in "server")
+2. Near the top, find this line:
+     const API_BASE = 'https://angaar-dhaba-api.onrender.com';
+3. Replace the URL with YOUR real Render URL from Step 2.
+4. Save, commit, and push to the ek-punjab branch.
+5. Vercel will automatically redeploy the website with the new setting.
+
+
+HOW TO TEST IT'S ACTUALLY WORKING
+------------------------------------
+Open the site on two different devices at the same time (e.g. your
+phone and a laptop, or two browser windows in "incognito" so they don't
+share storage):
+  - Device A: open menu.html, set a table number, add a dish, place order
+  - Device B: open kitchen.html
+You should see the order appear on Device B within a second or two,
+with no page refresh needed. That live sync across devices is the whole
+point of this backend — it did not work before.
+
+
+RUNNING THE BACKEND ON YOUR OWN COMPUTER (optional, for testing changes)
+-----------------------------------------------------------------------------
+  cd server
+  copy .env.example to .env
+  fill in MONGODB_URI in that .env file (same value as Step 1)
+  npm install
+  npm start
+
+The server will start on http://localhost:5000
+
+
+RUNNING THE FRONTEND ON YOUR OWN COMPUTER (optional)
+---------------------------------------------------------
+From the main project folder (not "server"):
+  python -m http.server 5000
+Then open http://localhost:5000/index.html in your browser.
