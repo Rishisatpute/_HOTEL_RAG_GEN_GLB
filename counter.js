@@ -13,8 +13,9 @@
     tickClock();
     setInterval(tickClock, 1000 * 30);
     render();
-    OrderStore.onChange((msg)=>{ if(msg.type === 'bill_requested') flashPending(); render(); });
-    setInterval(render, 15000);
+    // render() already diffs known pending-bill table keys itself to decide
+    // when to flash/beep, so onChange just needs to trigger a re-check.
+    OrderStore.onChange(() => render());
     document.getElementById('closeInvoiceBtn').addEventListener('click', closeInvoice);
     document.getElementById('printInvoiceBtn').addEventListener('click', ()=>window.print());
     document.getElementById('invoiceOverlay').addEventListener('click', (e)=>{ if(e.target.id==='invoiceOverlay') closeInvoice(); });
@@ -118,6 +119,8 @@
         try{
           const generated = await OrderStore.generateInvoice(table); // no-op if already generated
           if(generated.length) openInvoice(generated, method);
+          await OrderStore.printBill(table); // sends the bill to the physical billing printer
+          EkCommon.toast('Bill sent to billing printer');
         }catch(err){ EkCommon.toast(err.message); }
       });
 

@@ -1,32 +1,37 @@
 // Shared order store for Angaar Dhaba staff/customer flow.
 //
-// Talks to the real backend (Express + MongoDB + Socket.io, in /server) over
-// HTTP + WebSocket, so every device — a customer's phone, the kitchen
-// tablet, a waiter's phone, the counter PC — sees the same live order data.
+// Talks to the PHP + MySQL backend (server-php/) over HTTP. Devices stay in
+// sync via polling — every device — a customer's phone, the kitchen
+// tablet, a waiter's phone, the counter PC — refetches automatically every
+// few seconds. (Shared/cPanel hosting can't run a persistent WebSocket
+// server, so this replaces the earlier Socket.io push; in practice a few
+// seconds of lag is barely noticeable for this use case.)
 // Every page still only talks to OrderStore, never to the network directly,
-// so this file is the only thing that changed when the backend arrived.
+// so this file is the only thing that changed when the backend moved to PHP.
 const OrderStore = (() => {
-  // TODO: replace with your deployed Render backend URL once you've created it
-  // (see the deployment README). Example: 'https://angaar-dhaba-api.onrender.com'
-  const API_BASE = 'https://hotel-rag-gen-glb-1.onrender.com';
-  const listeners = new Set();
-  let socket = null;
+  // TODO: replace with your deployed PHP backend URL (e.g. https://api.angaardhaba.com
+  // or wherever server-php/ is hosted on MilesWeb). See server-php/README.md.
+  const API_BASE = 'http://localhost:8000';
+  const POLL_INTERVAL_MS = 4000;
 
-  function connectSocket() {
-    if (socket || typeof io === 'undefined') return;
-    socket = io(API_BASE);
-    // Same event names the server emits == the same actions orders.js used
-    // to emit() locally, so this just re-wraps them into the { type, payload,
-    // at } shape OrderStore.onChange(fn) callers have always received.
-    ['order_created', 'order_updated', 'bill_requested', 'invoice_generated', 'order_paid'].forEach((type) => {
-      socket.on(type, (msg) => {
-        listeners.forEach((fn) => { try { fn({ type, payload: msg.payload, at: msg.at }); } catch (e) {} });
-      });
-    });
+  const listeners = new Set();
+  let pollTimer = null;
+
+  // Every page's render() already does its own diffing (comparing known
+  // order ids/statuses between calls) to decide when to flash/beep for
+  // something new — that was originally a backup in case a socket event
+  // was missed, but it means this poll tick doesn't need to carry any
+  // meaningful event type or payload; "something might have changed, go
+  // re-check" is enough.
+  function startPolling() {
+    if (pollTimer) return;
+    pollTimer = setInterval(() => {
+      listeners.forEach((fn) => { try { fn({ type: 'poll', payload: null, at: Date.now() }); } catch (e) {} });
+    }, POLL_INTERVAL_MS);
   }
 
   function onChange(fn) {
-    connectSocket();
+    startPolling();
     listeners.add(fn);
     return () => listeners.delete(fn);
   }
@@ -70,45 +75,51 @@ const OrderStore = (() => {
 
   const ACTIVE_STATUSES = ['new','preparing','ready','delivered'];
 
-  // Every function below now returns a Promise (it's a network call, not an
-  // instant localStorage read) — callers use await/.then() instead of
-  // reading a return value synchronously.
+  // Every function below returns a Promise (it's a network call) — callers
+  // use await/.then() instead of reading a return value synchronously.
   function createOrder({ table, items, notes, placedBy, waiterName }){
-    return api('/api/orders', {
+    return api('/api/orders.php', {
       method: 'POST',
       body: JSON.stringify({ table, items, notes, placedBy, waiterName })
     });
   }
 
   function updateOrder(id, patch){
-    return api(`/api/orders/${encodeURIComponent(id)}`, {
+    return api(`/api/order_update.php?id=${encodeURIComponent(id)}`, {
       method: 'PATCH',
       body: JSON.stringify(patch)
     });
   }
 
   function requestBill(table, method){
-    return api(`/api/orders/table/${encodeURIComponent(table)}/request-bill`, {
+    return api(`/api/request_bill.php?table=${encodeURIComponent(table)}`, {
       method: 'POST',
       body: JSON.stringify({ method })
     });
   }
 
   function generateInvoice(table){
-    return api(`/api/orders/table/${encodeURIComponent(table)}/generate-invoice`, { method: 'POST' });
+    return api(`/api/generate_invoice.php?table=${encodeURIComponent(table)}`, { method: 'POST' });
   }
 
   function confirmPayment(table){
-    return api(`/api/orders/table/${encodeURIComponent(table)}/confirm-payment`, { method: 'POST' });
+    return api(`/api/confirm_payment.php?table=${encodeURIComponent(table)}`, { method: 'POST' });
   }
 
-  function getAll(){ return api('/api/orders'); }
-  function getByTable(table){ return api(`/api/orders/table/${encodeURIComponent(table)}`); }
-  function getActiveByTable(table){ return api(`/api/orders/table/${encodeURIComponent(table)}/active`); }
+  // Sends the full itemized bill to the counter's physical billing printer
+  // (via the local Print Agent) — separate from the on-screen invoice modal,
+  // which stays as a visual/browser-print fallback.
+  function printBill(table){
+    return api(`/api/print_bill.php?table=${encodeURIComponent(table)}`, { method: 'POST' });
+  }
+
+  function getAll(){ return api('/api/orders.php'); }
+  function getByTable(table){ return api(`/api/orders.php?table=${encodeURIComponent(table)}`); }
+  function getActiveByTable(table){ return api(`/api/orders.php?table=${encodeURIComponent(table)}&active=1`); }
 
   return {
     ACTIVE_STATUSES,
-    createOrder, updateOrder, requestBill, generateInvoice, confirmPayment,
+    createOrder, updateOrder, requestBill, generateInvoice, confirmPayment, printBill,
     getAll, getByTable, getActiveByTable,
     onChange, orderTotal, itemTotal, priceNumber, genId,
     getGstRate, billBreakdown

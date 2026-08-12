@@ -10,12 +10,9 @@
     tickClock();
     setInterval(tickClock, 1000 * 30);
     render();
-    OrderStore.onChange((msg)=>{
-      if(msg.type === 'order_updated' && msg.payload && msg.payload.status === 'ready') flashReady();
-      if(msg.type === 'bill_requested' && msg.payload && msg.payload.method === 'cash') flashCash();
-      render();
-    });
-    setInterval(render, 15000);
+    // render() already diffs known ready-order/cash-request ids itself to decide
+    // when to flash/beep, so onChange just needs to trigger a re-check.
+    OrderStore.onChange(() => render());
 
     document.getElementById('newOrderBtn')?.addEventListener('click', openNewOrderModal);
     document.getElementById('newOrderCancelBtn')?.addEventListener('click', closeNewOrderModal);

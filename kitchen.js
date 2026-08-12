@@ -7,11 +7,11 @@
     tickClock();
     setInterval(tickClock, 1000 * 30);
     render();
-    OrderStore.onChange((msg)=>{
-      if(msg.type === 'order_created') flashNewOrder();
-      render();
-    });
-    setInterval(render, 15000); // keep elapsed-time colours fresh even with no events
+    // render() already diffs known order ids itself to decide when to flash/beep
+    // for something new, so onChange just needs to trigger a re-check — no need
+    // to inspect what kind of change it was. This poll (every few seconds) also
+    // keeps the elapsed-time colour coding fresh even when nothing else changed.
+    OrderStore.onChange(() => render());
   });
 
   function tickClock(){

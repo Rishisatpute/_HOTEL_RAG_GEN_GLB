@@ -4,82 +4,106 @@ ANGAAR DHABA — HOW TO RUN THIS PROJECT
 This project has two parts:
   1. FRONTEND — the website (index.html, menu.html, kitchen.html, etc.)
      Already live on Vercel: https://hotel-rag-gen-glb.vercel.app/
-  2. BACKEND — a small server (in the "server" folder) that stores orders
-     in a real database, so the customer's phone, the kitchen screen, the
-     waiter's phone, and the counter PC all see the same live order data.
+  2. BACKEND — stores orders in a real database, so the customer's phone,
+     the kitchen screen, the waiter's phone, and the counter PC all see
+     the same live order data.
 
-The backend needs THREE things set up before it works. Do them in this
-order.
+IMPORTANT — there are currently TWO backend implementations in this repo:
 
+  server/       Node.js + MongoDB. This is what's ACTUALLY LIVE right now
+                (deployed on Render, orders.js currently points at it).
 
-STEP 1 — Get a MongoDB database (this is where orders get stored)
--------------------------------------------------------------------
-1. Go to https://www.mongodb.com/cloud/atlas/register and make a free
-   account (email + password, like signing up for anything else).
-2. It will ask you to create a "cluster" — pick the FREE one (called M0).
-   Any region is fine, pick one close to India.
-3. Wait a minute or two while it sets up.
-4. On the left, click "Database Access" -> "Add New Database User".
-   - Pick a username (e.g. angaar-admin)
-   - Click "Autogenerate Secure Password" and COPY the password somewhere
-     safe (like Notes app or a password manager). You will need it in
-     Step 2. Do not lose it, and do not paste it in chat with anyone.
-5. On the left, click "Network Access" -> "Add IP Address".
-   In the "Access List Entry" box, type exactly this (no brackets,
-   no parentheses):
-     0.0.0.0/0
-   This means "allow access from anywhere". You can leave the Comment
-   box as whatever text you like, e.g. "Allow Access From Anywhere".
-   Click Confirm.
-6. Go back to "Database" (or "Clusters"), click "Connect" on your cluster.
-   - Choose "Drivers"
-   - Copy the connection string shown. It looks like:
-     mongodb+srv://angaar-admin:<password>@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority
-   - Replace <password> with the real password you saved in step 4.
-   - Right after ".mongodb.net/" and before the "?", type a database name,
-     for example "angaar-dhaba", so it looks like:
-     mongodb+srv://angaar-admin:YOURPASSWORD@cluster0.xxxxx.mongodb.net/angaar-dhaba?retryWrites=true&w=majority
+  server-php/   PHP + MySQL. Newly built to run on MilesWeb (cPanel/shared
+                hosting), since that plan doesn't support deploying
+                MongoDB or a Node.js server. Fully built and tested, but
+                NOT deployed yet — the live site is still running on the
+                Node version above until someone completes the steps
+                below and re-points orders.js at it.
 
-   This full string is your MONGODB_URI. Keep it private — you'll paste
-   it directly into Render in Step 2, not anywhere else.
+Once server-php/ is deployed and orders.js is switched over, the old
+server/ and print-agent/ (Node.js) folders are no longer needed and can
+be removed — they're left in place for now so the live site keeps
+working in the meantime.
+
+The steps below are for deploying the NEW PHP + MySQL backend to MilesWeb.
 
 
-STEP 2 — Put the backend online (Render hosts the actual running server)
----------------------------------------------------------------------------
-1. Go to https://render.com and sign up (easiest: "Sign up with GitHub",
-   using the same GitHub account this repo is on).
-2. Click "New +" -> "Web Service".
-3. Connect the repo: Rishisatpute/_HOTEL_RAG_GEN_GLB
-   Pick the branch: ek-punjab
-4. Fill in the settings:
-   - Root Directory:   server
-   - Runtime:          Node
-   - Build Command:    npm install
-   - Start Command:    npm start
-5. Scroll to "Environment Variables" and add:
-   - MONGODB_URI       = (the full connection string from Step 1)
-   - ALLOWED_ORIGINS   = https://hotel-rag-gen-glb.vercel.app
-6. Click "Create Web Service". Wait for it to finish deploying (a few
-   minutes the first time).
-7. Render will give you a URL, something like:
-   https://angaar-dhaba-api.onrender.com
-   Open <that-url>/api/health in your browser — you should see:
-   {"ok":true,"message":"Angaar Dhaba API is running"}
-   If you see that, the backend is alive.
-
-Note: Render's free plan "sleeps" the server after 15 minutes with no
-visitors, and takes about 30-50 seconds to wake back up on the next
-request. That's normal on the free tier.
+STEP 1 — Create the MySQL database (cPanel)
+------------------------------------------------
+1. Log in to your MilesWeb cPanel.
+2. Find "MySQL® Databases" and open it.
+3. Under "Create New Database", type a name (e.g. angaardhaba) and click
+   Create. cPanel will rename it to something like
+   yourcpaneluser_angaardhaba — that's normal.
+4. Scroll to "MySQL Users" -> "Add New User". Pick a username, click
+   "Password Generator" to make a strong password, and COPY that password
+   somewhere safe (a password manager, not chat, not this conversation).
+5. Scroll to "Add User To Database". Pick the user and database you just
+   made, click Add, then on the next screen tick "ALL PRIVILEGES" and
+   click "Make Changes".
 
 
-STEP 3 — Tell the website where the backend lives
+STEP 2 — Load the database tables
+--------------------------------------
+1. In cPanel, open "phpMyAdmin".
+2. On the left, click your database name.
+3. Click the "Import" tab at the top.
+4. Click "Choose File" and select: server-php/db/schema.sql (from this
+   project folder on your computer).
+5. Click "Go" at the bottom. You should see a success message and four
+   new tables appear on the left: orders, order_items, print_jobs,
+   invoice_seq.
+
+
+STEP 3 — Upload the backend code
+--------------------------------------
+1. In cPanel, open "File Manager" (or use an FTP program if you prefer).
+2. Upload the ENTIRE server-php folder to your hosting.
+3. ALSO upload menu-data.json — it needs to sit one folder level ABOVE
+   server-php, i.e. if server-php ends up at:
+     /home/yourcpaneluser/api/server-php/
+   then menu-data.json needs to be at:
+     /home/yourcpaneluser/api/menu-data.json
+   (The backend reads menu-data.json directly to know each dish's price
+   and which printer station it belongs to.)
+4. If you want this reachable as its own address like
+   api.yourdomain.com, set that up under cPanel's "Subdomains" or
+   "Domains" tool, pointing at the folder from step 3.
+
+
+STEP 4 — Configure the backend
+------------------------------------
+1. In File Manager, go into server-php/config/
+2. Make a copy of .env.example and rename the copy to: .env
+3. Edit .env and fill in:
+     DB_HOST=localhost
+     DB_NAME=yourcpaneluser_angaardhaba   (from Step 1)
+     DB_USER=yourcpaneluser_angaardhaba   (from Step 1)
+     DB_PASSWORD=<the password you saved in Step 1>
+     ALLOWED_ORIGINS=https://hotel-rag-gen-glb.vercel.app
+
+
+STEP 5 — Test the backend
+-------------------------------
+Open this in a browser (using your actual domain from Step 3):
+     https://your-backend-url/api/health.php
+You should see:
+     {"ok":true,"message":"Angaar Dhaba API is running"}
+If you see a database error instead, double-check Step 4.
+
+
+STEP 6 — Tell the website where the backend lives
 -----------------------------------------------------
-1. Open the file: orders.js  (in the main project folder, not in "server")
+1. Open the file: orders.js  (in the main project folder, not in
+   "server-php")
 2. Near the top, find this line:
-     const API_BASE = 'https://angaar-dhaba-api.onrender.com';
-3. Replace the URL with YOUR real Render URL from Step 2.
+     const API_BASE = 'https://your-php-backend-url';
+3. Replace the URL with your real backend URL from Step 3.
 4. Save, commit, and push to the ek-punjab branch.
 5. Vercel will automatically redeploy the website with the new setting.
+
+This is the step that actually switches the live site over from the old
+Node/MongoDB backend to the new PHP/MySQL one.
 
 
 HOW TO TEST IT'S ACTUALLY WORKING
@@ -89,24 +113,57 @@ phone and a laptop, or two browser windows in "incognito" so they don't
 share storage):
   - Device A: open menu.html, set a table number, add a dish, place order
   - Device B: open kitchen.html
-You should see the order appear on Device B within a second or two,
-with no page refresh needed. That live sync across devices is the whole
-point of this backend — it did not work before.
+You should see the order appear on Device B within a few seconds (this
+version checks for updates every few seconds rather than pushing
+instantly — shared hosting can't run the always-on connection the old
+Node version used, but the difference is barely noticeable in practice).
+
+
+STEP 7 (OPTIONAL) — PHYSICAL RECEIPT PRINTING (Kitchen / Bar / Billing)
+---------------------------------------------------------------------------
+Only needed once you have real thermal printers set up at the restaurant.
+Kitchen and Bar tickets never show prices; the Billing printer is the
+only one that does, and it only prints when the counter clicks "Print
+Bill".
+
+This CANNOT run on the web host — printers sit on the restaurant's
+private network (192.168.x.x) which a website can't reach. Instead, a
+small PHP program called the "Print Agent" runs on a computer inside the
+restaurant (e.g. the billing PC), on the same network as the printers.
+
+1. Find each printer's IP address (usually via a self-test page or the
+   printer's own network menu) and give it a fixed/static IP on the
+   restaurant's router.
+2. On the restaurant's PC, if it doesn't already have PHP, download a
+   PHP zip from https://windows.php.net/download/ and extract it — no
+   installer needed.
+3. In print-agent-php/:
+     copy .env.example to .env
+     fill in BACKEND_URL (your real backend URL from Step 3) and each
+     printer's IP
+4. Run it:
+     php agent.php
+5. Full details, including how to test with DRY_RUN before wiring up
+   real printers, and how to keep it running in the background, are in
+   print-agent-php/README.md.
 
 
 RUNNING THE BACKEND ON YOUR OWN COMPUTER (optional, for testing changes)
 -----------------------------------------------------------------------------
-  cd server
+You'll need PHP and a local MySQL server (e.g. XAMPP, which bundles
+both) installed on your computer.
+  cd server-php/config
   copy .env.example to .env
-  fill in MONGODB_URI in that .env file (same value as Step 1)
-  npm install
-  npm start
+  fill in DB_HOST/DB_NAME/DB_USER/DB_PASSWORD for your local MySQL
+  load db/schema.sql into your local database (phpMyAdmin's Import tab)
+  cd ..
+  php -S localhost:5050
 
-The server will start on http://localhost:5000
+The backend will start on http://localhost:5050
 
 
 RUNNING THE FRONTEND ON YOUR OWN COMPUTER (optional)
 ---------------------------------------------------------
-From the main project folder (not "server"):
+From the main project folder:
   python -m http.server 5000
 Then open http://localhost:5000/index.html in your browser.
