@@ -117,10 +117,16 @@ const OrderStore = (() => {
   function getByTable(table){ return api(`/api/orders.php?table=${encodeURIComponent(table)}`); }
   function getActiveByTable(table){ return api(`/api/orders.php?table=${encodeURIComponent(table)}&active=1`); }
 
+  // Fire-and-forget — a page load shouldn't hang or error out over a tracking call,
+  // so failures (offline, backend down) are swallowed silently.
+  function trackVisit(page){ return api('/api/track_visit.php', { method: 'POST', body: JSON.stringify({ page }) }).catch(()=>{}); }
+  function getVisits(){ return api('/api/track_visit.php'); }
+
   return {
     ACTIVE_STATUSES,
     createOrder, updateOrder, requestBill, generateInvoice, confirmPayment, printBill,
     getAll, getByTable, getActiveByTable,
+    trackVisit, getVisits,
     onChange, orderTotal, itemTotal, priceNumber, genId,
     getGstRate, billBreakdown
   };

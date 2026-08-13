@@ -10,7 +10,8 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     EkCommon.initChrome();
-    fetch('menu-data.json?v=11').then(r => r.json()).then(data => {
+    OrderStore.trackVisit('menu');
+    fetch('menu-data.json?v=12').then(r => r.json()).then(data => {
       state.restaurant = data.restaurant;
       state.categories = data.categories || [];
       initPage(data);

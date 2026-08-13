@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Sales Dashboard – Angaar Dhaba</title>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=12">
+  <link rel="icon" href="favicon.svg?v=12" type="image/svg+xml">
+</head>
+<body class="page-staff">
+  <header class="staff-bar">
+    <div class="staff-bar-inner">
+      <a href="counter.html" class="staff-back" aria-label="Back to Counter">←</a>
+      <div class="staff-title">📊 Sales Dashboard</div>
+      <div class="staff-clock" id="staffClock"></div>
+    </div>
+  </header>
+
+  <section class="dash-hero">
+    <div class="dash-hero-inner">
+      <div class="rule gold"></div>
+      <div class="dash-hero-name">ANGAAR DHABA</div>
+      <div class="dash-hero-sub">Sales performance &amp; dish trends</div>
+    </div>
+  </section>
+
+  <main class="dashboard-page">
+    <div class="stat-tiles">
+      <div class="stat-tile">
+        <div class="stat-label">Today</div>
+        <div class="stat-value" id="statTodayRevenue">₹0</div>
+        <div class="stat-sub" id="statTodayOrders">0 bills</div>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-label">Last 7 days</div>
+        <div class="stat-value" id="statWeekRevenue">₹0</div>
+        <div class="stat-sub" id="statWeekOrders">0 bills</div>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-label">Last 30 days</div>
+        <div class="stat-value" id="statMonthRevenue">₹0</div>
+        <div class="stat-sub" id="statMonthOrders">0 bills</div>
+      </div>
+    </div>
+
+    <div class="dash-grid">
+      <div class="dash-card">
+        <h3 class="dash-card-title">Sales trend <span class="dash-card-sub">(last 14 days)</span></h3>
+        <div class="trend-chart" id="trendChart"></div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-head">
+          <h3 class="dash-card-title">Top dishes</h3>
+          <div class="dash-range-toggle" id="dishRangeToggle">
+            <button class="range-btn" data-range="1">Today</button>
+            <button class="range-btn active" data-range="7">7 days</button>
+            <button class="range-btn" data-range="30">30 days</button>
+            <button class="range-btn" data-range="0">All time</button>
+          </div>
+        </div>
+        <ol class="dish-rank-list" id="dishRankList"></ol>
+      </div>
+    </div>
+
+    <div class="dash-grid">
+      <div class="dash-card">
+        <h3 class="dash-card-title">Website visits <span class="dash-card-sub">(last 30 days)</span></h3>
+        <div class="pie-row">
+          <div class="pie-chart" id="visitsPie"></div>
+          <ul class="pie-legend" id="visitsLegend"></ul>
+        </div>
+      </div>
+      <div class="dash-card">
+        <h3 class="dash-card-title">Payment method split <span class="dash-card-sub">(last 30 days)</span></h3>
+        <div class="pie-row">
+          <div class="pie-chart" id="paymentPie"></div>
+          <ul class="pie-legend" id="paymentLegend"></ul>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <p class="staff-sync-note">Figures are calculated live from paid bills — keep this tab open and it refreshes automatically.</p>
+
+  <script src="common.js?v=12"></script>
+  <script src="orders.js?v=12"></script>
+  <script src="dashboard.js?v=12"></script>
+</body>
+</html>

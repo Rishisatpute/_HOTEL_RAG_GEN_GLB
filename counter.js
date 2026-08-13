@@ -7,7 +7,7 @@
   // Invoices (GSTIN/FSSAI lines, UPI QR) need restaurant data from menu-data.json. On a slow
   // connection that fetch can still be in flight when staff click "Print Bill" — openInvoice()
   // awaits this promise so the invoice never silently renders without it.
-  const restaurantReady = fetch('menu-data.json?v=11').then(r=>r.json()).then(data=>{ restaurant = data.restaurant; }).catch(()=>{});
+  const restaurantReady = fetch('menu-data.json?v=12').then(r=>r.json()).then(data=>{ restaurant = data.restaurant; }).catch(()=>{});
 
   document.addEventListener('DOMContentLoaded', () => {
     tickClock();

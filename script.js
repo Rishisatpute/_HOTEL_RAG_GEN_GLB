@@ -2,7 +2,8 @@
 (() => {
   document.addEventListener('DOMContentLoaded', () => {
     EkCommon.initChrome();
-    fetch('menu-data.json?v=11').then(r => r.json()).then(data => {
+    OrderStore.trackVisit('home');
+    fetch('menu-data.json?v=12').then(r => r.json()).then(data => {
       initSite(data);
     }).catch(err => console.error('menu load', err));
   });

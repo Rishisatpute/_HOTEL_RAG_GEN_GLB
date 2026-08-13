@@ -415,6 +415,65 @@ body{
 .method-chip.method-card{background:var(--st-preparing);color:#fff}
 .method-chip.method-upi{background:var(--gold);color:var(--wood-dark)}
 .recent-card{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--card);border-radius:10px;padding:10px 14px;cursor:pointer}
+
+/* ============ Sales dashboard ============ */
+.dash-link-banner{margin:18px 18px 0;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg, rgba(201,162,75,0.14), rgba(201,162,75,0.04));border:1px solid rgba(201,162,75,0.35);border-radius:14px;padding:16px 18px;text-decoration:none;color:var(--cream);transition:border-color .15s ease, transform .15s ease}
+.dash-link-banner:hover{border-color:var(--gold);transform:translateY(-2px)}
+.dash-link-icon{font-size:26px;flex-shrink:0}
+.dash-link-text{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.dash-link-title{font-family:Oswald,Segoe UI;font-weight:700;font-size:16px;letter-spacing:.02em}
+.dash-link-sub{font-size:12.5px;color:rgba(245,236,217,0.65)}
+.dash-link-arrow{font-size:20px;color:var(--gold-soft);flex-shrink:0}
+
+.dash-hero{min-height:34vh;display:flex;align-items:center;justify-content:center;position:relative;background-image:linear-gradient(to bottom, rgba(20,12,8,0.55), rgba(20,12,8,0.88)), url('images/ambiance-01.jpg');background-size:cover;background-position:center}
+.dash-hero-inner{text-align:center;padding:36px 20px}
+.dash-hero-inner .rule{height:3px;width:64px;background:var(--gold);margin:0 auto 12px}
+.dash-hero-name{font-family:Oswald,Segoe UI;font-weight:700;font-size:32px;letter-spacing:.08em;color:var(--cream)}
+.dash-hero-sub{color:var(--gold-soft);font-size:13px;letter-spacing:.1em;text-transform:uppercase;margin-top:8px}
+.dashboard-page{max-width:1180px;margin:0 auto;padding:24px 18px 8px}
+.stat-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px}
+.stat-tile{background:var(--card);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:16px 18px}
+.stat-label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-soft);font-weight:700}
+.stat-value{font-family:Oswald,Segoe UI;font-size:26px;font-weight:700;color:var(--cream);margin-top:6px;font-variant-numeric:tabular-nums}
+.stat-sub{font-size:12.5px;color:rgba(245,236,217,0.55);margin-top:2px}
+.dash-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:16px}
+.dash-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:16px}
+.dash-card-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.dash-card-head .dash-card-title{margin:0}
+.dash-card-title{font-family:Oswald,Segoe UI;font-size:15px;margin:0 0 14px;letter-spacing:.02em}
+.dash-card-sub{font-family:Poppins;font-size:12px;font-weight:400;color:rgba(245,236,217,0.5)}
+.dash-range-toggle{display:flex;gap:6px;flex-wrap:wrap}
+.range-btn{background:transparent;border:1px solid rgba(255,255,255,0.15);color:rgba(245,236,217,0.7);border-radius:999px;padding:4px 11px;font-size:11.5px;font-weight:600;cursor:pointer;min-height:28px}
+.range-btn:hover{border-color:var(--gold-soft);color:var(--cream)}
+.range-btn.active{background:var(--gold);border-color:var(--gold);color:var(--wood-dark)}
+
+.trend-chart{display:flex;align-items:flex-end;gap:6px;height:150px;padding-top:8px}
+.trend-bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px}
+.trend-bar-fill{width:100%;max-width:26px;background:linear-gradient(180deg,var(--gold-soft),var(--gold));border-radius:4px 4px 0 0;min-height:2px;transition:height .25s ease}
+.trend-bar.is-today .trend-bar-fill{background:linear-gradient(180deg,#fff,var(--gold-soft))}
+.trend-bar-label{font-size:9.5px;color:rgba(245,236,217,0.45);white-space:nowrap}
+.trend-empty{color:rgba(245,236,217,0.4);font-size:13px;text-align:center;width:100%;align-self:center}
+
+.dish-rank-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.dish-rank-item{display:flex;align-items:center;gap:10px}
+.dish-rank-badge{font-family:Oswald,Segoe UI;font-weight:700;font-size:13px;color:var(--gold-soft);width:20px;flex-shrink:0;text-align:center}
+.dish-rank-body{flex:1;min-width:0}
+.dish-rank-top{display:flex;justify-content:space-between;gap:8px;font-size:13.5px;margin-bottom:4px}
+.dish-rank-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--cream)}
+.dish-rank-qty{color:var(--gold-soft);font-weight:700;flex-shrink:0;font-variant-numeric:tabular-nums}
+.dish-rank-bar-track{background:rgba(255,255,255,0.06);border-radius:999px;height:6px;overflow:hidden}
+.dish-rank-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-soft));border-radius:999px}
+.dish-rank-revenue{font-size:11px;color:rgba(245,236,217,0.5);margin-top:3px}
+
+.pie-row{display:flex;align-items:center;gap:22px;padding-top:6px}
+.pie-chart{width:130px;height:130px;border-radius:50%;flex-shrink:0;background:rgba(255,255,255,0.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,0.06)}
+.pie-legend{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;flex:1;min-width:0}
+.pie-legend li{display:flex;align-items:center;gap:9px;font-size:13px}
+.pie-swatch{width:11px;height:11px;border-radius:3px;flex-shrink:0}
+.pie-legend-label{flex:1;color:var(--cream);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pie-legend-value{color:rgba(245,236,217,0.6);font-variant-numeric:tabular-nums;flex-shrink:0}
+.pie-legend-pct{color:var(--gold-soft);font-weight:700;font-variant-numeric:tabular-nums;flex-shrink:0;width:42px;text-align:right}
+.pie-empty{color:rgba(245,236,217,0.4);font-size:13px;padding:8px 0}
 .recent-card:hover{background:var(--wood-mid)}
 
 .staff-hub{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;gap:32px;text-align:center}
@@ -483,6 +542,16 @@ body{
   .waiter-board, .counter-board{grid-template-columns:1fr;padding:14px;gap:12px}
   .staff-hub-grid{grid-template-columns:1fr}
   .modal-card{padding:20px}
+  .dashboard-page{padding:18px 14px 8px}
+  .dash-link-banner{margin:14px 14px 0}
+  .dash-hero{min-height:26vh}
+  .dash-hero-name{font-size:24px}
+  .stat-tiles{grid-template-columns:1fr;gap:10px}
+  .dash-grid{grid-template-columns:1fr}
+}
+
+@media (max-width:480px){
+  .trend-bar-label{display:none}
 }
 
 @media (max-width:380px){

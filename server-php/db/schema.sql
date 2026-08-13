@@ -82,3 +82,15 @@ CREATE TABLE IF NOT EXISTS invoice_seq (
 
 INSERT INTO invoice_seq (id, seq) VALUES (1, 0)
   ON DUPLICATE KEY UPDATE id = id;
+
+-- One row per real page load of a customer-facing page (Home, Menu — see
+-- track_visit.php), so the Sales Dashboard's "Website visits" chart reflects
+-- actual traffic instead of a guess.
+CREATE TABLE IF NOT EXISTS page_views (
+  id          INT AUTO_INCREMENT PRIMARY KEY,
+  page        VARCHAR(30) NOT NULL,
+  created_at  BIGINT NOT NULL,
+
+  INDEX idx_page (page),
+  INDEX idx_created (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
