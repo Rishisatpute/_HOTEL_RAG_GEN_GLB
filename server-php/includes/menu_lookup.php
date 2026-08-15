@@ -26,6 +26,21 @@ function print_station_for(string $itemName): string {
     return $map[$itemName] ?? 'KITCHEN';
 }
 
+// Falls back to null (stored as NULL) for anything not found, same reasoning
+// as print_station_for() — never blocks billing over a menu lookup miss.
+function category_for(string $itemName): ?string {
+    static $map = null;
+    if ($map === null) {
+        $map = [];
+        foreach (menu_data()['categories'] as $cat) {
+            foreach ($cat['items'] as $item) {
+                $map[$item['name']] = $cat['name'];
+            }
+        }
+    }
+    return $map[$itemName] ?? null;
+}
+
 function restaurant_info(): array {
     return menu_data()['restaurant'];
 }

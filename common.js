@@ -12,6 +12,11 @@ const EkCommon = (() => {
     return '₹' + num.toLocaleString('en-IN');
   }
 
+  // "Takeaway" is its own special table value (see orders.php — deliberately never
+  // registered in the `tables` dropdown/token flow). Every other table shows as
+  // "Table 7"; Takeaway shouldn't read as the redundant "Table Takeaway".
+  function tableLabel(table){ return table === 'Takeaway' ? 'Takeaway' : `Table ${table}`; }
+
   // Menu prices can be "499" or a slash-separated set of options like "399 / 649"
   // (half/full, size variants, etc). Every option gets its own ₹ so "199 / 249"
   // never reads like a fraction or a range.
@@ -50,6 +55,23 @@ const EkCommon = (() => {
   }
 
   function qs(name){ return new URLSearchParams(location.search).get(name); }
+
+  const STAFF_UNLOCK_KEY = 'ek_staff_unlocked';
+  // Called first thing by every staff-only page (staff.html, waiter.html,
+  // table-qr.html, counter.html). The actual PIN check happens server-side
+  // (staff_login.php, either a personal waiter/counter PIN or the shared
+  // manager PIN) — this just remembers "already verified" for this browser
+  // so it isn't asked every page load.
+  // Client-side only — a soft gate to keep the public out, not a defense
+  // against a determined technical bypass, matching this app's existing
+  // security level elsewhere (e.g. table QR tokens).
+  function requireStaffAccess(){
+    if(localStorage.getItem(STAFF_UNLOCK_KEY) === 'true') return true;
+    const next = encodeURIComponent(location.pathname.split('/').pop() + location.search);
+    location.replace(`staff-login.html?next=${next}`);
+    return false;
+  }
+  function staffLogout(){ localStorage.removeItem(STAFF_UNLOCK_KEY); }
 
   function setHeaderHeightVar(){
     const topbar = document.getElementById('topbar');
@@ -96,5 +118,5 @@ const EkCommon = (() => {
     }
   }
 
-  return { WHATSAPP_NUMBER, whatsappLink, money, formatMenuPrice, beep, alertChime, toast, qs, setHeaderHeightVar, fmtClock, fmtDateTime, timeAgoMins, initChrome, initFooterExtras };
+  return { WHATSAPP_NUMBER, whatsappLink, money, formatMenuPrice, tableLabel, beep, alertChime, toast, qs, setHeaderHeightVar, fmtClock, fmtDateTime, timeAgoMins, initChrome, initFooterExtras, requireStaffAccess, staffLogout };
 })();

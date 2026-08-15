@@ -23,4 +23,18 @@ $stmt->execute([$method, $now, $now, $table]);
 
 $stmt2 = db()->prepare('SELECT * FROM orders WHERE table_no = ? AND paid_at = ?');
 $stmt2->execute([$table, $now]);
-json_out(attach_items($stmt2->fetchAll()));
+$paid = attach_items($stmt2->fetchAll());
+
+log_paid_invoice($paid);
+
+// Once safely snapshotted into invoice_log/invoice_items, the detailed order rows
+// serve no further purpose — orders only needs to hold currently-active business,
+// not a permanently growing history. Scoped to exactly these order ids (not a
+// broad "delete everything paid" sweep). order_items cascades via its FK.
+$ids = array_column($paid, 'id');
+if ($ids) {
+    $placeholders = implode(',', array_fill(0, count($ids), '?'));
+    db()->prepare("DELETE FROM orders WHERE id IN ($placeholders)")->execute($ids);
+}
+
+json_out($paid);

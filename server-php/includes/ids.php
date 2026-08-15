@@ -7,3 +7,10 @@ function gen_id(): string {
     $rand = strtoupper(substr(bin2hex(random_bytes(3)), 0, 3));
     return 'EP' . strtoupper($time) . $rand;
 }
+
+// A table's QR secret — 16 hex chars from a cryptographically secure source,
+// unguessable enough for this threat model (stops casual URL-guessing/table
+// spoofing, not a defense against a determined, resourced attacker).
+function gen_table_token(): string {
+    return bin2hex(random_bytes(8));
+}

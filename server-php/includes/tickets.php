@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/db.php';
+
 function ticket_line(string $ch = '-', int $len = 32): string {
     return str_repeat($ch, $len);
 }
@@ -19,10 +21,14 @@ function ticket_fmt_time(int $ts): string {
 
 // Kitchen/Bar tickets (KOT/BOT) — name + qty + notes only. No prices, ever.
 // $items here are the order's items already filtered to one station.
-function format_station_ticket(string $stationLabel, array $order, array $items): string {
+// $suffix marks a reprint that's an addition to an already-placed order
+// (e.g. 'UPDATE') rather than the original ticket — the table number sits
+// right in the heading either way so it can't be missed at the printer.
+function format_station_ticket(string $stationLabel, array $order, array $items, string $suffix = ''): string {
     $rows = [
         ticket_line('='),
-        "      $stationLabel ORDER",
+        "      $stationLabel ORDER" . ($suffix !== '' ? " - $suffix" : ''),
+        "      TABLE {$order['table_no']}",
         ticket_line('='),
         "Order: #{$order['id']}",
         "Table: {$order['table_no']}",
@@ -42,16 +48,48 @@ function format_station_ticket(string $stationLabel, array $order, array $items)
     return implode("\n", $rows);
 }
 
-function format_kitchen_ticket(array $order, array $items): string {
-    return format_station_ticket('KITCHEN', $order, $items);
+function format_kitchen_ticket(array $order, array $items, string $suffix = ''): string {
+    return format_station_ticket('KITCHEN', $order, $items, $suffix);
 }
 
-function format_bar_ticket(array $order, array $items): string {
-    return format_station_ticket('BAR', $order, $items);
+function format_bar_ticket(array $order, array $items, string $suffix = ''): string {
+    return format_station_ticket('BAR', $order, $items, $suffix);
+}
+
+// Splits $items by print station and inserts one pending print_jobs row per
+// non-empty station (a food-only order never creates an empty BAR ticket).
+// $suffix distinguishes an addition-to-an-existing-order reprint ('UPDATE')
+// from the original ticket. Shared by orders.php (new order) and
+// order_update.php (items added to an existing order).
+function create_print_jobs(array $order, array $items, string $suffix = ''): void {
+    $byStation = ['KITCHEN' => [], 'BAR' => []];
+    foreach ($items as $it) {
+        $byStation[$it['printStation'] ?? 'KITCHEN'][] = $it;
+    }
+
+    $orderForTicket = [
+        'id' => $order['id'], 'table_no' => $order['table'],
+        'created_at' => $order['createdAt'], 'notes' => $order['notes'],
+    ];
+
+    $now = (int) (microtime(true) * 1000);
+    $stmt = db()->prepare('INSERT INTO print_jobs (order_id, table_no, station, content, status, created_at)
+                            VALUES (?, ?, ?, ?, "pending", ?)');
+
+    if ($byStation['KITCHEN']) {
+        $content = format_kitchen_ticket($orderForTicket, $byStation['KITCHEN'], $suffix);
+        $stmt->execute([$order['id'], $order['table'], 'KITCHEN', $content, $now]);
+    }
+    if ($byStation['BAR']) {
+        $content = format_bar_ticket($orderForTicket, $byStation['BAR'], $suffix);
+        $stmt->execute([$order['id'], $order['table'], 'BAR', $content, $now]);
+    }
 }
 
 // Billing ticket — full itemized bill with GST breakdown, for the counter's
 // Epson printer only. This is the one place prices are allowed to print.
+// Address is deliberately left off — it's shown on screen (the invoice modal)
+// but not worth the extra line on a receipt handed over in person.
 function format_bill_ticket(array $restaurant, array $orders): string {
     $first = $orders[0];
     $allItems = [];
@@ -60,8 +98,6 @@ function format_bill_ticket(array $restaurant, array $orders): string {
     $rows = [
         ticket_line('='),
         strtoupper($restaurant['name'] ?? 'RESTAURANT'),
-        $restaurant['tagline'] ?? '',
-        $restaurant['address'] ?? '',
         ticket_line('-'),
         'Invoice: ' . ($first['invoice_no'] ?? $first['id']),
         "Table:   {$first['table_no']}",

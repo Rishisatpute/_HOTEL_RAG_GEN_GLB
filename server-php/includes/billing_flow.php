@@ -2,6 +2,7 @@
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/orders_repo.php';
 require_once __DIR__ . '/billing.php';
+require_once __DIR__ . '/menu_lookup.php';
 
 // Atomic invoice-number counter — MySQL's LAST_INSERT_ID(expr) trick makes
 // this safe even if two requests hit it at the exact same moment (the
@@ -10,7 +11,7 @@ function next_invoice_number(): string {
     $pdo = db();
     $pdo->exec('UPDATE invoice_seq SET seq = LAST_INSERT_ID(seq + 1) WHERE id = 1');
     $seq = (int) $pdo->query('SELECT LAST_INSERT_ID()')->fetchColumn();
-    return 'INV-EKP-' . str_pad((string) $seq, 6, '0', STR_PAD_LEFT);
+    return 'INV-ANG-DHB-' . str_pad((string) $seq, 4, '0', STR_PAD_LEFT);
 }
 
 // Locks in the invoice number + GST breakdown for a table's pending bill,
@@ -37,4 +38,43 @@ function generate_invoice_for_table(string $table): array {
     ]);
 
     return find_orders_by_invoice($table, $invoiceNo);
+}
+
+// Snapshots a just-paid bill into invoice_log + invoice_items, so the
+// itemized receipt survives independent of the orders/order_items rows.
+// Idempotent (ON DUPLICATE KEY / DELETE-then-insert) — safe if a retry
+// hits this twice for the same invoice.
+function log_paid_invoice(array $paidOrders): void {
+    if (!$paidOrders) return;
+    $invoiceNo = $paidOrders[0]['invoiceNo'];
+    if (!$invoiceNo) return; // shouldn't happen — generate_invoice_for_table() always runs first
+
+    $pdo = db();
+    $pdo->beginTransaction();
+    try {
+        $stmt = $pdo->prepare('INSERT INTO invoice_log (invoice_no, table_no, amount, payment_method, paid_at)
+                                VALUES (?, ?, ?, ?, ?)
+                                ON DUPLICATE KEY UPDATE table_no = VALUES(table_no), amount = VALUES(amount),
+                                    payment_method = VALUES(payment_method), paid_at = VALUES(paid_at)');
+        $stmt->execute([
+            $invoiceNo, $paidOrders[0]['table'], $paidOrders[0]['billTotal'],
+            $paidOrders[0]['paymentMethod'], $paidOrders[0]['paidAt']
+        ]);
+
+        // Re-running this (e.g. a retried request) shouldn't duplicate items —
+        // clear out anything already logged for this invoice_no first.
+        $pdo->prepare('DELETE FROM invoice_items WHERE invoice_no = ?')->execute([$invoiceNo]);
+
+        $itemStmt = $pdo->prepare('INSERT INTO invoice_items (invoice_no, name, category, price, qty)
+                                    VALUES (?, ?, ?, ?, ?)');
+        foreach ($paidOrders as $order) {
+            foreach ($order['items'] as $item) {
+                $itemStmt->execute([$invoiceNo, $item['name'], category_for($item['name']), $item['price'], $item['qty']]);
+            }
+        }
+        $pdo->commit();
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        throw $e;
+    }
 }

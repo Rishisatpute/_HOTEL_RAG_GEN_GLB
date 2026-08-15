@@ -2,7 +2,7 @@
 require_once __DIR__ . '/db.php';
 
 // Maps a snake_case DB row (+ its items) to the same camelCase shape the
-// frontend has always consumed — so menu.js/kitchen.js/waiter.js/counter.js
+// frontend has always consumed — so menu.js/waiter.js/counter.js
 // don't need to change at all, only the API layer underneath them did.
 function row_to_order(array $row, array $items): array {
     return [
@@ -25,6 +25,7 @@ function row_to_order(array $row, array $items): array {
         'notes' => $row['notes'] ?? '',
         'placedBy' => $row['placed_by'],
         'waiterName' => $row['waiter_name'] ?? '',
+        'assignedWaiter' => $row['assigned_waiter'] ?? null,
         'billId' => $row['bill_id'],
         'gstRate' => $row['gst_rate'] !== null ? (float) $row['gst_rate'] : null,
         'halfRate' => $row['half_rate'] !== null ? (float) $row['half_rate'] : null,
@@ -73,6 +74,17 @@ function find_orders_active_by_table(string $table): array {
 function find_orders_by_status(string $table, string $status): array {
     $stmt = db()->prepare('SELECT * FROM orders WHERE table_no = ? AND status = ? ORDER BY created_at ASC');
     $stmt->execute([$table, $status]);
+    return attach_items($stmt->fetchAll());
+}
+
+// Cross-table status filter (no table_no) — for live staff queues like the
+// Waiter view, which only ever renders a couple of statuses at a time and
+// otherwise has no reason to pull every order ever placed on every poll.
+function find_orders_by_statuses(array $statuses): array {
+    if (!$statuses) return [];
+    $placeholders = implode(',', array_fill(0, count($statuses), '?'));
+    $stmt = db()->prepare("SELECT * FROM orders WHERE status IN ($placeholders) ORDER BY created_at ASC");
+    $stmt->execute($statuses);
     return attach_items($stmt->fetchAll());
 }
 

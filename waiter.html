@@ -5,14 +5,15 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Waiter View – Angaar Dhaba</title>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=11">
-  <link rel="icon" href="favicon.svg?v=11" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css?v=21">
+  <link rel="icon" href="favicon.svg?v=18" type="image/svg+xml">
 </head>
 <body class="page-staff">
   <header class="staff-bar">
     <div class="staff-bar-inner">
       <a href="staff.html" class="staff-back" aria-label="Back to staff hub">←</a>
       <div class="staff-title">🧑‍🍳 Waiter View</div>
+      <div class="waiter-welcome" id="waiterWelcome"></div>
       <div class="staff-clock" id="staffClock"></div>
     </div>
   </header>
@@ -23,27 +24,24 @@
 
   <main class="waiter-board">
     <section class="waiter-section">
-      <h2 class="waiter-section-title"><span class="dot-ready"></span>Ready to deliver <span class="kds-count" id="countReady">0</span></h2>
-      <div class="waiter-cards" id="colReady"></div>
+      <h2 class="waiter-section-title"><span class="dot-ready"></span>Active orders <span class="kds-count" id="countActive">0</span></h2>
+      <p class="waiter-section-hint">Everything currently being prepared or ready, restaurant-wide. Take an order to work it yourself.</p>
+      <div class="waiter-cards" id="colActive"></div>
     </section>
     <section class="waiter-section">
-      <h2 class="waiter-section-title"><span class="dot-bill"></span>Delivered — request payment <span class="kds-count" id="countDelivered">0</span></h2>
-      <div class="waiter-cards" id="colDelivered"></div>
-    </section>
-    <section class="waiter-section cash-section full-row">
-      <h2 class="waiter-section-title"><span class="dot-cash"></span>Cash collection needed <span class="kds-count" id="countCash">0</span></h2>
-      <div class="waiter-cards" id="colCash"></div>
+      <h2 class="waiter-section-title"><span class="dot-bill"></span>My orders <span class="kds-count" id="countMine">0</span></h2>
+      <p class="waiter-section-hint">Orders you've taken — deliver them, then request payment.</p>
+      <div class="waiter-cards" id="colMine"></div>
     </section>
   </main>
 
-  <p class="staff-sync-note">Live within this browser — keep Kitchen, Waiter and Counter open in separate tabs on this device.</p>
+  <p class="staff-sync-note">Live across every device — kitchen, waiter, counter and customers all stay in sync automatically.</p>
 
   <!-- New order: pick table + waiter name, then open the menu pre-set to that table -->
   <div id="newOrderModal" class="modal-overlay" aria-hidden="true">
     <div class="modal-card">
       <h3>Take a new order</h3>
-      <p class="modal-hint">Enter your name and the table number — this opens the same menu the customer sees, so you can add dishes on their behalf. Placing the order sends it straight to the kitchen.</p>
-      <input id="waiterNameInput" class="modal-input" placeholder="Your name">
+      <p class="modal-hint">Enter the table number — this opens the same menu the customer sees, so you can add dishes on their behalf. Placing the order sends it straight to the kitchen.</p>
       <input id="waiterTableInput" class="modal-input" placeholder="Table number, e.g. 7" inputmode="numeric">
       <div class="modal-actions">
         <button class="btn outline" id="newOrderCancelBtn">Cancel</button>
@@ -52,8 +50,8 @@
     </div>
   </div>
 
-  <script src="common.js?v=11"></script>
-  <script src="orders.js?v=11"></script>
-  <script src="waiter.js?v=11"></script>
+  <script src="common.js?v=21"></script>
+  <script src="orders.js?v=18"></script>
+  <script src="waiter.js?v=21"></script>
 </body>
 </html>

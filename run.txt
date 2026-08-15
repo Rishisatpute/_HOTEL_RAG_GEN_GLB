@@ -2,11 +2,12 @@ ANGAAR DHABA — HOW TO RUN THIS PROJECT
 ========================================
 
 This project has two parts:
-  1. FRONTEND — the website (index.html, menu.html, kitchen.html, etc.)
+  1. FRONTEND — the website (index.html, menu.html, waiter.html, etc.)
      Already live on Vercel: https://hotel-rag-gen-glb.vercel.app/
   2. BACKEND — stores orders in a real database, so the customer's phone,
-     the kitchen screen, the waiter's phone, and the counter PC all see
-     the same live order data.
+     the waiter's phone, and the counter PC all see the same live order
+     data. The kitchen isn't a screen at all — it gets a physical printed
+     ticket per order via print_jobs/the Print Agent (see Step 7 below).
 
 IMPORTANT — there are currently TWO backend implementations in this repo:
 
@@ -50,9 +51,9 @@ STEP 2 — Load the database tables
 3. Click the "Import" tab at the top.
 4. Click "Choose File" and select: server-php/db/schema.sql (from this
    project folder on your computer).
-5. Click "Go" at the bottom. You should see a success message and four
-   new tables appear on the left: orders, order_items, print_jobs,
-   invoice_seq.
+5. Click "Go" at the bottom. You should see a success message and new
+   tables appear on the left: orders, order_items, print_jobs,
+   invoice_seq, staff_logins (per-waiter/counter PIN login).
 
 
 STEP 3 — Upload the backend code
@@ -81,6 +82,21 @@ STEP 4 — Configure the backend
      DB_USER=yourcpaneluser_angaardhaba   (from Step 1)
      DB_PASSWORD=<the password you saved in Step 1>
      ALLOWED_ORIGINS=https://hotel-rag-gen-glb.vercel.app
+
+
+STEP 4b — Add waiter/counter staff logins
+------------------------------------------------
+Each waiter and each counter person gets their own PIN, which both logs
+them in and sends them straight to their console (waiter.html or
+counter.html) — no shared PIN, no picking your name from a list. In
+phpMyAdmin, run one INSERT per person against the staff_logins table:
+     INSERT INTO staff_logins (pin, name, role, created_at)
+     VALUES ('1234', 'Rahul', 'waiter', UNIX_TIMESTAMP()*1000);
+role is either 'waiter' or 'counter'. To deactivate someone without
+deleting their row: UPDATE staff_logins SET active = 0 WHERE pin = '1234'.
+The old shared STAFF_PIN (Step 4 above) still works too — it's the
+fallback for anyone who isn't a waiter/counter, e.g. to reach staff.html
+for table-qr.html.
 
 
 STEP 5 — Test the backend
@@ -112,11 +128,14 @@ Open the site on two different devices at the same time (e.g. your
 phone and a laptop, or two browser windows in "incognito" so they don't
 share storage):
   - Device A: open menu.html, set a table number, add a dish, place order
-  - Device B: open kitchen.html
+  - Device B: open waiter.html (log in with a waiter PIN — see Step 4b below)
 You should see the order appear on Device B within a few seconds (this
 version checks for updates every few seconds rather than pushing
 instantly — shared hosting can't run the always-on connection the old
 Node version used, but the difference is barely noticeable in practice).
+There's no on-screen kitchen queue to check — confirm the kitchen side by
+looking for a new row in the print_jobs table (station=KITCHEN/BAR), which
+is what the Print Agent picks up and sends to the physical ticket printer.
 
 
 STEP 7 (OPTIONAL) — PHYSICAL RECEIPT PRINTING (Kitchen / Bar / Billing)

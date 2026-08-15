@@ -5,12 +5,18 @@
     categories: [],
     cart: [], // { key, name, price(number), qty, type, special }
     table: sessionStorage.getItem('ek_table') || null,
+    // The table's QR secret — only present when the table was set via a scanned QR
+    // link (?table=&t=), never via the manual dropdown or a waiter-placed order.
+    // Sent back on order creation; see the token check in orders.php.
+    token: sessionStorage.getItem('ek_token') || null,
     waiterName: null, // set when a waiter is ordering on a guest's behalf (?waiter=Name)
+    editOrderId: null, // set via ?edit=<orderId> — a waiter editing an already-placed order
+                        // instead of starting a new one; Save patches that order in place.
   };
 
   document.addEventListener('DOMContentLoaded', () => {
     EkCommon.initChrome();
-    fetch('menu-data.json?v=11').then(r => r.json()).then(data => {
+    fetch('menu-data.json?v=18').then(r => r.json()).then(data => {
       state.restaurant = data.restaurant;
       state.categories = data.categories || [];
       initPage(data);
@@ -35,6 +41,7 @@
     renderCart();
     subscribeToOrderChanges();
     EkCommon.initFooterExtras();
+    if(state.editOrderId) loadOrderForEdit();
   }
 
   function renderFooterNotes(notes){
@@ -253,7 +260,7 @@
     document.getElementById('cartBtn')?.addEventListener('click', openCart);
     document.getElementById('closeCart')?.addEventListener('click', closeCart);
     document.getElementById('cartScrim')?.addEventListener('click', closeCart);
-    document.getElementById('placeOrderBtn')?.addEventListener('click', placeOrder);
+    document.getElementById('placeOrderBtn')?.addEventListener('click', ()=>{ state.editOrderId ? saveOrderEdits() : placeOrder(); });
     document.getElementById('tableChangeBtn')?.addEventListener('click', openTableModal);
     document.getElementById('tableConfirmBtn')?.addEventListener('click', confirmTable);
     document.getElementById('takeawayBtn')?.addEventListener('click', ()=>{ setTable('Takeaway'); closeTableModal(); });
@@ -265,8 +272,12 @@
     const urlWaiter = EkCommon.qs('waiter');
     if(urlWaiter){ state.waiterName = urlWaiter; }
 
+    const urlEdit = EkCommon.qs('edit');
+    if(urlEdit){ state.editOrderId = urlEdit; }
+
     const urlTable = EkCommon.qs('table');
-    if(urlTable){ setTable(urlTable, {silent:true}); }
+    const urlToken = EkCommon.qs('t');
+    if(urlTable){ setTable(urlTable, {silent:true, token: urlToken}); }
     else if(state.waiterName){ renderTableBar(); }
   }
 
@@ -303,7 +314,11 @@
     totalEl.textContent = EkCommon.money(total);
     btnText.textContent = count > 0 ? `Cart · ${count}` : 'Cart';
     placeBtn.disabled = state.cart.length === 0 || !state.table;
-    placeBtn.textContent = !state.table ? 'Set your table to order' : 'Place order';
+    if(state.editOrderId){
+      placeBtn.textContent = state.cart.length === 0 ? 'Add at least one dish' : 'Save changes';
+    } else {
+      placeBtn.textContent = !state.table ? 'Set your table to order' : 'Place order';
+    }
     renderMyOrders();
   }
 
@@ -314,27 +329,72 @@
     const bar = document.getElementById('tableBar');
     const waiterPrefix = state.waiterName ? `🧑‍🍳 Waiter order (${state.waiterName}) — ` : '';
     if(bar) bar.classList.toggle('waiter-mode', !!state.waiterName);
+    if(state.editOrderId){
+      // Editing is scoped to the order's original table — no switching tables mid-edit,
+      // and the table number stays front-and-center since a waiter may have several of
+      // these edit tabs open for different tables at once.
+      label.textContent = state.table ? `✏️ Editing order — ${EkCommon.tableLabel(state.table)}` : '✏️ Editing order';
+      changeBtn.textContent = 'Locked';
+      changeBtn.disabled = true;
+      document.getElementById('cartTableTag').textContent = state.table ? `· ${EkCommon.tableLabel(state.table)}` : '';
+      return;
+    }
     if(state.table){
-      label.textContent = `${waiterPrefix}🍽️ Table ${state.table}`;
+      label.textContent = `${waiterPrefix}🍽️ ${EkCommon.tableLabel(state.table)}`;
       changeBtn.textContent = 'Change';
-      document.getElementById('cartTableTag').textContent = `· Table ${state.table}`;
+      document.getElementById('cartTableTag').textContent = `· ${EkCommon.tableLabel(state.table)}`;
     } else {
       label.textContent = `${waiterPrefix}🍽️ Choose your table to start ordering`;
       changeBtn.textContent = 'Set table';
       document.getElementById('cartTableTag').textContent = '';
     }
   }
-  function openTableModal(){ document.getElementById('tableModal').classList.add('show'); document.getElementById('tableModal').setAttribute('aria-hidden','false'); document.getElementById('tableInput').focus(); }
+  function openTableModal(){
+    document.getElementById('tableModal').classList.add('show');
+    document.getElementById('tableModal').setAttribute('aria-hidden','false');
+    loadTableOptions();
+  }
   function closeTableModal(){ document.getElementById('tableModal').classList.remove('show'); document.getElementById('tableModal').setAttribute('aria-hidden','true'); }
+
+  // Refetched every time the modal opens, so occupied/free reflects right now —
+  // a table someone else just claimed shouldn't still look pickable a minute later.
+  async function loadTableOptions(){
+    const select = document.getElementById('tableSelect');
+    select.innerHTML = '<option value="">Loading tables…</option>';
+    select.disabled = true;
+    let statuses;
+    try{ statuses = await OrderStore.getTableStatus(); }
+    catch(err){ select.innerHTML = '<option value="">Could not load tables — try again</option>'; return; }
+    select.innerHTML = '';
+    select.disabled = false;
+    if(statuses.length === 0){ select.innerHTML = '<option value="">No tables set up yet — ask staff</option>'; return; }
+    const placeholder = document.createElement('option');
+    placeholder.value = ''; placeholder.textContent = 'Choose a table…';
+    select.appendChild(placeholder);
+    statuses.forEach(s=>{
+      const opt = document.createElement('option');
+      opt.value = s.table;
+      opt.textContent = s.occupied ? `Table ${s.table} (occupied)` : `Table ${s.table}`;
+      opt.disabled = s.occupied;
+      select.appendChild(opt);
+    });
+  }
+
   function confirmTable(){
-    const v = document.getElementById('tableInput').value.trim();
-    if(!v){ EkCommon.toast('Enter a table number, or choose Takeaway'); return; }
-    setTable(v);
+    const v = document.getElementById('tableSelect').value;
+    if(!v){ EkCommon.toast('Choose a table, or tap Takeaway'); return; }
+    setTable(v); // manual/dropdown path — no token
     closeTableModal();
   }
+  // opts.token: only ever set from a scanned QR link (see the URL-reading block
+  // above) — never carried over from a previous table, so switching tables always
+  // clears any stale token rather than sending it for the wrong table.
   function setTable(t, opts){
     state.table = String(t);
+    state.token = (opts && opts.token) || null;
     sessionStorage.setItem('ek_table', state.table);
+    if(state.token) sessionStorage.setItem('ek_token', state.token);
+    else sessionStorage.removeItem('ek_token');
     renderTableBar();
     renderCart();
     if(!opts || !opts.silent) EkCommon.toast(`Table set to ${state.table}`, 1600);
@@ -351,15 +411,54 @@
         table: state.table,
         items: state.cart.map(l=>({name:l.name, price:l.price, qty:l.qty, special:l.special})),
         placedBy: state.waiterName ? 'waiter' : 'customer',
-        waiterName: state.waiterName || ''
+        waiterName: state.waiterName || '',
+        token: state.token
       });
       state.cart = [];
       renderCart();
       controlRepaint.forEach(fn=>fn());
       closeCart();
-      EkCommon.toast(`Order placed for Table ${state.table} — the kitchen has been notified 👨‍🍳`, 3200);
+      EkCommon.toast(`Order placed for ${EkCommon.tableLabel(state.table)} — the kitchen has been notified 👨‍🍳`, 3200);
     }catch(err){
       EkCommon.toast(`Couldn't place the order — ${err.message}`, 3600);
+      placeBtn.disabled = false;
+    }
+  }
+
+  // ---------- Edit an already-placed order (waiter only, via ?edit=<orderId>) ----------
+  // Seeds the cart from the order's current items so the same ADD/stepper/remove
+  // controls used for a brand-new order double as the edit UI — Save then PATCHes
+  // the existing order's items instead of creating a new one.
+  async function loadOrderForEdit(){
+    if(!state.table) return;
+    let orders;
+    try{ orders = await OrderStore.getByTable(state.table); }
+    catch(err){ EkCommon.toast(`Couldn't load the order to edit — ${err.message}`, 3600); return; }
+    const order = orders.find(o => o.id === state.editOrderId);
+    if(!order){ EkCommon.toast('Could not find that order to edit — it may have already been billed'); return; }
+    state.cart = order.items.map(it => ({
+      key: cartKey(it.name, it.price), name: it.name, price: it.price, qty: it.qty, special: !!it.special
+    }));
+    renderCart();
+    controlRepaint.forEach(fn=>fn());
+    renderTableBar();
+    openCart();
+    EkCommon.toast(`Editing order for ${EkCommon.tableLabel(state.table)} — add or remove dishes, then Save changes`, 3600);
+  }
+
+  async function saveOrderEdits(){
+    if(state.cart.length === 0 || !state.editOrderId) return;
+    const placeBtn = document.getElementById('placeOrderBtn');
+    placeBtn.disabled = true;
+    try{
+      await OrderStore.updateOrder(state.editOrderId, {
+        items: state.cart.map(l=>({name:l.name, price:l.price, qty:l.qty, special:l.special}))
+      });
+      EkCommon.toast(`Order updated for ${EkCommon.tableLabel(state.table)} — kitchen notified of any new items`, 3200);
+      closeCart();
+      setTimeout(()=>window.close(), 1200); // this tab was opened via window.open() from the Waiter view
+    }catch(err){
+      EkCommon.toast(`Couldn't save changes — ${err.message}`, 3600);
       placeBtn.disabled = false;
     }
   }
@@ -400,7 +499,7 @@
     try{ orders = (await OrderStore.getByTable(state.table)).sort((a,b)=>b.createdAt-a.createdAt); }
     catch(err){ return; } // transient network hiccup — next poll/onChange will retry
     if(orders.length === 0){ host.innerHTML=''; billBox.hidden = true; return; }
-    host.innerHTML = '<h4 class="my-orders-title">Your orders — Table ' + state.table + '</h4>';
+    host.innerHTML = '<h4 class="my-orders-title">Your orders — ' + EkCommon.tableLabel(state.table) + '</h4>';
     orders.forEach(o=>{
       const meta = statusMeta(o.status);
       const card = document.createElement('div'); card.className='order-card';

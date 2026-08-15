@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Staff – Angaar Dhaba</title>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=11">
-  <link rel="icon" href="favicon.svg?v=11" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css?v=21">
+  <link rel="icon" href="favicon.svg?v=18" type="image/svg+xml">
 </head>
 <body class="page-staff">
   <main class="staff-hub">
@@ -16,11 +16,6 @@
       <div class="staff-hub-sub">Staff consoles</div>
     </div>
     <div class="staff-hub-grid">
-      <a class="staff-tile" href="kitchen.html">
-        <span class="staff-tile-icon">🥘</span>
-        <span class="staff-tile-title">Kitchen</span>
-        <span class="staff-tile-desc">New orders, prep queue, mark ready</span>
-      </a>
       <a class="staff-tile" href="waiter.html">
         <span class="staff-tile-icon">🧑🏻‍🍳</span>
         <span class="staff-tile-title">Waiter</span>
@@ -31,9 +26,24 @@
         <span class="staff-tile-title">Counter</span>
         <span class="staff-tile-desc">Confirm payment, print invoices</span>
       </a>
+      <a class="staff-tile" href="table-qr.html">
+        <span class="staff-tile-icon">🔗</span>
+        <span class="staff-tile-title">Table QR Codes</span>
+        <span class="staff-tile-desc">Print codes that open the menu with the table preloaded</span>
+      </a>
+      <a class="staff-tile" href="dashboard.html">
+        <span class="staff-tile-icon">📊</span>
+        <span class="staff-tile-title">Sales Dashboard</span>
+        <span class="staff-tile-desc">Revenue trends, top dishes, payment split</span>
+      </a>
     </div>
     <a class="staff-hub-home" href="index.html">← Back to customer site</a>
-    <p class="staff-sync-note">These sync live within this browser only — open each in its own tab.</p>
+    <p class="staff-sync-note">Every screen stays in sync live across all devices — waiter, counter and customers can all be on separate phones/tablets.</p>
+    <a class="staff-hub-home" href="#" id="staffLockLink">Lock this device</a>
   </main>
+
+  <script src="common.js?v=21"></script>
+  <script src="orders.js?v=18"></script>
+  <script src="staff.js?v=19"></script>
 </body>
 </html>

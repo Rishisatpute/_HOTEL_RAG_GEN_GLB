@@ -7,8 +7,8 @@
   <meta name="description" content="Browse the full Angaar Dhaba menu and order straight to your table. Royal Punjabi flavours, live bar, dhaba-style feasts.">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=11">
-  <link rel="icon" href="favicon.svg?v=11" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css?v=21">
+  <link rel="icon" href="favicon.svg?v=18" type="image/svg+xml">
 </head>
 <body class="page-menu">
   <header class="topbar" id="topbar">
@@ -104,8 +104,8 @@
   <div id="tableModal" class="modal-overlay" aria-hidden="true">
     <div class="modal-card">
       <h3>Which table are you at?</h3>
-      <p class="modal-hint">Scanned a QR on your table? This is usually filled in for you. Otherwise, enter the number printed on your table.</p>
-      <input id="tableInput" class="modal-input" placeholder="e.g. 7" inputmode="numeric">
+      <p class="modal-hint">Scanned a QR on your table? This is usually filled in for you. Otherwise, choose your table below — occupied tables are greyed out.</p>
+      <select id="tableSelect" class="modal-input"><option value="">Loading tables…</option></select>
       <div class="modal-actions">
         <button class="btn outline" id="takeawayBtn">Takeaway</button>
         <button class="btn primary" id="tableConfirmBtn">Confirm</button>
@@ -146,9 +146,9 @@
   </div>
   <div id="cartScrim" class="drawer-scrim" aria-hidden="true"></div>
 
-  <script src="common.js?v=11"></script>
-  <script src="orders.js?v=11"></script>
-  <script src="dish-photos.js?v=11"></script>
-  <script src="menu.js?v=11"></script>
+  <script src="common.js?v=21"></script>
+  <script src="orders.js?v=18"></script>
+  <script src="dish-photos.js?v=18"></script>
+  <script src="menu.js?v=21"></script>
 </body>
 </html>

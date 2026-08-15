@@ -1,7 +1,9 @@
 <?php
 // POST /api/request_bill.php?table=7   { method: "cash" }
-// Every DELIVERED order at the table moves to bill_requested, grouped
-// under one billId.
+// Every active order at the table (new/preparing/ready/delivered — whatever
+// stage the kitchen has it at) moves to bill_requested, grouped under one
+// billId. The waiter decides when to send a table to the counter; nothing
+// here is gated on delivery status.
 require_once __DIR__ . '/../includes/response.php';
 require_once __DIR__ . '/../includes/orders_repo.php';
 require_once __DIR__ . '/../includes/ids.php';
@@ -17,7 +19,7 @@ $now = (int) (microtime(true) * 1000);
 $billId = gen_id();
 
 $stmt = db()->prepare("UPDATE orders SET status = 'bill_requested', payment_method_requested = ?, bill_requested_at = ?, bill_id = ?, updated_at = ?
-                        WHERE table_no = ? AND status = 'delivered'");
+                        WHERE table_no = ? AND status IN ('new', 'preparing', 'ready', 'delivered')");
 $stmt->execute([$method, $now, $billId, $now, $table]);
 
 if ($stmt->rowCount() === 0) json_out([]);

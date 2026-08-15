@@ -77,10 +77,13 @@ const OrderStore = (() => {
 
   // Every function below returns a Promise (it's a network call) — callers
   // use await/.then() instead of reading a return value synchronously.
-  function createOrder({ table, items, notes, placedBy, waiterName }){
+  // token: the table's QR secret, if the customer arrived via a scanned QR link
+  // (see menu.js). Omitted for waiter-placed orders and the manual table dropdown
+  // — the backend applies different rules for each, see orders.php.
+  function createOrder({ table, items, notes, placedBy, waiterName, token }){
     return api('/api/orders.php', {
       method: 'POST',
-      body: JSON.stringify({ table, items, notes, placedBy, waiterName })
+      body: JSON.stringify({ table, items, notes, placedBy, waiterName, token })
     });
   }
 
@@ -89,6 +92,10 @@ const OrderStore = (() => {
       method: 'PATCH',
       body: JSON.stringify(patch)
     });
+  }
+
+  function deleteOrder(id){
+    return api(`/api/order_delete.php?id=${encodeURIComponent(id)}`, { method: 'POST' });
   }
 
   function requestBill(table, method){
@@ -116,11 +123,32 @@ const OrderStore = (() => {
   function getAll(){ return api('/api/orders.php'); }
   function getByTable(table){ return api(`/api/orders.php?table=${encodeURIComponent(table)}`); }
   function getActiveByTable(table){ return api(`/api/orders.php?table=${encodeURIComponent(table)}&active=1`); }
+  // Server-side status filter, any table — for live queues (e.g. Waiter's "ready"/
+  // "delivered" columns) that only ever need a couple of statuses, not the whole
+  // order history, on every poll.
+  function getByStatuses(statuses){ return api(`/api/orders.php?status=${encodeURIComponent(statuses.join(','))}`); }
+
+  // Paid bills — read from invoice_log/invoice_items (the durable record), not orders,
+  // which only holds currently-active business. from/to are ms timestamps, both optional.
+  function getInvoices(from, to){
+    const params = new URLSearchParams();
+    if(from != null) params.set('from', from);
+    if(to != null) params.set('to', to);
+    return api(`/api/invoices.php?${params.toString()}`);
+  }
+
+  // Customer-facing "which tables are free right now" — no tokens in the response.
+  function getTableStatus(){ return api('/api/tables_status.php'); }
+  // Staff-only (table-qr.html) — creates any missing tokens, returns [{table, token}].
+  function ensureTableTokens(tableNames){
+    return api('/api/tables_ensure.php', { method: 'POST', body: JSON.stringify({ tables: tableNames }) });
+  }
 
   return {
-    ACTIVE_STATUSES,
-    createOrder, updateOrder, requestBill, generateInvoice, confirmPayment, printBill,
-    getAll, getByTable, getActiveByTable,
+    ACTIVE_STATUSES, apiBase: API_BASE,
+    createOrder, updateOrder, deleteOrder, requestBill, generateInvoice, confirmPayment, printBill,
+    getAll, getByTable, getActiveByTable, getByStatuses, getInvoices,
+    getTableStatus, ensureTableTokens,
     onChange, orderTotal, itemTotal, priceNumber, genId,
     getGstRate, billBreakdown
   };

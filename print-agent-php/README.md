@@ -99,6 +99,7 @@ Simplest options for a restaurant PC:
 - It doesn't store any order data — it's stateless, just a relay
 - It doesn't decide what goes on a ticket — that's already decided by
   the backend before the job reaches here
-- If it's offline, orders keep working normally on every screen (kitchen
-  display, waiter view, counter) — only the *physical printout* is delayed
-  until the agent reconnects
+- If it's offline, orders keep working normally on every screen (waiter
+  view, counter) — only the *physical printout* is delayed until the agent
+  reconnects. The kitchen has no screen at all — the printed ticket from
+  this agent is the only way it finds out about an order.
