@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/db.php';
 
-function ticket_line(string $ch = '-', int $len = 32): string {
+function ticket_line(string $ch = '-', int $len = 42): string {
     return str_repeat($ch, $len);
 }
 
@@ -103,19 +103,19 @@ function format_bill_ticket(array $restaurant, array $orders): string {
         "Table:   {$first['table_no']}",
         'Time:    ' . ticket_fmt_time((int) (microtime(true) * 1000)),
         ticket_line('-'),
-        ticket_pad('Item', 18) . ticket_pad('Qty', 4) . ticket_pad('Amt', 10),
+        ticket_pad('Item', 24) . ticket_pad('Qty', 5) . ticket_pad('Amt', 13),
         ticket_line('-'),
     ];
     foreach ($allItems as $it) {
         $amt = 'Rs.' . ($it['price'] * $it['qty']);
-        $rows[] = ticket_pad($it['name'], 18) . ticket_pad((string) $it['qty'], 4) . ticket_pad($amt, 10);
+        $rows[] = ticket_pad($it['name'], 24) . ticket_pad((string) $it['qty'], 5) . ticket_pad($amt, 13);
     }
     $rows[] = ticket_line('-');
-    $rows[] = ticket_pad('Subtotal', 22) . 'Rs.' . ($first['bill_subtotal'] ?? '');
-    $rows[] = ticket_pad('CGST ' . ($first['half_rate'] ?? '') . '%', 22) . 'Rs.' . ($first['cgst_amount'] ?? '');
-    $rows[] = ticket_pad('SGST ' . ($first['half_rate'] ?? '') . '%', 22) . 'Rs.' . ($first['sgst_amount'] ?? '');
+    $rows[] = ticket_pad('Subtotal', 29) . 'Rs.' . ($first['bill_subtotal'] ?? '');
+    $rows[] = ticket_pad('CGST ' . ($first['half_rate'] ?? '') . '%', 29) . 'Rs.' . ($first['cgst_amount'] ?? '');
+    $rows[] = ticket_pad('SGST ' . ($first['half_rate'] ?? '') . '%', 29) . 'Rs.' . ($first['sgst_amount'] ?? '');
     $rows[] = ticket_line('-');
-    $rows[] = ticket_pad('TOTAL', 22) . 'Rs.' . ($first['bill_total'] ?? '');
+    $rows[] = ticket_pad('TOTAL', 29) . 'Rs.' . ($first['bill_total'] ?? '');
     $rows[] = ticket_line('=');
     $rows[] = 'Thank you for dining with us';
     $rows[] = '';

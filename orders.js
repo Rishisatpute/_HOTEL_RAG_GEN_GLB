@@ -11,7 +11,10 @@
 const OrderStore = (() => {
   // TODO: replace with your deployed PHP backend URL (e.g. https://api.angaardhaba.com
   // or wherever server-php/ is hosted on MilesWeb). See server-php/README.md.
-  const API_BASE = 'http://localhost:8000';
+  // Derived from the page's own hostname (not hardcoded to localhost) so this
+  // still works when a phone/tablet on the same network loads the frontend via
+  // the PC's LAN IP instead of localhost.
+  const API_BASE = `http://${window.location.hostname}:8000`;
   const POLL_INTERVAL_MS = 4000;
 
   const listeners = new Set();

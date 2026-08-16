@@ -79,7 +79,10 @@ function print_ticket(string $station, string $content, array $printers, int $po
 
     stream_set_timeout($fp, 5);
     $bytes = "\x1B\x40"; // ESC @ — initialize
+    $bytes .= "\x1B\x37\x0F\xFF\x02"; // ESC 7 — max heating dots/time, min interval = highest print density
+    $bytes .= "\x1B\x45\x01"; // ESC E 1 — bold (emphasized) on, for extra contrast on thin thermal paper
     $bytes .= str_replace("\n", "\r\n", $content);
+    $bytes .= "\x1B\x45\x00"; // ESC E 0 — bold off
     $bytes .= "\n\n\n";
     $bytes .= "\x1D\x56\x00"; // GS V 0 — full cut
     fwrite($fp, $bytes);

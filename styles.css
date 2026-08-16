@@ -545,7 +545,7 @@ body{
 .pie-legend-pct{color:var(--gold-soft);font-weight:700;font-size:12px;min-width:34px;text-align:right}
 .pie-empty{color:rgba(245,236,217,0.4);font-size:13px}
 
-/* Named page sized for 58mm thermal receipt roll paper — the invoice is meant
+/* Named page sized for 72mm thermal receipt roll paper — the invoice is meant
    to come off the counter's thermal printer, not a regular A4/Letter sheet.
    Chrome/Edge honor a named @page assigned via the `page` property on just
    #invoicePrintArea, so this doesn't affect print sizing anywhere else on the
@@ -553,7 +553,7 @@ body{
    — they never set `page:`). Firefox/Safari fall back to their default page
    size but #invoicePrintArea's own width below still keeps the content itself
    receipt-narrow either way. */
-@page invoice-58mm{ size:58mm auto; margin:2mm; }
+@page invoice-72mm{ size:72mm auto; margin:2mm; }
 
 /* Scoped to body.page-counter (only counter.html) — otherwise "hide everything
    except #invoicePrintArea" would blank out every other page's print output too,
@@ -561,7 +561,7 @@ body{
 @media print{
   body.page-counter *{visibility:hidden}
   body.page-counter #invoicePrintArea, body.page-counter #invoicePrintArea *{visibility:visible}
-  #invoicePrintArea{position:absolute;top:0;left:0;width:54mm;color:#000;page:invoice-58mm;font-size:11px}
+  #invoicePrintArea{position:absolute;top:0;left:0;width:68mm;color:#000;page:invoice-72mm;font-size:11px}
   .invoice-brand{color:#000;font-size:16px}
   /* Address is useful context on screen but redundant on a receipt that's handed
      over in person — left off the printout entirely. */
