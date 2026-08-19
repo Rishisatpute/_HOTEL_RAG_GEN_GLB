@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Order Menu – Ek Punjab · Royal Chill Bar & Dhaba</title>
-  <meta name="description" content="Browse the full Ek Punjab menu and order straight to your table. Royal Punjabi flavours, live bar, dhaba-style feasts.">
+  <title>Order Menu – Angaar Dhaba · Family Restaurant & Bar</title>
+  <meta name="description" content="Browse the full Angaar Dhaba menu and order straight to your table. Royal Punjabi flavours, live bar, dhaba-style feasts.">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=7">
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css?v=21">
+  <link rel="icon" href="favicon.svg?v=18" type="image/svg+xml">
 </head>
 <body class="page-menu">
   <header class="topbar" id="topbar">
     <div class="container bar-inner">
-      <a href="index.html" class="brand" aria-label="Ek Punjab home">
+      <a href="index.html" class="brand" aria-label="Angaar Dhaba home">
         <div class="wordmark">
           <div class="rule"></div>
-          <div class="name">EK PUNJAB</div>
-          <div class="subtitle">ROYAL CHILL BAR & DHABA</div>
+          <div class="name">ANGAAR DHABA</div>
+          <div class="subtitle">FAMILY RESTAURANT & BAR</div>
         </div>
       </a>
       <nav class="nav-desktop" id="navDesktop">
@@ -53,7 +53,7 @@
         <div class="menu-main">
           <div class="menu-filter-bar sticky" id="menuFilterBar">
             <div class="menu-filter" id="menuFilter">
-              <input id="menuSearch" placeholder="Search in Ek Punjab…" aria-label="Search menu">
+              <input id="menuSearch" placeholder="Search in Angaar Dhaba…" aria-label="Search menu">
               <div class="chips">
                 <button class="chip" data-type="veg"><span class="dot veg"></span> Veg</button>
                 <button class="chip" data-type="egg"><span class="dot egg"></span> Egg</button>
@@ -72,8 +72,8 @@
       <div class="footer-col footer-brand-col">
         <div class="brand-small">
           <div class="rule"></div>
-          <div class="name">EK PUNJAB</div>
-          <div class="subtitle">Royal Chill Bar & Dhaba</div>
+          <div class="name">ANGAAR DHABA</div>
+          <div class="subtitle">Family Restaurant & Bar</div>
         </div>
         <div class="footer-secondary-order">
           <span>Ordering for delivery instead?</span>
@@ -93,8 +93,8 @@
       </div>
     </div>
     <div class="footer-legal">
-      <span>© <span id="footerYear"></span> Ek Punjab – Royal Chill Bar & Dhaba · <a href="staff.html">Staff</a></span>
-      <span class="footer-credit">Developed by <strong>Rag Genesis Global</strong></span>
+      <span>© <span id="footerYear"></span> Angaar Dhaba – Family Restaurant & Bar · <a href="staff.html">Staff</a></span>
+      <span class="footer-credit">Developed by <a href="https://www.ragenesisglobal.com/" target="_blank" rel="noopener"><strong>RAG Genesis Global Pvt. Ltd.</strong></a></span>
     </div>
   </footer>
 
@@ -104,8 +104,8 @@
   <div id="tableModal" class="modal-overlay" aria-hidden="true">
     <div class="modal-card">
       <h3>Which table are you at?</h3>
-      <p class="modal-hint">Scanned a QR on your table? This is usually filled in for you. Otherwise, enter the number printed on your table.</p>
-      <input id="tableInput" class="modal-input" placeholder="e.g. 7" inputmode="numeric">
+      <p class="modal-hint">Scanned a QR on your table? This is usually filled in for you. Otherwise, choose your table below — occupied tables are greyed out.</p>
+      <select id="tableSelect" class="modal-input"><option value="">Loading tables…</option></select>
       <div class="modal-actions">
         <button class="btn outline" id="takeawayBtn">Takeaway</button>
         <button class="btn primary" id="tableConfirmBtn">Confirm</button>
@@ -146,9 +146,9 @@
   </div>
   <div id="cartScrim" class="drawer-scrim" aria-hidden="true"></div>
 
-  <script src="common.js?v=7"></script>
-  <script src="orders.js?v=7"></script>
-  <script src="dish-photos.js?v=7"></script>
-  <script src="menu.js?v=7"></script>
+  <script src="common.js?v=21"></script>
+  <script src="orders.js?v=18"></script>
+  <script src="dish-photos.js?v=18"></script>
+  <script src="menu.js?v=21"></script>
 </body>
 </html>

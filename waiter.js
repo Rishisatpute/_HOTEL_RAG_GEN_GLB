@@ -1,20 +1,31 @@
-// Ek Punjab — Waiter view: deliver ready orders, get alerted when a table wants to pay cash.
+// Angaar Dhaba — Waiter view.
+// Left column: unclaimed active orders restaurant-wide (new/preparing/ready), with
+// a "Take this order" claim button — claiming moves an order OFF this list, so two
+// waiters can never work the same order. Right column: orders claimed by THIS
+// waiter (grouped by table, since payment is requested per table) — edit, mark
+// delivered, and a Request Payment control that's always live: clicking it sends
+// every order at that table to the counter regardless of kitchen status.
 (() => {
-  let knownReadyIds = new Set();
-  let knownCashKeys = new Set();
+  if(!EkCommon.requireStaffAccess()) return; // staff PIN required first
+
+  // Identity now comes from the PIN itself (staff-login.js), not a name picker —
+  // ek_waiter_name is per-tab (sessionStorage), so a fresh tab that's already
+  // PIN-unlocked overall can still land here without it and needs to re-auth.
+  const myName = sessionStorage.getItem('ek_waiter_name');
+  if(!myName){ location.replace('staff-login.html?next=waiter.html'); return; }
+
+  let knownActiveIds = new Set();
   let firstRender = true;
-  const ackCashTables = new Set(); // acknowledged-in-this-tab-session, clears on reload by design
+  const selectedMethodByTable = {}; // table -> 'cash'|'upi'|'card', persisted across re-renders until requested
 
   document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('waiterWelcome').textContent = `Welcome, ${myName}`;
     tickClock();
     setInterval(tickClock, 1000 * 30);
     render();
-    OrderStore.onChange((msg)=>{
-      if(msg.type === 'order_updated' && msg.payload && msg.payload.status === 'ready') flashReady();
-      if(msg.type === 'bill_requested' && msg.payload && msg.payload.method === 'cash') flashCash();
-      render();
-    });
-    setInterval(render, 15000);
+    // render() already diffs known ids/keys itself to decide when to flash/beep,
+    // so onChange just needs to trigger a re-check.
+    OrderStore.onChange(() => render());
 
     document.getElementById('newOrderBtn')?.addEventListener('click', openNewOrderModal);
     document.getElementById('newOrderCancelBtn')?.addEventListener('click', closeNewOrderModal);
@@ -25,12 +36,11 @@
 
   // ---------- Take a new order (waiter ordering on behalf of a guest) ----------
   function openNewOrderModal(){
-    document.getElementById('waiterNameInput').value = sessionStorage.getItem('ek_waiter_name') || '';
     document.getElementById('waiterTableInput').value = '';
     const modal = document.getElementById('newOrderModal');
     modal.classList.add('show');
     modal.setAttribute('aria-hidden','false');
-    document.getElementById('waiterNameInput').focus();
+    document.getElementById('waiterTableInput').focus();
   }
   function closeNewOrderModal(){
     const modal = document.getElementById('newOrderModal');
@@ -38,12 +48,9 @@
     modal.setAttribute('aria-hidden','true');
   }
   function confirmNewOrder(){
-    const name = document.getElementById('waiterNameInput').value.trim();
     const table = document.getElementById('waiterTableInput').value.trim();
-    if(!name){ EkCommon.toast('Enter your name'); return; }
     if(!table){ EkCommon.toast('Enter a table number'); return; }
-    sessionStorage.setItem('ek_waiter_name', name);
-    const url = `menu.html?table=${encodeURIComponent(table)}&waiter=${encodeURIComponent(name)}`;
+    const url = `menu.html?table=${encodeURIComponent(table)}&waiter=${encodeURIComponent(myName)}`;
     window.open(url, '_blank');
     closeNewOrderModal();
   }
@@ -52,76 +59,134 @@
     const el = document.getElementById('staffClock');
     if(el) el.textContent = EkCommon.fmtClock(Date.now());
   }
-  function flashReady(){
+  function flashActive(){
     EkCommon.alertChime();
-    const col = document.querySelector('.waiter-section:not(.cash-section)');
-    col.classList.add('flash'); setTimeout(()=>col.classList.remove('flash'), 1600);
-  }
-  function flashCash(){
-    EkCommon.beep(660,0.12); setTimeout(()=>EkCommon.beep(660,0.12),180); setTimeout(()=>EkCommon.beep(880,0.2),360);
-    const col = document.querySelector('.cash-section');
+    const col = document.getElementById('colActive').closest('.waiter-section');
     col.classList.add('flash'); setTimeout(()=>col.classList.remove('flash'), 1600);
   }
 
-  function render(){
-    const orders = OrderStore.getAll();
-    const ready = orders.filter(o=>o.status==='ready').sort((a,b)=>a.updatedAt-b.updatedAt);
-    const cashByTable = {};
-    orders.filter(o=>o.status==='bill_requested' && o.paymentMethodRequested==='cash' && !ackCashTables.has(o.table))
-      .forEach(o=>{ (cashByTable[o.table] = cashByTable[o.table] || []).push(o); });
+  function methodLabel(m){ return { cash:'Cash', upi:'UPI', card:'Card' }[m] || m; }
+  function statusLabel(s){ return { new:'New', preparing:'Preparing', ready:'Ready — deliver now', delivered:'Delivered' }[s] || s; }
 
+  function groupByTable(orders){
+    const g = {};
+    orders.forEach(o => { (g[o.table] = g[o.table] || []).push(o); });
+    return g;
+  }
+
+  async function render(){
+    let orders;
+    // new/preparing/ready feed the left overview; delivered orders (still mine
+    // until paid) round out the right "my orders" panel.
+    try{ orders = await OrderStore.getByStatuses(['new','preparing','ready','delivered']); }
+    catch(err){ return; } // transient network hiccup — the next poll will retry
+
+    // Once an order is claimed it belongs on that waiter's own screen only —
+    // it drops out of the shared "active" overview so two waiters can't both
+    // work it.
+    const active = orders.filter(o => !o.assignedWaiter && (o.status==='new' || o.status==='preparing' || o.status==='ready'))
+      .sort((a,b)=>a.createdAt-b.createdAt);
+    const mine = orders.filter(o => o.assignedWaiter===myName);
+
+    // Chime whenever a brand-new order needs claiming — there's no more digital
+    // "kitchen marked it ready" moment to alert on (no Kitchen Display anymore),
+    // so this is the one event left worth a sound.
     if(!firstRender){
-      const currentReadyIds = new Set(ready.map(o=>o.id));
-      let hasNew = false;
-      currentReadyIds.forEach(id=>{ if(!knownReadyIds.has(id)) hasNew = true; });
-      if(hasNew) flashReady();
-      const currentCashKeys = new Set(Object.keys(cashByTable));
-      let hasNewCash = false;
-      currentCashKeys.forEach(k=>{ if(!knownCashKeys.has(k)) hasNewCash = true; });
-      if(hasNewCash) flashCash();
+      const currentActiveIds = new Set(active.map(o=>o.id));
+      let hasNewActive = false;
+      currentActiveIds.forEach(id => { if(!knownActiveIds.has(id)) hasNewActive = true; });
+      if(hasNewActive) flashActive();
     }
-    knownReadyIds = new Set(ready.map(o=>o.id));
-    knownCashKeys = new Set(Object.keys(cashByTable));
+    knownActiveIds = new Set(active.map(o=>o.id));
     firstRender = false;
 
-    renderReady(ready);
-    renderCash(cashByTable);
+    renderActive(active);
+    renderMine(groupByTable(mine));
   }
 
-  function renderReady(ready){
-    const host = document.getElementById('colReady');
-    document.getElementById('countReady').textContent = ready.length;
+  function renderActive(active){
+    const host = document.getElementById('colActive');
+    document.getElementById('countActive').textContent = active.length;
     host.innerHTML = '';
-    if(ready.length === 0){ host.innerHTML = '<p class="kds-empty">Nothing waiting right now</p>'; return; }
-    ready.forEach(o=>{
+    if(active.length === 0){ host.innerHTML = '<p class="kds-empty">Nothing active right now</p>'; return; }
+    active.forEach(o => {
       const card = document.createElement('div'); card.className = 'kds-card';
       const head = document.createElement('div'); head.className = 'kds-card-head';
-      head.innerHTML = `<span class="kds-table">Table ${escapeHtml(o.table)}</span><span class="kds-age">${EkCommon.timeAgoMins(o.updatedAt)}m ready</span>`;
+      head.innerHTML = `<span class="kds-table">${escapeHtml(EkCommon.tableLabel(o.table))}</span><span class="kds-age">${statusLabel(o.status)} · ${EkCommon.timeAgoMins(o.createdAt)}m</span>`;
       const items = document.createElement('ul'); items.className = 'kds-items';
-      o.items.forEach(it=>{ const li=document.createElement('li'); li.textContent = `${it.qty}× ${it.name}`; items.appendChild(li); });
-      const btn = document.createElement('button'); btn.className='btn primary sm'; btn.textContent='Mark delivered';
-      btn.addEventListener('click', ()=>OrderStore.updateOrder(o.id, {status:'delivered'}));
-      card.appendChild(head); card.appendChild(items); card.appendChild(btn);
+      o.items.forEach(it => { const li=document.createElement('li'); li.textContent = `${it.qty}× ${it.name}`; items.appendChild(li); });
+      card.appendChild(head); card.appendChild(items);
+
+      const btn = document.createElement('button'); btn.className='btn primary sm full-width'; btn.textContent='Take this order';
+      btn.addEventListener('click', ()=>OrderStore.updateOrder(o.id, {assignedWaiter: myName}).catch(err=>EkCommon.toast(err.message)));
+      card.appendChild(btn);
       host.appendChild(card);
     });
   }
 
-  function renderCash(cashByTable){
-    const host = document.getElementById('colCash');
-    const tables = Object.keys(cashByTable);
-    document.getElementById('countCash').textContent = tables.length;
+  function renderMine(groups){
+    const host = document.getElementById('colMine');
+    const tables = Object.keys(groups);
+    const orderCount = tables.reduce((n,t)=>n+groups[t].length, 0);
+    document.getElementById('countMine').textContent = orderCount;
     host.innerHTML = '';
-    if(tables.length === 0){ host.innerHTML = '<p class="kds-empty">No cash pickups pending</p>'; return; }
-    tables.forEach(table=>{
-      const orders = cashByTable[table];
-      const total = orders.reduce((s,o)=>s+OrderStore.orderTotal(o),0);
-      const card = document.createElement('div'); card.className = 'kds-card cash-card';
+    if(tables.length === 0){ host.innerHTML = '<p class="kds-empty">You haven\'t taken any orders yet</p>'; return; }
+
+    tables.forEach(table => {
+      const tableOrders = groups[table];
+      if(!selectedMethodByTable[table]) selectedMethodByTable[table] = 'cash';
+
+      const card = document.createElement('div'); card.className = 'kds-card';
       const head = document.createElement('div'); head.className = 'kds-card-head';
-      head.innerHTML = `<span class="kds-table">Table ${escapeHtml(table)}</span><span class="kds-age">₹${total}</span>`;
-      const note = document.createElement('div'); note.className='kds-notes'; note.textContent = 'Customer wants to pay CASH — take the bill to the table.';
-      const btn = document.createElement('button'); btn.className='btn outline sm'; btn.textContent='Got it — heading there';
-      btn.addEventListener('click', ()=>{ ackCashTables.add(table); render(); });
-      card.appendChild(head); card.appendChild(note); card.appendChild(btn);
+      head.innerHTML = `<span class="kds-table">${escapeHtml(EkCommon.tableLabel(table))}</span>`;
+      card.appendChild(head);
+
+      tableOrders.forEach(o => {
+        const row = document.createElement('div'); row.className = 'mine-order-row';
+        const items = document.createElement('ul'); items.className = 'kds-items';
+        o.items.forEach(it => { const li=document.createElement('li'); li.textContent = `${it.qty}× ${it.name}`; items.appendChild(li); });
+        row.appendChild(items);
+
+        const rowActions = document.createElement('div'); rowActions.className = 'kds-actions wrap';
+
+        // No Kitchen Display anymore to mark an order "ready" first — the waiter
+        // just marks it delivered whenever they've actually walked it to the table.
+        if(o.status !== 'delivered'){
+          const deliverBtn = document.createElement('button'); deliverBtn.className='btn primary sm'; deliverBtn.textContent='Mark delivered';
+          deliverBtn.addEventListener('click', ()=>OrderStore.updateOrder(o.id, {status:'delivered'}).catch(err=>EkCommon.toast(err.message)));
+          rowActions.appendChild(deliverBtn);
+        }
+
+        const editBtn = document.createElement('button'); editBtn.className='btn outline sm'; editBtn.textContent='Edit';
+        editBtn.addEventListener('click', ()=>{
+          const url = `menu.html?table=${encodeURIComponent(table)}&waiter=${encodeURIComponent(myName)}&edit=${encodeURIComponent(o.id)}`;
+          window.open(url, '_blank');
+        });
+        rowActions.appendChild(editBtn);
+
+        row.appendChild(rowActions);
+        card.appendChild(row);
+      });
+
+      const methodRow = document.createElement('div'); methodRow.className = 'kds-actions wrap';
+      ['cash','upi','card'].forEach(m => {
+        const b = document.createElement('button');
+        b.className = 'btn ' + (m===selectedMethodByTable[table] ? 'primary' : 'outline') + ' sm';
+        b.textContent = methodLabel(m);
+        b.addEventListener('click', ()=>{ selectedMethodByTable[table] = m; render(); });
+        methodRow.appendChild(b);
+      });
+      card.appendChild(methodRow);
+
+      const requestBtn = document.createElement('button');
+      requestBtn.className = 'btn full-width primary';
+      requestBtn.textContent = 'Request Payment';
+      requestBtn.addEventListener('click', ()=>{
+        OrderStore.requestBill(table, selectedMethodByTable[table]).catch(err=>EkCommon.toast(err.message));
+        delete selectedMethodByTable[table];
+      });
+      card.appendChild(requestBtn);
+
       host.appendChild(card);
     });
   }

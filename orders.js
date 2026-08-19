@@ -1,37 +1,70 @@
-// Shared order store for Ek Punjab staff/customer flow.
+// Shared order store for Angaar Dhaba staff/customer flow.
 //
-// For now (no backend yet) this syncs across browser TABS on the same device only,
-// via localStorage (persistence) + BroadcastChannel (instant cross-tab push).
-// Open Menu / Kitchen / Waiter / Counter as separate tabs on one browser to see it live.
-// Swapping this for a real backend later only means rewriting the functions below —
-// every page talks to OrderStore, never to localStorage directly.
+// Talks to the PHP + MySQL backend (server-php/) over HTTP. Devices stay in
+// sync via polling — every device — a customer's phone, the kitchen
+// tablet, a waiter's phone, the counter PC — refetches automatically every
+// few seconds. (Shared/cPanel hosting can't run a persistent WebSocket
+// server, so this replaces the earlier Socket.io push; in practice a few
+// seconds of lag is barely noticeable for this use case.)
+// Every page still only talks to OrderStore, never to the network directly,
+// so this file is the only thing that changed when the backend moved to PHP.
 const OrderStore = (() => {
-  const KEY = 'ekpunjab_orders_v1';
-  const CHANNEL = 'ekpunjab_orders_v1';
-  let bc = null;
-  try { bc = new BroadcastChannel(CHANNEL); } catch(e) { bc = null; }
+  // TODO: replace with your deployed PHP backend URL (e.g. https://api.angaardhaba.com
+  // or wherever server-php/ is hosted on MilesWeb). See server-php/README.md.
+  // Derived from the page's own hostname (not hardcoded to localhost) so this
+  // still works when a phone/tablet on the same network loads the frontend via
+  // the PC's LAN IP instead of localhost.
+  const API_BASE = `http://${window.location.hostname}:8000`;
+  const POLL_INTERVAL_MS = 4000;
+
   const listeners = new Set();
+  let pollTimer = null;
 
-  function readAll(){
-    try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch(e){ return []; }
+  // Every page's render() already does its own diffing (comparing known
+  // order ids/statuses between calls) to decide when to flash/beep for
+  // something new — that was originally a backup in case a socket event
+  // was missed, but it means this poll tick doesn't need to carry any
+  // meaningful event type or payload; "something might have changed, go
+  // re-check" is enough.
+  function startPolling() {
+    if (pollTimer) return;
+    pollTimer = setInterval(() => {
+      listeners.forEach((fn) => { try { fn({ type: 'poll', payload: null, at: Date.now() }); } catch (e) {} });
+    }, POLL_INTERVAL_MS);
   }
-  function writeAll(orders){ localStorage.setItem(KEY, JSON.stringify(orders)); }
 
-  function emit(type, payload){
-    const msg = { type, payload, at: Date.now() };
-    listeners.forEach(fn=>{ try{ fn(msg); }catch(e){} });
-    if(bc){ try{ bc.postMessage(msg); }catch(e){} }
+  function onChange(fn) {
+    startPolling();
+    listeners.add(fn);
+    return () => listeners.delete(fn);
   }
-  if(bc){
-    bc.onmessage = (ev)=>{ listeners.forEach(fn=>{ try{ fn(ev.data); }catch(e){} }); };
-  }
-  // Fallback for browsers without BroadcastChannel: the native 'storage' event
-  // fires in OTHER tabs whenever localStorage changes.
-  window.addEventListener('storage', (e)=>{
-    if(e.key===KEY){ listeners.forEach(fn=>{ try{ fn({type:'sync', payload:null, at:Date.now()}); }catch(err){} }); }
-  });
 
-  function onChange(fn){ listeners.add(fn); return ()=>listeners.delete(fn); }
+  async function api(path, options) {
+    const res = await fetch(API_BASE + path, {
+      headers: { 'Content-Type': 'application/json' },
+      ...options
+    });
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body.error || `Request failed (${res.status})`);
+    }
+    return res.json();
+  }
+
+  // Fixed restaurant-wide GST rate — billing never requires manually entering this.
+  // Pure math, so this (and the functions below it) stay client-side unchanged —
+  // Counter uses these for a live preview before generateInvoice() locks in the
+  // server's authoritative numbers.
+  const GST_RATE = 5;
+  function getGstRate(){ return GST_RATE; }
+
+  function billBreakdown(subtotal, rate){
+    const r = rate == null ? getGstRate() : rate;
+    const gstAmount = Math.round(subtotal * r / 100 * 100) / 100;
+    const halfRate = Math.round(r / 2 * 100) / 100;
+    const half = Math.round(gstAmount / 2 * 100) / 100;
+    return { subtotal, rate: r, halfRate, gst: gstAmount, cgst: half, sgst: half, total: Math.round((subtotal + gstAmount) * 100) / 100 };
+  }
 
   function genId(){ return 'EP' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2,5).toUpperCase(); }
 
@@ -45,72 +78,81 @@ const OrderStore = (() => {
 
   const ACTIVE_STATUSES = ['new','preparing','ready','delivered'];
 
-  function createOrder({ table, items, notes, placedBy, waiterName }){
-    const orders = readAll();
-    const order = {
-      id: genId(),
-      table: table || 'Takeaway',
-      items: items.map(it=>({ name: it.name, price: it.price, qty: it.qty || 1, special: !!it.special })),
-      status: 'new', // new -> preparing -> ready -> delivered -> bill_requested -> paid
-      paymentMethodRequested: null,
-      paymentMethod: null,
-      billRequestedAt: null,
-      paidAt: null,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-      notes: notes || '',
-      placedBy: placedBy === 'waiter' ? 'waiter' : 'customer',
-      waiterName: waiterName || ''
-    };
-    orders.push(order);
-    writeAll(orders);
-    emit('order_created', order);
-    return order;
+  // Every function below returns a Promise (it's a network call) — callers
+  // use await/.then() instead of reading a return value synchronously.
+  // token: the table's QR secret, if the customer arrived via a scanned QR link
+  // (see menu.js). Omitted for waiter-placed orders and the manual table dropdown
+  // — the backend applies different rules for each, see orders.php.
+  function createOrder({ table, items, notes, placedBy, waiterName, token }){
+    return api('/api/orders.php', {
+      method: 'POST',
+      body: JSON.stringify({ table, items, notes, placedBy, waiterName, token })
+    });
   }
 
   function updateOrder(id, patch){
-    const orders = readAll();
-    const idx = orders.findIndex(o=>o.id===id);
-    if(idx===-1) return null;
-    orders[idx] = Object.assign({}, orders[idx], patch, { updatedAt: Date.now() });
-    writeAll(orders);
-    emit('order_updated', orders[idx]);
-    return orders[idx];
+    return api(`/api/order_update.php?id=${encodeURIComponent(id)}`, {
+      method: 'PATCH',
+      body: JSON.stringify(patch)
+    });
   }
 
-  // Customer/waiter asks to pay: every active order at that table moves to bill_requested.
+  function deleteOrder(id){
+    return api(`/api/order_delete.php?id=${encodeURIComponent(id)}`, { method: 'POST' });
+  }
+
   function requestBill(table, method){
-    const orders = readAll();
-    const active = orders.filter(o=>o.table===table && ACTIVE_STATUSES.includes(o.status));
-    if(active.length===0) return [];
-    const now = Date.now(); // shared so this whole batch can be grouped into one bill later
-    const billId = genId();
-    active.forEach(o=>{ o.status='bill_requested'; o.paymentMethodRequested=method; o.billRequestedAt=now; o.billId=billId; o.updatedAt=now; });
-    writeAll(orders);
-    emit('bill_requested', { table, method, orders: active });
-    return active;
+    return api(`/api/request_bill.php?table=${encodeURIComponent(table)}`, {
+      method: 'POST',
+      body: JSON.stringify({ method })
+    });
   }
 
-  // Counter confirms money actually received.
-  function markPaid(table, method){
-    const orders = readAll();
-    const pending = orders.filter(o=>o.table===table && o.status==='bill_requested');
-    if(pending.length===0) return [];
-    const now = Date.now();
-    pending.forEach(o=>{ o.status='paid'; o.paymentMethod=method; o.paidAt=now; o.updatedAt=now; });
-    writeAll(orders);
-    emit('order_paid', { table, method, orders: pending });
-    return pending;
+  function generateInvoice(table){
+    return api(`/api/generate_invoice.php?table=${encodeURIComponent(table)}`, { method: 'POST' });
   }
 
-  function getAll(){ return readAll(); }
-  function getByTable(table){ return readAll().filter(o=>o.table===table); }
-  function getActiveByTable(table){ return readAll().filter(o=>o.table===table && o.status!=='paid'); }
+  function confirmPayment(table){
+    return api(`/api/confirm_payment.php?table=${encodeURIComponent(table)}`, { method: 'POST' });
+  }
+
+  // Sends the full itemized bill to the counter's physical billing printer
+  // (via the local Print Agent) — separate from the on-screen invoice modal,
+  // which stays as a visual/browser-print fallback.
+  function printBill(table){
+    return api(`/api/print_bill.php?table=${encodeURIComponent(table)}`, { method: 'POST' });
+  }
+
+  function getAll(){ return api('/api/orders.php'); }
+  function getByTable(table){ return api(`/api/orders.php?table=${encodeURIComponent(table)}`); }
+  function getActiveByTable(table){ return api(`/api/orders.php?table=${encodeURIComponent(table)}&active=1`); }
+  // Server-side status filter, any table — for live queues (e.g. Waiter's "ready"/
+  // "delivered" columns) that only ever need a couple of statuses, not the whole
+  // order history, on every poll.
+  function getByStatuses(statuses){ return api(`/api/orders.php?status=${encodeURIComponent(statuses.join(','))}`); }
+
+  // Paid bills — read from invoice_log/invoice_items (the durable record), not orders,
+  // which only holds currently-active business. from/to are ms timestamps, both optional.
+  function getInvoices(from, to){
+    const params = new URLSearchParams();
+    if(from != null) params.set('from', from);
+    if(to != null) params.set('to', to);
+    return api(`/api/invoices.php?${params.toString()}`);
+  }
+
+  // Customer-facing "which tables are free right now" — no tokens in the response.
+  function getTableStatus(){ return api('/api/tables_status.php'); }
+  // Staff-only (table-qr.html) — creates any missing tokens, returns [{table, token}].
+  function ensureTableTokens(tableNames){
+    return api('/api/tables_ensure.php', { method: 'POST', body: JSON.stringify({ tables: tableNames }) });
+  }
 
   return {
-    ACTIVE_STATUSES,
-    createOrder, updateOrder, requestBill, markPaid,
-    getAll, getByTable, getActiveByTable,
-    onChange, orderTotal, itemTotal, priceNumber, genId
+    ACTIVE_STATUSES, apiBase: API_BASE,
+    createOrder, updateOrder, deleteOrder, requestBill, generateInvoice, confirmPayment, printBill,
+    getAll, getByTable, getActiveByTable, getByStatuses, getInvoices,
+    getTableStatus, ensureTableTokens,
+    onChange, orderTotal, itemTotal, priceNumber, genId,
+    getGstRate, billBreakdown
   };
 })();

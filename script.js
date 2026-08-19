@@ -1,8 +1,8 @@
-// Ek Punjab — home page: hero reveal, popular picks, gallery, lightbox.
+// Angaar Dhaba — home page: hero reveal, popular picks, gallery, lightbox.
 (() => {
   document.addEventListener('DOMContentLoaded', () => {
     EkCommon.initChrome();
-    fetch('menu-data.json?v=7').then(r => r.json()).then(data => {
+    fetch('menu-data.json?v=18').then(r => r.json()).then(data => {
       initSite(data);
     }).catch(err => console.error('menu load', err));
   });
@@ -10,11 +10,11 @@
   function initSite(data){
     document.title = `${data.restaurant.name} – ${data.restaurant.tagline}`;
     const wa = document.getElementById('waHeaderLink');
-    if(wa) wa.href = EkCommon.whatsappLink(`Hi Ek Punjab! I'd like to ask about...`);
+    if(wa) wa.href = EkCommon.whatsappLink(`Hi Angaar Dhaba! I'd like to ask about...`);
     const waVisit = document.getElementById('waVisitLink');
-    if(waVisit) waVisit.href = EkCommon.whatsappLink(`Hi Ek Punjab! I'd like to make a reservation.`);
+    if(waVisit) waVisit.href = EkCommon.whatsappLink(`Hi Angaar Dhaba! I'd like to make a reservation.`);
     const waFooter = document.getElementById('waFooterLink');
-    if(waFooter) waFooter.href = EkCommon.whatsappLink(`Hi Ek Punjab! I'd like to ask about...`);
+    if(waFooter) waFooter.href = EkCommon.whatsappLink(`Hi Angaar Dhaba! I'd like to ask about...`);
 
     const zomato = data.restaurant.order?.zomato || '#';
     const swig = data.restaurant.order?.swiggy || '#';
