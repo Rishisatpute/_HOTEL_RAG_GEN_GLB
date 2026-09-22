@@ -80,7 +80,7 @@ const EkCommon = (() => {
   }
 
   function fmtClock(ts){ return new Date(ts).toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'}); }
-  function fmtDateTime(ts){ return new Date(ts).toLocaleString('en-IN', {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'}); }
+  function fmtDateTime(ts){ return new Date(ts).toLocaleString('en-IN', {day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'}); }
   function timeAgoMins(ts){ return Math.max(0, Math.floor((Date.now()-ts)/60000)); }
 
   function initChrome(){

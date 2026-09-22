@@ -293,7 +293,7 @@
       am: amount.toFixed(2), cu: 'INR', tn: invoiceNo
     });
     const upiLink = 'upi://pay?' + params.toString();
-    try{ new QRCode(host, { text: upiLink, width: 102, height: 102 }); }
+    try{ new QRCode(host, { text: upiLink, width: 172, height: 172 }); }
     catch(e){ host.style.display = 'none'; }
   }
   function closeInvoice(){

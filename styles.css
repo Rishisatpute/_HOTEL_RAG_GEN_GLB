@@ -472,12 +472,12 @@ body{
 /* ============ Invoice ============
    Styled as a printed paper receipt (light background, monospace) regardless
    of the site's dark theme — this is what the customer takes away on paper. */
-.invoice-card{max-width:420px;background:var(--cream);color:#3a2a1a;font-family:'Courier New',ui-monospace,Consolas,monospace;border:1px solid rgba(0,0,0,0.08)}
+.invoice-card{max-width:420px;background:var(--cream);color:#3a2a1a;font-family:'Courier New',ui-monospace,Consolas,monospace;border:1px solid rgba(0,0,0,0.08);font-weight:700}
 .invoice-head{text-align:center;margin-bottom:14px;padding-bottom:14px;border-bottom:1px dashed rgba(0,0,0,0.25)}
 .invoice-brand{font-family:Oswald,Segoe UI;font-weight:700;font-size:22px;letter-spacing:.05em;color:#241207}
 .invoice-addr{font-size:11.5px;color:rgba(58,42,26,0.75);margin-top:6px}
 .invoice-reg{font-size:11px;color:rgba(58,42,26,0.75);margin-top:4px}
-.invoice-meta{display:flex;justify-content:space-between;font-size:13px;margin:10px 0;color:rgba(58,42,26,0.85)}
+.invoice-meta{display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 12px;font-size:13px;margin:10px 0;color:rgba(58,42,26,0.85)}
 .invoice-table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
 .invoice-table th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#a97a1f;padding-bottom:6px;border-bottom:1px solid rgba(0,0,0,0.2)}
 .invoice-table td{padding:6px 0;border-bottom:1px dotted rgba(0,0,0,0.15)}
@@ -485,7 +485,8 @@ body{
 .invoice-table th:nth-child(3), .invoice-table td:nth-child(3), .invoice-table th:nth-child(4), .invoice-table td:nth-child(4){text-align:right}
 .invoice-pay-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin:14px 0}
 .invoice-qr-block{display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0}
-.invoice-qr-img{width:110px;height:110px;border-radius:6px;background:#fff;padding:4px;box-shadow:0 1px 4px rgba(0,0,0,0.15)}
+.invoice-qr-img{width:180px;height:180px;border-radius:6px;background:#fff;padding:4px;box-shadow:0 1px 4px rgba(0,0,0,0.15);overflow:hidden}
+.invoice-qr-img canvas, .invoice-qr-img img{width:100%;height:100%;display:block}
 .invoice-totals-block{display:flex;flex-direction:column;gap:4px;min-width:150px;flex:1}
 .invoice-totals-block .invoice-meta{margin:0;font-size:12.5px}
 .invoice-total-row{display:flex;justify-content:space-between;font-size:16px;margin-top:8px;padding-top:8px;border-top:1px dashed rgba(0,0,0,0.3)}
@@ -567,13 +568,17 @@ body{
      over in person — left off the printout entirely. */
   .invoice-addr{display:none}
   .invoice-table{font-size:11px}
-  /* Invoice # got a longer prefix (INV-ANG-DHB-####) — shrunk just this row,
-     and stopped it wrapping, so it stays on one line next to the date. */
-  .invoice-id-row{font-size:9.5px;flex-wrap:nowrap;gap:6px}
-  .invoice-id-row div{white-space:nowrap}
+  /* Invoice # (INV-ANG-DHB-####) plus the now-dated timestamp don't fit
+     next to each other at 68mm — let the date wrap to its own line instead
+     of forcing one line and clipping it. */
+  .invoice-id-row{font-size:9.5px;gap:2px}
+  /* Totals first, QR code below it — matches the order staff read a printed
+     receipt in, and keeps the QR from ever sitting next to (and overlapping)
+     the totals text at narrow 68mm width. */
   .invoice-pay-row{flex-direction:column;align-items:center}
-  .invoice-totals-block{width:100%}
-  .invoice-qr-img{width:76px;height:76px}
+  .invoice-totals-block{width:100%;order:1}
+  .invoice-qr-block{order:2;margin-top:10px}
+  .invoice-qr-img{width:200px;height:200px}
   .invoice-thanks{font-size:10px;white-space:nowrap}
   .no-print{display:none!important}
 }
