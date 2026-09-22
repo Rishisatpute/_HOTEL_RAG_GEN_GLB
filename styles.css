@@ -563,7 +563,12 @@ body{
   body.page-counter *{visibility:hidden}
   body.page-counter #invoicePrintArea, body.page-counter #invoicePrintArea *{visibility:visible}
   #invoicePrintArea{position:absolute;top:0;left:0;width:68mm;color:#000;page:invoice-72mm;font-size:11px}
-  .invoice-brand{color:#000;font-size:16px}
+  /* Screen styling uses gold/translucent colors on several pieces (table
+     header, meta rows, thank-you line, footnote) that look faint-to-invisible
+     on a monochrome printer — force every bit of invoice text to solid black
+     for print, regardless of what color it uses on screen. */
+  #invoicePrintArea, #invoicePrintArea *{color:#000!important}
+  .invoice-brand{font-size:16px}
   /* Address is useful context on screen but redundant on a receipt that's handed
      over in person — left off the printout entirely. */
   .invoice-addr{display:none}
