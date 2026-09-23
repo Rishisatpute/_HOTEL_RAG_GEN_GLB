@@ -5,6 +5,12 @@
   let restaurant = null;
   let knownBillKeys = new Set();
   let firstRender = true;
+  const DISCOUNT_OPTIONS = [0, 5, 10, 15, 20, 25, 30];
+  // Staff's in-progress discount pick per table, before Print Bill/Confirm
+  // Payment locks it in — kept here (not in the DOM) because renderPending()
+  // rebuilds the cards from scratch on every poll tick, which would otherwise
+  // reset a dropdown mid-selection.
+  const pendingDiscountByTable = new Map();
   let selectedDate = null; // 'YYYY-MM-DD', or null for the default "last hour" view
   // Invoices (GSTIN line, UPI QR) need restaurant data from menu-data.json. On a slow
   // connection that fetch can still be in flight when staff click "Print Bill" — openInvoice()
@@ -33,20 +39,23 @@
     });
   });
 
-  // A bill with no invoice generated yet always uses today's live GST rate. Once
-  // generateInvoice() (or confirmPayment(), which calls it) has run, the rate, GST
-  // breakdown and invoice number are locked in and read straight off the order.
-  function billFor(orders){
+  // A bill with no invoice generated yet always uses today's live GST rate and
+  // whatever discount staff currently have picked on screen. Once
+  // generateInvoice() (or confirmPayment(), which calls it) has run, the rate,
+  // discount, GST breakdown and invoice number are locked in and read straight
+  // off the order — discountPct is ignored at that point.
+  function billFor(orders, discountPct){
     const first = orders[0];
     if(first && first.billTotal != null){
       return {
-        subtotal: first.billSubtotal, rate: first.gstRate, halfRate: first.halfRate,
+        subtotal: first.billSubtotal, discountPct: first.discountPct || 0, discountAmount: first.discountAmount || 0,
+        rate: first.gstRate, halfRate: first.halfRate,
         gst: first.gstAmount, cgst: first.cgstAmount, sgst: first.sgstAmount,
         total: first.billTotal, invoiceNo: first.invoiceNo || first.id
       };
     }
     const subtotal = orders.reduce((s,o)=>s+OrderStore.orderTotal(o),0);
-    return Object.assign({ invoiceNo: null }, OrderStore.billBreakdown(subtotal));
+    return Object.assign({ invoiceNo: null }, OrderStore.billBreakdown(subtotal, null, discountPct || 0));
   }
 
   function tickClock(){
@@ -113,7 +122,11 @@
     if(tables.length===0){ host.innerHTML = '<p class="kds-empty">No bills waiting</p>'; return; }
     tables.forEach(table=>{
       const ordersForTable = groups[table];
-      const bill = billFor(ordersForTable);
+      const alreadyGenerated = ordersForTable[0].billTotal != null;
+      // Once the invoice exists, the discount is whatever got locked in server-side —
+      // the staff pick before that point is irrelevant (and stale) from here on.
+      const discountPct = alreadyGenerated ? (ordersForTable[0].discountPct || 0) : (pendingDiscountByTable.get(table) || 0);
+      const bill = billFor(ordersForTable, discountPct);
       const method = ordersForTable[0].paymentMethodRequested;
       const waiterOrder = ordersForTable.find(o=>o.placedBy==='waiter');
       const waiterTag = waiterOrder ? `<span class="waiter-tag">🧑‍🍳 ${escapeHtml(waiterOrder.waiterName || 'Waiter')}</span>` : '';
@@ -122,6 +135,25 @@
       head.innerHTML = `<span class="kds-table">${escapeHtml(EkCommon.tableLabel(table))}</span>${waiterTag}<span class="method-chip method-${method}">${methodLabel(method)}</span>`;
       const itemsList = document.createElement('ul'); itemsList.className='kds-items';
       ordersForTable.forEach(o=>o.items.forEach(it=>{ const li=document.createElement('li'); li.textContent = `${it.qty}× ${it.name}`; itemsList.appendChild(li); }));
+
+      const discountRow = document.createElement('div'); discountRow.className = 'bill-discount-row';
+      if(alreadyGenerated){
+        discountRow.innerHTML = `<span>Discount</span><strong>${discountPct}%</strong>`;
+      } else {
+        const select = document.createElement('select'); select.className = 'bill-discount-select';
+        DISCOUNT_OPTIONS.forEach(pct=>{
+          const opt = document.createElement('option'); opt.value = pct; opt.textContent = pct===0 ? 'No discount' : `${pct}% off`;
+          if(pct===discountPct) opt.selected = true;
+          select.appendChild(opt);
+        });
+        select.addEventListener('change', ()=>{
+          pendingDiscountByTable.set(table, Number(select.value));
+          totalRow.innerHTML = billBreakdownHtml(billFor(ordersForTable, Number(select.value)));
+        });
+        const label = document.createElement('span'); label.textContent = 'Discount ';
+        discountRow.appendChild(label); discountRow.appendChild(select);
+      }
+
       const totalRow = document.createElement('div'); totalRow.className='bill-breakdown'; totalRow.innerHTML = billBreakdownHtml(bill);
       const invoiceLine = document.createElement('div'); invoiceLine.className = 'kds-notes';
       invoiceLine.innerHTML = bill.invoiceNo ? `Invoice: <strong>${escapeHtml(bill.invoiceNo)}</strong>` : 'Invoice not generated yet';
@@ -129,14 +161,17 @@
 
       // Invoice generation itself has no standalone button anymore — both actions
       // below need a locked-in invoice number to work, so each generates one
-      // first if it isn't there yet (a no-op once it already exists).
+      // first if it isn't there yet (a no-op once it already exists), passing
+      // along whatever discount staff picked above.
       const printBtn = document.createElement('button'); printBtn.className = 'btn outline sm';
       printBtn.textContent = 'Print Bill';
       printBtn.addEventListener('click', async ()=>{
         try{
-          const generated = await OrderStore.generateInvoice(table); // no-op if already generated
+          const chosenDiscount = pendingDiscountByTable.get(table) || 0;
+          const generated = await OrderStore.generateInvoice(table, chosenDiscount); // no-op if already generated
           if(generated.length) openInvoice(generated, method);
-          await OrderStore.printBill(table); // sends the bill to the physical billing (thermal) printer
+          await OrderStore.printBill(table, chosenDiscount); // sends the bill to the physical billing (thermal) printer
+          pendingDiscountByTable.delete(table);
           EkCommon.toast('Bill sent to billing printer');
         }catch(err){ EkCommon.toast(err.message); }
       });
@@ -145,13 +180,15 @@
       confirmBtn.textContent = 'Confirm Payment';
       confirmBtn.addEventListener('click', async ()=>{
         try{
-          const paid = await OrderStore.confirmPayment(table);
+          const chosenDiscount = pendingDiscountByTable.get(table) || 0;
+          const paid = await OrderStore.confirmPayment(table, chosenDiscount);
           if(paid.length) openInvoice(paid, paid[0].paymentMethod);
+          pendingDiscountByTable.delete(table);
         }catch(err){ EkCommon.toast(err.message); }
       });
 
       actions.appendChild(printBtn); actions.appendChild(confirmBtn);
-      card.appendChild(head); card.appendChild(itemsList); card.appendChild(totalRow);
+      card.appendChild(head); card.appendChild(itemsList); card.appendChild(discountRow); card.appendChild(totalRow);
       card.appendChild(invoiceLine); card.appendChild(actions);
       host.appendChild(card);
     });
@@ -176,10 +213,14 @@
   }
 
   function billBreakdownHtml(bill){
+    const discountLine = bill.discountPct
+      ? `<div class="bill-line"><span>Discount (${bill.discountPct}%)</span><span>-${EkCommon.money(bill.discountAmount)}</span></div>`
+      : '';
     return `
       <div class="bill-line"><span>Subtotal</span><span>${EkCommon.money(bill.subtotal)}</span></div>
       <div class="bill-line"><span>CGST (${bill.halfRate}%)</span><span>${EkCommon.money(bill.cgst)}</span></div>
       <div class="bill-line"><span>SGST (${bill.halfRate}%)</span><span>${EkCommon.money(bill.sgst)}</span></div>
+      ${discountLine}
       <div class="bill-total-line"><span>Total</span><span>${EkCommon.money(bill.total)}</span></div>
     `;
   }
@@ -198,7 +239,8 @@
       orderRef: orders[0].id,
       invoiceNo: bill.invoiceNo || orders[0].id,
       items: allItems,
-      subtotal: bill.subtotal, halfRate: bill.halfRate, cgst: bill.cgst, sgst: bill.sgst, total: bill.total,
+      subtotal: bill.subtotal, discountPct: bill.discountPct, discountAmount: bill.discountAmount,
+      halfRate: bill.halfRate, cgst: bill.cgst, sgst: bill.sgst, total: bill.total,
       paymentMethod: method,
       // Paid bills show the actual moment payment was confirmed (so reopening an old
       // invoice doesn't relabel it with today's date). A bill only printed pre-payment
@@ -210,14 +252,21 @@
 
   // History path: reopening a past invoice from Recent Invoices — sourced from
   // invoice_log/invoice_items, which is now the only place paid bills live at all.
-  // invoice_log only stores the final amount, not the tax breakdown, so the
-  // subtotal/CGST/SGST split is reconstructed here from the stored items, with the
-  // GST derived as (amount - itemsSubtotal) rather than recomputed from today's GST
-  // rate — that way the numbers stay internally consistent with what was actually
-  // charged even if the rate constant changes later.
+  // invoice_log stores the final amount plus the discount that was applied, but
+  // not the GST split itself, so that part is reconstructed here from the
+  // stored items/discount, with GST derived as (amount - discountedSubtotal)
+  // rather than recomputed from today's GST rate — that way the numbers stay
+  // internally consistent with what was actually charged even if the rate
+  // constant changes later.
   async function openInvoiceFromRecord(inv){
     const subtotal = inv.items.reduce((s,it)=>s + it.price * it.qty, 0);
-    const gst = Math.round((inv.amount - subtotal) * 100) / 100;
+    const discountPct = inv.discountPct || 0;
+    const discountAmount = inv.discountAmount || 0;
+    // GST was computed on the full subtotal, then discount taken off the
+    // GST-inclusive total — so the pre-discount total is amount + whatever
+    // was discounted off it, and GST is what's left after removing subtotal.
+    const preDiscountTotal = Math.round((inv.amount + discountAmount) * 100) / 100;
+    const gst = Math.round((preDiscountTotal - subtotal) * 100) / 100;
     const half = Math.round(gst / 2 * 100) / 100;
     const halfRate = subtotal > 0 ? Math.round((half / subtotal * 100) * 100) / 100 : 0;
     await renderInvoiceHtml({
@@ -225,7 +274,7 @@
       orderRef: null,
       invoiceNo: inv.invoiceNo,
       items: inv.items,
-      subtotal, halfRate, cgst: half, sgst: half, total: inv.amount,
+      subtotal, discountPct, discountAmount, halfRate, cgst: half, sgst: half, total: inv.amount,
       paymentMethod: inv.paymentMethod,
       paidAt: inv.paidAt,
       isPaid: true
@@ -269,6 +318,7 @@
           <div class="invoice-meta"><div>Subtotal</div><div>${EkCommon.money(bill.subtotal)}</div></div>
           <div class="invoice-meta"><div>CGST @ ${bill.halfRate}%</div><div>${EkCommon.money(bill.cgst)}</div></div>
           <div class="invoice-meta"><div>SGST @ ${bill.halfRate}%</div><div>${EkCommon.money(bill.sgst)}</div></div>
+          ${bill.discountPct ? `<div class="invoice-meta"><div>Discount @ ${bill.discountPct}%</div><div>-${EkCommon.money(bill.discountAmount)}</div></div>` : ''}
           <div class="invoice-total-row"><span>Total</span><strong>${EkCommon.money(bill.total)}</strong></div>
         </div>
       </div>

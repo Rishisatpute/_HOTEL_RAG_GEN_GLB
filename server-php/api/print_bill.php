@@ -1,5 +1,5 @@
 <?php
-// POST /api/print_bill.php?table=7
+// POST /api/print_bill.php?table=7   { discount?: 0|5|10|... }
 // Prints the full itemized bill on the counter's billing printer. Prices
 // only ever appear here — never on a KITCHEN/BAR ticket. Generates the
 // invoice first if it hasn't been yet, so the printed amount and the one
@@ -16,7 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') json_error('Method not allowed', 405)
 $table = $_GET['table'] ?? '';
 if (!$table) json_error('table is required');
 
-$orders = generate_invoice_for_table($table);
+$discountPct = (float) (body()['discount'] ?? 0);
+$orders = generate_invoice_for_table($table, $discountPct);
 if (!$orders) json_error('No bill pending for this table', 400);
 
 $ordersForTicket = array_map(fn($o) => [
@@ -24,6 +25,7 @@ $ordersForTicket = array_map(fn($o) => [
     'invoice_no' => $o['invoiceNo'], 'bill_subtotal' => $o['billSubtotal'],
     'half_rate' => $o['halfRate'], 'cgst_amount' => $o['cgstAmount'],
     'sgst_amount' => $o['sgstAmount'], 'bill_total' => $o['billTotal'],
+    'discount_pct' => $o['discountPct'], 'discount_amount' => $o['discountAmount'],
 ], $orders);
 
 $content = format_bill_ticket(restaurant_info(), $ordersForTicket);

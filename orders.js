@@ -58,12 +58,24 @@ const OrderStore = (() => {
   const GST_RATE = 5;
   function getGstRate(){ return GST_RATE; }
 
-  function billBreakdown(subtotal, rate){
+  // discountPct: 0/5/10/... applied AFTER GST — GST is computed on the full
+  // subtotal, then the discount % comes off that GST-inclusive total. Mirrors
+  // server-php/includes/billing.php's bill_breakdown() exactly (same rounding),
+  // so the pre-generation preview on Counter matches what generateInvoice()
+  // actually locks in server-side.
+  function billBreakdown(subtotal, rate, discountPct){
     const r = rate == null ? getGstRate() : rate;
+    const d = discountPct || 0;
     const gstAmount = Math.round(subtotal * r / 100 * 100) / 100;
     const halfRate = Math.round(r / 2 * 100) / 100;
     const half = Math.round(gstAmount / 2 * 100) / 100;
-    return { subtotal, rate: r, halfRate, gst: gstAmount, cgst: half, sgst: half, total: Math.round((subtotal + gstAmount) * 100) / 100 };
+    const preDiscountTotal = Math.round((subtotal + gstAmount) * 100) / 100;
+    const discountAmount = Math.round(preDiscountTotal * d / 100 * 100) / 100;
+    return {
+      subtotal, rate: r, halfRate, gst: gstAmount, cgst: half, sgst: half,
+      discountPct: d, discountAmount,
+      total: Math.round((preDiscountTotal - discountAmount) * 100) / 100
+    };
   }
 
   function genId(){ return 'EP' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2,5).toUpperCase(); }
@@ -108,19 +120,28 @@ const OrderStore = (() => {
     });
   }
 
-  function generateInvoice(table){
-    return api(`/api/generate_invoice.php?table=${encodeURIComponent(table)}`, { method: 'POST' });
+  // discount: 0/5/10/... — only takes effect the first time an invoice is
+  // generated for this table's bill; ignored on any later call (server-side
+  // locked in, same as the GST rate).
+  function generateInvoice(table, discount){
+    return api(`/api/generate_invoice.php?table=${encodeURIComponent(table)}`, {
+      method: 'POST', body: JSON.stringify({ discount: discount || 0 })
+    });
   }
 
-  function confirmPayment(table){
-    return api(`/api/confirm_payment.php?table=${encodeURIComponent(table)}`, { method: 'POST' });
+  function confirmPayment(table, discount){
+    return api(`/api/confirm_payment.php?table=${encodeURIComponent(table)}`, {
+      method: 'POST', body: JSON.stringify({ discount: discount || 0 })
+    });
   }
 
   // Sends the full itemized bill to the counter's physical billing printer
   // (via the local Print Agent) — separate from the on-screen invoice modal,
   // which stays as a visual/browser-print fallback.
-  function printBill(table){
-    return api(`/api/print_bill.php?table=${encodeURIComponent(table)}`, { method: 'POST' });
+  function printBill(table, discount){
+    return api(`/api/print_bill.php?table=${encodeURIComponent(table)}`, {
+      method: 'POST', body: JSON.stringify({ discount: discount || 0 })
+    });
   }
 
   function getAll(){ return api('/api/orders.php'); }

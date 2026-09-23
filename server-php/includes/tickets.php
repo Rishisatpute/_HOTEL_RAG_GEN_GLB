@@ -114,6 +114,9 @@ function format_bill_ticket(array $restaurant, array $orders): string {
     $rows[] = ticket_pad('Subtotal', 29) . 'Rs.' . ($first['bill_subtotal'] ?? '');
     $rows[] = ticket_pad('CGST ' . ($first['half_rate'] ?? '') . '%', 29) . 'Rs.' . ($first['cgst_amount'] ?? '');
     $rows[] = ticket_pad('SGST ' . ($first['half_rate'] ?? '') . '%', 29) . 'Rs.' . ($first['sgst_amount'] ?? '');
+    if (!empty($first['discount_pct'])) {
+        $rows[] = ticket_pad('Discount ' . $first['discount_pct'] . '%', 29) . '-Rs.' . ($first['discount_amount'] ?? '');
+    }
     $rows[] = ticket_line('-');
     $rows[] = ticket_pad('TOTAL', 29) . 'Rs.' . ($first['bill_total'] ?? '');
     $rows[] = ticket_line('=');

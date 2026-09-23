@@ -1,5 +1,5 @@
 <?php
-// POST /api/confirm_payment.php?table=7
+// POST /api/confirm_payment.php?table=7   { discount?: 0|5|10|... }
 require_once __DIR__ . '/../includes/response.php';
 require_once __DIR__ . '/../includes/billing_flow.php';
 
@@ -10,8 +10,9 @@ $table = $_GET['table'] ?? '';
 if (!$table) json_error('table is required');
 
 // Ensures a bill that skipped straight to "Confirm Payment" still gets a
-// locked-in invoice number and GST split first.
-$generated = generate_invoice_for_table($table);
+// locked-in invoice number, GST split, and discount first.
+$discountPct = (float) (body()['discount'] ?? 0);
+$generated = generate_invoice_for_table($table, $discountPct);
 if (!$generated) json_out([]);
 
 $method = $generated[0]['paymentMethodRequested'];

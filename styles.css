@@ -396,6 +396,8 @@ body{
 .bill-breakdown{font-size:12.5px;color:rgba(245,236,217,0.7);display:flex;flex-direction:column;gap:2px;margin-bottom:8px}
 .bill-breakdown .bill-total-line{display:flex;justify-content:space-between;font-size:14.5px;color:var(--cream);font-weight:700;margin-top:2px;padding-top:4px;border-top:1px dashed rgba(255,255,255,0.15)}
 .bill-breakdown .bill-line{display:flex;justify-content:space-between}
+.bill-discount-row{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12.5px;color:rgba(245,236,217,0.7);margin-bottom:8px}
+.bill-discount-select{padding:5px 8px;border-radius:6px;border:1px solid rgba(255,255,255,0.15);background:var(--wood-dark);color:var(--cream);font-size:12.5px}
 .staff-sync-note{text-align:center;color:rgba(245,236,217,0.45);font-size:12px;padding:18px 16px 30px}
 
 .kds-board{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:18px}

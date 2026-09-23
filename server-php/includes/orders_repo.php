@@ -32,6 +32,8 @@ function row_to_order(array $row, array $items): array {
         'gstAmount' => $row['gst_amount'] !== null ? (float) $row['gst_amount'] : null,
         'cgstAmount' => $row['cgst_amount'] !== null ? (float) $row['cgst_amount'] : null,
         'sgstAmount' => $row['sgst_amount'] !== null ? (float) $row['sgst_amount'] : null,
+        'discountPct' => $row['discount_pct'] !== null ? (float) $row['discount_pct'] : null,
+        'discountAmount' => $row['discount_amount'] !== null ? (float) $row['discount_amount'] : null,
         'billSubtotal' => $row['bill_subtotal'] !== null ? (float) $row['bill_subtotal'] : null,
         'billTotal' => $row['bill_total'] !== null ? (float) $row['bill_total'] : null,
         'invoiceNo' => $row['invoice_no'],

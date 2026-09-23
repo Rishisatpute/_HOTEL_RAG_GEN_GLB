@@ -33,6 +33,11 @@ CREATE TABLE IF NOT EXISTS orders (
   gst_amount            DECIMAL(10,2) DEFAULT NULL,
   cgst_amount            DECIMAL(10,2) DEFAULT NULL,
   sgst_amount            DECIMAL(10,2) DEFAULT NULL,
+  -- Counter-only discount, applied to the subtotal before GST. Chosen by
+  -- staff (0/5/10/...%) before Print Bill/Confirm Payment first generates
+  -- the invoice, then locked in the same way gst_rate is.
+  discount_pct           DECIMAL(5,2)  DEFAULT NULL,
+  discount_amount        DECIMAL(10,2) DEFAULT NULL,
   bill_subtotal         DECIMAL(10,2) DEFAULT NULL,
   bill_total             DECIMAL(10,2) DEFAULT NULL,
   invoice_no             VARCHAR(30)   DEFAULT NULL,
@@ -115,6 +120,8 @@ CREATE TABLE IF NOT EXISTS invoice_log (
   invoice_no     VARCHAR(30)   NOT NULL PRIMARY KEY,
   table_no       VARCHAR(50)   NOT NULL,
   amount         DECIMAL(10,2) NOT NULL,
+  discount_pct   DECIMAL(5,2)  DEFAULT NULL,
+  discount_amount DECIMAL(10,2) DEFAULT NULL,
   payment_method VARCHAR(20)   NOT NULL,
   paid_at        BIGINT        NOT NULL,
 

@@ -34,6 +34,8 @@ json_out(array_map(fn($inv) => [
     'invoiceNo' => $inv['invoice_no'],
     'table' => $inv['table_no'],
     'amount' => (float) $inv['amount'],
+    'discountPct' => $inv['discount_pct'] !== null ? (float) $inv['discount_pct'] : null,
+    'discountAmount' => $inv['discount_amount'] !== null ? (float) $inv['discount_amount'] : null,
     'paymentMethod' => $inv['payment_method'],
     'paidAt' => (int) $inv['paid_at'],
     'items' => $itemsByInvoice[$inv['invoice_no']] ?? [],
