@@ -300,11 +300,16 @@ body{
 /* ============ Modal overlay (table picker, invoice) ============ */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;z-index:95;padding:16px}
 .modal-overlay.show{display:flex}
-.modal-card{background:var(--card);border-radius:14px;padding:24px;max-width:380px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.modal-card{background:var(--card);border-radius:14px;padding:24px;max-width:380px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
 .modal-card h3{margin:0 0 8px;font-family:Oswald,Segoe UI}
 .modal-hint{font-size:13px;color:rgba(245,236,217,0.75);margin:0 0 14px}
 .modal-input{width:100%;padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:var(--wood-dark);color:var(--cream);font-size:16px;margin-bottom:14px}
-.modal-actions{display:flex;gap:10px;justify-content:flex-end}
+/* Sticky footer inside the scrolling modal card — long content (e.g. a
+   big invoice's item list) scrolls, but Close/Print/Confirm stay reachable
+   instead of getting pushed off the bottom of the viewport with no way to
+   scroll down to them. The negative margin + re-added padding extends the
+   sticky bar flush to the card's edges, canceling modal-card's own padding. */
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;position:sticky;bottom:-24px;margin:16px -24px -24px;padding:14px 24px 24px;background:inherit}
 
 /* ============ Cart drawer ============ */
 .drawer-scrim{position:fixed;inset:0;background:rgba(0,0,0,0.55);display:none;z-index:75}
@@ -472,7 +477,11 @@ body{
 /* ============ Invoice ============
    Styled as a printed paper receipt (light background, monospace) regardless
    of the site's dark theme — this is what the customer takes away on paper. */
-.invoice-card{max-width:420px;background:var(--cream);color:#3a2a1a;font-family:'Courier New',ui-monospace,Consolas,monospace;border:1px solid rgba(0,0,0,0.08);font-weight:700}
+.invoice-card{max-width:420px;background:var(--cream);color:#3a2a1a;font-family:'Courier New',ui-monospace,Consolas,monospace;border:1px solid rgba(0,0,0,0.08);font-weight:700;scrollbar-width:thin;scrollbar-color:#a97a1f var(--cream)}
+.invoice-card::-webkit-scrollbar{width:9px}
+.invoice-card::-webkit-scrollbar-track{background:var(--cream)}
+.invoice-card::-webkit-scrollbar-thumb{background:#a97a1f;border-radius:6px;border:2px solid var(--cream)}
+.invoice-card::-webkit-scrollbar-thumb:hover{background:#8a6419}
 .invoice-head{text-align:center;margin-bottom:14px;padding-bottom:14px;border-bottom:1px dashed rgba(0,0,0,0.25)}
 .invoice-brand{font-family:Oswald,Segoe UI;font-weight:700;font-size:22px;letter-spacing:.05em;color:#241207}
 .invoice-addr{font-size:11.5px;color:rgba(58,42,26,0.75);margin-top:6px}
